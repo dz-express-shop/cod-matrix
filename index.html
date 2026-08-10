@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COD MATRIX - Enterprise E-Commerce Platform</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090D16',
+                        cardBg: 'rgba(18, 24, 38, 0.85)',
+                        cardHoverBg: 'rgba(28, 36, 56, 0.95)',
+                        accentEmerald: '#00FF9D',
+                        accentGold: '#FFB800',
+                        accentCyan: '#00E5FF',
+                        accentRose: '#FF3B30',
+                        accentPurple: '#8B5CF6'
+                    },
+                    boxShadow: {
+                        'neon-emerald': '0 0 25px rgba(0, 255, 157, 0.35)',
+                        'neon-gold': '0 0 25px rgba(255, 184, 0, 0.35)',
+                        'neon-cyan': '0 0 25px rgba(0, 229, 255, 0.35)',
+                        'neon-rose': '0 0 25px rgba(255, 59, 48, 0.35)',
+                        'neon-purple': '0 0 25px rgba(139, 92, 246, 0.35)'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- React & ReactDOM Standalone CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Babel Standalone CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #090D16;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(18, 24, 38, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-hover:hover {
+            background: rgba(28, 36, 56, 0.95);
+            border-color: rgba(0, 255, 157, 0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px -10px rgba(0, 255, 157, 0.2);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090D16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #182438;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00FF9D;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.03); }
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-400 selection:text-slate-950">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx && typeof window !== 'undefined') {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+            }
+            playSuccess() {
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                osc.frequency.setValueAtTime(783.99, now + 0.16);
+                osc.frequency.setValueAtTime(1046.50, now + 0.24);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            }
+            playChaChing() {
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc1.type = 'triangle';
+                osc2.type = 'sine';
+                osc1.frequency.setValueAtTime(987.77, now);
+                osc1.frequency.setValueAtTime(1318.51, now + 0.09);
+                osc2.frequency.setValueAtTime(1567.98, now + 0.18);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc1.start(now);
+                osc2.start(now + 0.09);
+                osc1.stop(now + 0.5);
+                osc2.stop(now + 0.5);
+            }
+            playClick() {
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(900, now + 0.04);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            }
+            playCancel() {
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.exponentialRampToValueAtTime(160, now + 0.2);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+        }
+        const sfx = new SoundEngine();
+
+        const ALGERIA_WILAYAS = [
+            { code: '01', name: '01 - Adrar', homeFee: 900, stopDeskFee: 500, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef'] },
+            { code: '05', name: '05 - Batna', homeFee: 700, stopDeskFee: 400, communes: ['Batna', 'Tazoult', 'Barika', 'Ain Touta', 'Merouana'] },
+            { code: '06', name: '06 - Béjaïa', homeFee: 650, stopDeskFee: 350, communes: ['Béjaïa', 'Amizour', 'Akbou', 'El Kseur', 'Sidi Aïch'] },
+            { code: '09', name: '09 - Blida', homeFee: 500, stopDeskFee: 300, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun'] },
+            { code: '16', name: '16 - Alger', homeFee: 400, stopDeskFee: 250, communes: ['Bab Ezzouar', 'Hydra', 'Kouba', 'Cheraga', 'Dely Ibrahim', 'Zeralda', 'Bordj El Kiffan'] },
+            { code: '19', name: '19 - Sétif', homeFee: 600, stopDeskFee: 350, communes: ['Sétif', 'El Eulma', 'Ain Oulmene', 'Ain Arnat', 'Bougaa'] },
+            { code: '23', name: '23 - Annaba', homeFee: 650, stopDeskFee: 350, communes: ['Annaba', 'El Bouni', 'El Hadjar', 'Berrahal'] },
+            { code: '25', name: '25 - Constantine', homeFee: 600, stopDeskFee: 350, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli', 'Hamma Bouziane', 'Didouche Mourad'] },
+            { code: '31', name: '31 - Oran', homeFee: 550, stopDeskFee: 300, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew', 'Ain El Turk', 'Gardy'] },
+            { code: '35', name: '35 - Boumerdès', homeFee: 500, stopDeskFee: 300, communes: ['Boumerdès', 'Bordj Menaïel', 'Khemis El Khechna', 'Boudouaou', 'Dellys'] }
+        ];
+
+        const INITIAL_USERS = [
+            { id: 'user-admin', username: 'admin', password: 'admin123', name: 'صاحب المنصة (Admin)', role: 'admin', pendingBalanceDZD: 0, confirmedBalanceDZD: 150000, xp: 5000, level: 10, streak: 30, confirmedCount: 150 },
+            { id: 'user-dalia', username: 'dalia', password: '123456', name: 'دالية المنصوري (Confirmatrice)', role: 'confirmatrice', pendingBalanceDZD: 3800, confirmedBalanceDZD: 45000, xp: 850, level: 2, streak: 4, confirmedCount: 28 },
+            { id: 'user-sarah', username: 'sarah', password: '123456', name: 'سارة التواتي (Confirmatrice)', role: 'confirmatrice', pendingBalanceDZD: 4200, confirmedBalanceDZD: 68000, xp: 1450, level: 3, streak: 7, confirmedCount: 42 },
+            { id: 'user-yacine', username: 'yacine', password: '123456', name: 'ياصين خليل (Suivi Livraison)', role: 'suivi_agent', pendingBalanceDZD: 1900, confirmedBalanceDZD: 32000, xp: 620, level: 2, streak: 3, confirmedCount: 19 },
+            { id: 'user-kamel', username: 'kamel', password: '123456', name: 'كمال بن عيسى (Agent Stock)', role: 'stock_agent', pendingBalanceDZD: 1200, confirmedBalanceDZD: 21000, xp: 410, level: 1, streak: 2, confirmedCount: 12 }
+        ];
+
+        const TODAY_ISO = '2026-08-10';
+        const YESTERDAY_ISO = '2026-08-09';
+        const PAST_WEEK_ISO = '2026-08-05';
+
+        const INITIAL_ORDERS = [
+            {
+                id: 'ord-101',
+                orderNumber: 'ORD-2026-881',
+                customerName: 'Karim Boukhalfa',
+                customerPhone: '0550123456',
+                wilaya: '16 - Alger',
+                commune: 'Bab Ezzouar',
+                deliveryType: 'Domicile',
+                productSku: 'AZ-CAM-AUTO',
+                productName: 'Caméra Rétroviseur ZamilAuto 4K',
+                variant: 'Full HD + Carte 64GB',
+                quantity: 1,
+                unitPriceDZD: 6500,
+                totalPriceDZD: 6900,
+                shippingFeeDZD: 400,
+                statusCall: 'En_Cours', // Options: En_Cours, Pas_1, Pas_2, Pas_3, Injoignable, Confirme, Annule
+                statusShipping: 'Non_Expedie',
+                assignedAgentId: 'user-dalia',
+                createdAtISO: `${TODAY_ISO}T14:30:00`,
+                createdAtDisplay: 'اليوم - 14:30',
+                isUrgent: true,
+                notes: 'اتصلوا به بعد الساعة 16:00',
+                upsellAdded: false,
+                courier: 'Yalidine'
+            },
+            {
+                id: 'ord-102',
+                orderNumber: 'ORD-2026-882',
+                customerName: 'Amina Benali',
+                customerPhone: '0661987654',
+                wilaya: '31 - Oran',
+                commune: 'Es Senia',
+                deliveryType: 'StopDesk',
+                productSku: 'LUX-WATCH-01',
+                productName: 'Montre Luxe Tapyach Gold Edition',
+                variant: 'Doré / Cuir Noir',
+                quantity: 1,
+                unitPriceDZD: 8900,
+                totalPriceDZD: 9200,
+                shippingFeeDZD: 300,
+                statusCall: 'Pas_1',
+                statusShipping: 'Non_Expedie',
+                assignedAgentId: 'user-dalia',
+                createdAtISO: `${TODAY_ISO}T11:15:00`,
+                createdAtDisplay: 'اليوم - 11:15',
+                isUrgent: false,
+                notes: 'لم ترد على الهاتف في المحاولة الأولى',
+                upsellAdded: false,
+                courier: 'ZR Express'
+            },
+            {
+                id: 'ord-103',
+                orderNumber: 'ORD-2026-883',
+                customerName: 'Yacine Djebbar',
+                customerPhone: '0770456789',
+                wilaya: '25 - Constantine',
+                commune: 'El Khroub',
+                deliveryType: 'Domicile',
+                productSku: 'KRAFT-BAG-100',
+                productName: 'Pack Sac Kraft Personnalisé (x100)',
+                variant: 'Format Moyen 28x15',
+                quantity: 2,
+                unitPriceDZD: 4500,
+                totalPriceDZD: 9600,
+                shippingFeeDZD: 600,
+                statusCall: 'Confirme',
+                statusShipping: 'Expedie',
+                assignedAgentId: 'user-dalia',
+                createdAtISO: `${YESTERDAY_ISO}T16:45:00`,
+                createdAtDisplay: 'أمس - 16:45',
+                isUrgent: false,
+                notes: 'طلب تأكيد الشحن الفوري',
+                upsellAdded: false,
+                courier: 'Yalidine'
+            },
+            {
+                id: 'ord-104',
+                orderNumber: 'ORD-2026-884',
+                customerName: 'Meriem Ziani',
+                customerPhone: '0560112233',
+                wilaya: '19 - Sétif',
+                commune: 'El Eulma',
+                deliveryType: 'Domicile',
+                productSku: 'BIO-PACK-SERUM',
+                productName: 'Pack Anti-Taches Bio Luxury',
+                variant: 'Sérum + Crème Nuit',
+                quantity: 1,
+                unitPriceDZD: 4200,
+                totalPriceDZD: 4800,
+                shippingFeeDZD: 600,
+                statusCall: 'Confirme',
+                statusShipping: 'Livre',
+                assignedAgentId: 'user-sarah',
+                createdAtISO: `${PAST_WEEK_ISO}T09:20:00`,
+                createdAtDisplay: '05 أوكتوبر - 09:20',
+                isUrgent: false,
+                notes: 'تم التسليم وجمع المبلغ بنجاح',
+                upsellAdded: true,
+                courier: 'Yalidine'
+            },
+            {
+                id: 'ord-105',
+                orderNumber: 'ORD-2026-885',
+                customerName: 'Sofiane Hamidi',
+                customerPhone: '0799887766',
+                wilaya: '06 - Béjaïa',
+                commune: 'Akbou',
+                deliveryType: 'Domicile',
+                productSku: 'AZ-CAM-AUTO',
+                productName: 'Caméra Rétroviseur ZamilAuto 4K',
+                variant: 'Full HD Standard',
+                quantity: 1,
+                unitPriceDZD: 6500,
+                totalPriceDZD: 7150,
+                shippingFeeDZD: 650,
+                statusCall: 'En_Cours',
+                statusShipping: 'Non_Expedie',
+                assignedAgentId: 'user-dalia',
+                createdAtISO: `${TODAY_ISO}T08:00:00`,
+                createdAtDisplay: 'اليوم - 08:00',
+                isUrgent: true,
+                notes: 'طلب عاجل من إعلان الفايسبوك',
+                upsellAdded: false,
+                courier: 'EcoTrack'
+            }
+        ];
+
+        const { useState, useEffect, useMemo } = React;
+
+        function App() {
+            // Auth State
+            const [users, setUsers] = useState(INITIAL_USERS);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [loginInput, setLoginInput] = useState({ username: '', password: '' });
+            const [loginError, setLoginError] = useState('');
+
+            // Data State
+            const [orders, setOrders] = useState(INITIAL_ORDERS);
+            const [soundEnabled, setSoundEnabled] = useState(true);
+
+            // Filter States
+            const [searchQuery, setSearchQuery] = useState('');
+            const [dateFilter, setDateFilter] = useState('All'); // All, Today, Yesterday, Last7Days
+            const [statusCallFilter, setStatusCallFilter] = useState('All');
+            const [wilayaFilter, setWilayaFilter] = useState('All');
+            const [urgentOnly, setUrgentOnly] = useState(false);
+
+            // Modals
+            const [cancelModalOrder, setCancelModalOrder] = useState(null);
+            const [cancelReason, setCancelReason] = useState('');
+            const [rewardToast, setRewardToast] = useState(null);
+            const [whatsappModalOrder, setWhatsappModalOrder] = useState(null);
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                const found = users.find(u => u.username.toLowerCase() === loginInput.username.trim().toLowerCase() && u.password === loginInput.password);
+                if (found) {
+                    setCurrentUser(found);
+                    setLoginError('');
+                    if (soundEnabled) sfx.playSuccess();
+                } else {
+                    setLoginError('اسم المستخدم أو كلمة السر غير صحيحة!');
+                    if (soundEnabled) sfx.playCancel();
+                }
+            };
+
+            const handleLogout = () => {
+                setCurrentUser(null);
+                setLoginInput({ username: '', password: '' });
+                if (soundEnabled) sfx.playClick();
+            };
+
+            const filteredOrders = useMemo(() => {
+                return orders.filter(o => {
+                    const q = searchQuery.toLowerCase().trim();
+                    const matchSearch = !q || o.customerName.toLowerCase().includes(q) ||
+                                        o.customerPhone.includes(q) ||
+                                        o.orderNumber.toLowerCase().includes(q) ||
+                                        o.productName.toLowerCase().includes(q);
+
+                    let matchDate = true;
+                    const orderDateStr = o.createdAtISO.split('T')[0];
+                    if (dateFilter === 'Today') matchDate = orderDateStr === TODAY_ISO;
+                    else if (dateFilter === 'Yesterday') matchDate = orderDateStr === YESTERDAY_ISO;
+                    else if (dateFilter === 'Last7Days') matchDate = orderDateStr >= PAST_WEEK_ISO;
+
+                    const matchStatusCall = statusCallFilter === 'All' ? true : o.statusCall === statusCallFilter;
+                    const matchWilaya = wilayaFilter === 'All' ? true : o.wilaya.includes(wilayaFilter);
+                    const matchUrgent = urgentOnly ? o.isUrgent : true;
+
+                    return matchSearch && matchDate && matchStatusCall && matchWilaya && matchUrgent;
+                }).sort((a, b) => new Date(b.createdAtISO) - new Date(a.createdAtISO));
+            }, [orders, searchQuery, dateFilter, statusCallFilter, wilayaFilter, urgentOnly]);
+
+            const handleUpdateOrderStatus = (orderId, newStatusCall, extraData = {}) => {
+                const prevOrder = orders.find(o => o.id === orderId);
+                const wasAlreadyConfirmed = prevOrder && prevOrder.statusCall === 'Confirme';
+                const isConfirmation = newStatusCall === 'Confirme';
+
+                // Bonuses
+                const baseBonus = isConfirmation && !wasAlreadyConfirmed ? 100 : 0;
+                const upsellBonus = extraData.upsellAdded && !prevOrder?.upsellAdded ? 100 : 0;
+                const totalAddedEarnings = baseBonus + upsellBonus;
+
+                if (isConfirmation || upsellBonus > 0) {
+                    if (window.confetti) {
+                        window.confetti({ particleCount: 110, spread: 80, origin: { y: 0.7 }, colors: ['#00FF9D', '#FFB800', '#00E5FF', '#8B5CF6'] });
+                    }
+                    if (upsellBonus > 0 && soundEnabled) sfx.playChaChing();
+                    else if (soundEnabled) sfx.playSuccess();
+
+                    setRewardToast({
+                        text: `+${totalAddedEarnings} DZD 🔥`,
+                        sub: upsellBonus > 0 ? 'مكافأة التأكيد + العرض التوفيري (Upsell)!' : 'تم تأكيد الطلب وإضافته للمستحقات!'
+                    });
+                    setTimeout(() => setRewardToast(null), 3000);
+
+                } else if (newStatusCall === 'Annule') {
+                    if (soundEnabled) sfx.playCancel();
+                } else {
+                    if (soundEnabled) sfx.playClick();
+                }
+
+                setOrders(prevOrders => prevOrders.map(o => {
+                    if (o.id === orderId) {
+                        return {
+                            ...o,
+                            statusCall: newStatusCall || o.statusCall,
+                            wilaya: extraData.wilaya || o.wilaya,
+                            commune: extraData.commune || o.commune,
+                            deliveryType: extraData.deliveryType || o.deliveryType,
+                            shippingFeeDZD: extraData.shippingFeeDZD !== undefined ? extraData.shippingFeeDZD : o.shippingFeeDZD,
+                            totalPriceDZD: extraData.totalPriceDZD || o.totalPriceDZD,
+                            quantity: extraData.quantity || o.quantity,
+                            notes: extraData.notes !== undefined ? extraData.notes : o.notes,
+                            cancelReason: extraData.cancelReason || o.cancelReason,
+                            upsellAdded: extraData.upsellAdded !== undefined ? extraData.upsellAdded : o.upsellAdded
+                        };
+                    }
+                    return o;
+                }));
+
+                if (currentUser && totalAddedEarnings > 0) {
+                    setUsers(prevUsers => prevUsers.map(u => {
+                        if (u.id === currentUser.id) {
+                            const updatedUser = {
+                                ...u,
+                                pendingBalanceDZD: u.pendingBalanceDZD + totalAddedEarnings,
+                                xp: u.xp + 50,
+                                confirmedCount: isConfirmation && !wasAlreadyConfirmed ? u.confirmedCount + 1 : u.confirmedCount
+                            };
+                            setCurrentUser(updatedUser);
+                            return updatedUser;
+                        }
+                        return u;
+                    }));
+                }
+
+                setCancelModalOrder(null);
+                setCancelReason('');
+            };
+
+            if (!currentUser) {
+                return (
+                    <div className="min-h-screen bg-[#090D16] flex items-center justify-center p-4">
+                        <div className="glass-panel p-8 rounded-3xl border border-slate-800 max-w-md w-full space-y-6 shadow-2xl relative overflow-hidden">
+                            <div className="text-center space-y-2">
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 via-cyan-500 to-purple-600 flex items-center justify-center text-slate-950 font-black text-3xl mx-auto shadow-neon-emerald">
+                                    M
+                                </div>
+                                <h2 className="text-2xl font-black text-white tracking-tight">COD MATRIX</h2>
+                                <p className="text-xs text-slate-400">منصة إدارة وتأكيد الطلبات للـ COD</p>
+                            </div>
+
+                            {loginError && (
+                                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs font-bold text-center">
+                                    <i className="fa-solid fa-circle-exclamation mr-1.5"></i> {loginError}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleLogin} className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-bold text-slate-400 block mb-1">اسم المستخدم</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="مثال: dalia, sarah, admin"
+                                        value={loginInput.username}
+                                        onChange={(e) => setLoginInput({ ...loginInput, username: e.target.value })}
+                                        className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-xs font-bold text-slate-400 block mb-1">كلمة السر</label>
+                                    <input 
+                                        type="password"
+                                        placeholder="••••••••"
+                                        value={loginInput.password}
+                                        onChange={(e) => setLoginInput({ ...loginInput, password: e.target.value })}
+                                        className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                                        required
+                                    />
+                                </div>
+
+                                <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black rounded-xl text-xs shadow-neon-emerald transition active:scale-95">
+                                    دخول للمنصة <i className="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                                </button>
+                            </form>
+
+                            <div className="pt-4 border-t border-slate-800 text-center text-[11px] text-slate-500 space-y-1">
+                                <div>حسابات تجريبية:</div>
+                                <div className="font-mono text-emerald-400">dalia / 123456 | sarah / 123456 | admin / admin123</div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen pb-16">
+                    {/* Toast Notification */}
+                    {rewardToast && (
+                        <div className="fixed top-20 right-6 z-50 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 text-slate-950 font-black px-6 py-4 rounded-2xl shadow-neon-emerald flex items-center gap-3 animate-bounce">
+                            <i className="fa-solid fa-bolt text-2xl"></i>
+                            <div>
+                                <div className="text-lg leading-none">{rewardToast.text}</div>
+                                <div className="text-xs text-slate-900 font-semibold mt-1">{rewardToast.sub}</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TOP HEADER BAR */}
+                    <header className="sticky top-0 z-40 glass-panel border-b border-slate-800 px-4 md:px-8 py-3 mb-6">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                            
+                            <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 via-cyan-500 to-purple-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-neon-emerald">
+                                        M
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <h1 className="font-extrabold text-lg tracking-tight text-white">COD MATRIX</h1>
+                                            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">CONFIRMATRICE PAGE</span>
+                                        </div>
+                                        <p className="text-xs text-slate-400">مرحباً بكِ {currentUser.name}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* DUAL-TIER BALANCE SYSTEM (المستحقات المعلقة والمؤكدة) */}
+                            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                                
+                                {/* 1. المستحقات المعلقة (Yellow / Gold) */}
+                                <div className="bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/30 px-3.5 py-1.5 rounded-xl flex items-center gap-2.5 shadow-neon-gold">
+                                    <i className="fa-solid fa-hourglass-half text-amber-400 text-base"></i>
+                                    <div>
+                                        <div className="text-[9px] uppercase font-extrabold text-amber-500/90">مستحقاتك المعلقة</div>
+                                        <div className="text-sm font-black text-amber-400">
+                                            {currentUser.pendingBalanceDZD.toLocaleString()} <span className="text-[10px]">DA</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 2. المستحقات المؤكدة (Green / Emerald) */}
+                                <div className="bg-gradient-to-r from-emerald-500/10 to-teal-600/5 border border-emerald-500/30 px-3.5 py-1.5 rounded-xl flex items-center gap-2.5 shadow-neon-emerald">
+                                    <i className="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+                                    <div>
+                                        <div className="text-[9px] uppercase font-extrabold text-emerald-400/90">مستحقاتك المؤكدة</div>
+                                        <div className="text-sm font-black text-emerald-400">
+                                            {currentUser.confirmedBalanceDZD.toLocaleString()} <span className="text-[10px]">DA</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    onClick={() => setSoundEnabled(!soundEnabled)}
+                                    className={`p-2.5 rounded-xl border text-xs font-bold transition ${soundEnabled ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-900 text-slate-500 border-slate-800'}`}
+                                >
+                                    <i className={`fa-solid ${soundEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
+                                </button>
+
+                                <button 
+                                    onClick={handleLogout}
+                                    className="px-3 py-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition flex items-center gap-1"
+                                >
+                                    <i className="fa-solid fa-power-off"></i> خروج
+                                </button>
+                            </div>
+
+                        </div>
+                    </header>
+
+                    {/* MAIN WORKSPACE CONTENT */}
+                    <main className="max-w-7xl mx-auto px-4 md:px-8 space-y-6">
+
+                        {/* WORKSPACE BANNER */}
+                        <div className="glass-panel p-5 rounded-3xl border-l-4 border-l-emerald-400 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 className="text-xl font-black text-white flex items-center gap-2">
+                                    <i className="fa-solid fa-headset text-emerald-400"></i> صفحة توكيد الطلبيات (Confirmatrice Page)
+                                </h3>
+                                <p className="text-xs text-slate-400 mt-1">
+                                    إدارة بطاقات الزبائن مع أزرار الحالة المباشرة، العروض التوفيرية (Upsell +100 DA)، وكتابة الملاحظات
+                                </p>
+                            </div>
+
+                            <div className="text-right">
+                                <div className="text-[10px] text-slate-400 font-bold uppercase">الطلبات الظاهرة</div>
+                                <div className="text-lg font-black text-emerald-400">{filteredOrders.length} / {orders.length}</div>
+                            </div>
+                        </div>
+
+                        {/* EASY & PRO FILTER TOOLBAR */}
+                        <div className="glass-panel p-4 rounded-3xl border border-slate-800 space-y-3">
+                            <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                                <i className="fa-solid fa-filter"></i> فلترة الطلبات المباشرة (Smart Filters)
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                                
+                                {/* 1. Quick Search */}
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-1">بحث سريع</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="اسم، هاتف، رقم طلب..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                                    />
+                                </div>
+
+                                {/* 2. Date Filter */}
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-1">التاريخ</label>
+                                    <select 
+                                        value={dateFilter}
+                                        onChange={(e) => setDateFilter(e.target.value)}
+                                        className="w-full p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                                    >
+                                        <option value="All">جميع الأوقات</option>
+                                        <option value="Today">طلبات اليوم</option>
+                                        <option value="Yesterday">طلبات الأمس</option>
+                                        <option value="Last7Days">آخر 7 أيام</option>
+                                    </select>
+                                </div>
+
+                                {/* 3. Call Status Filter */}
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-1">حالة الاتصال</label>
+                                    <select 
+                                        value={statusCallFilter}
+                                        onChange={(e) => setStatusCallFilter(e.target.value)}
+                                        className="w-full p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                                    >
+                                        <option value="All">جميع الحالات</option>
+                                        <option value="En_Cours">En Cours (طلب جديد)</option>
+                                        <option value="Pas_1">Pas 1 (لم يرد 1)</option>
+                                        <option value="Pas_2">Pas 2 (لم يرد 2)</option>
+                                        <option value="Pas_3">Pas 3 (لم يرد 3)</option>
+                                        <option value="Injoignable">Injoignable (غير مستعمل)</option>
+                                        <option value="Confirme">Confirmé (مؤكد)</option>
+                                        <option value="Annule">Annulé (ملغى)</option>
+                                    </select>
+                                </div>
+
+                                {/* 4. Wilaya Filter */}
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-1">الولاية</label>
+                                    <select 
+                                        value={wilayaFilter}
+                                        onChange={(e) => setWilayaFilter(e.target.value)}
+                                        className="w-full p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                                    >
+                                        <option value="All">جميع الولايات</option>
+                                        {ALGERIA_WILAYAS.map(w => (
+                                            <option key={w.code} value={w.name}>{w.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* 5. Urgent Toggle */}
+                                <div className="flex items-end">
+                                    <button 
+                                        onClick={() => setUrgentOnly(!urgentOnly)}
+                                        className={`w-full py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                                            urgentOnly ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-neon-rose' : 'bg-slate-950 text-slate-400 border-slate-800'
+                                        }`}
+                                    >
+                                        🔥 الطلبات المستعجلة فقط
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {filteredOrders.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredOrders.map(order => {
+                                    const currentWilayaObj = ALGERIA_WILAYAS.find(w => w.name === order.wilaya) || ALGERIA_WILAYAS[0];
+
+                                    return (
+                                        <div 
+                                            key={order.id} 
+                                            className={`glass-panel glass-panel-hover p-5 rounded-3xl border transition-all relative flex flex-col justify-between space-y-4 ${
+                                                order.isUrgent ? 'border-rose-500/40 shadow-neon-rose' : 'border-slate-800'
+                                            }`}
+                                        >
+                                            {/* Card Top Banner */}
+                                            <div>
+                                                <div className="flex justify-between items-center mb-3">
+                                                    <span className="text-xs font-mono font-bold text-emerald-400 px-2.5 py-1 bg-slate-950 rounded-lg border border-slate-800">
+                                                        {order.orderNumber}
+                                                    </span>
+
+                                                    {/* Current Status Badge */}
+                                                    <span className={`text-xs px-3 py-1 rounded-full font-black border ${
+                                                        order.statusCall === 'Confirme' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' :
+                                                        order.statusCall === 'Annule' ? 'bg-rose-500/10 text-rose-400 border-rose-500/30' :
+                                                        order.statusCall.includes('Pas') ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' :
+                                                        'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                                                    }`}>
+                                                        {order.statusCall === 'En_Cours' ? 'En Cours' :
+                                                         order.statusCall === 'Pas_1' ? 'Pas 1' :
+                                                         order.statusCall === 'Pas_2' ? 'Pas 2' :
+                                                         order.statusCall === 'Pas_3' ? 'Pas 3' :
+                                                         order.statusCall === 'Confirme' ? 'Confirmé ✓' :
+                                                         order.statusCall === 'Annule' ? 'Annulé ✗' : order.statusCall}
+                                                    </span>
+                                                </div>
+
+                                                {/* CLIENT PRIMARY INFO BOX */}
+                                                <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                                                    <div className="text-base font-black text-white flex justify-between items-center">
+                                                        <span><i className="fa-solid fa-user text-emerald-400 mr-1.5"></i>{order.customerName}</span>
+                                                        <span className="text-[10px] font-mono text-slate-500">{order.createdAtDisplay}</span>
+                                                    </div>
+                                                    
+                                                    <div className="flex justify-between items-center pt-1">
+                                                        <a 
+                                                            href={`tel:${order.customerPhone}`}
+                                                            className="text-sm font-mono font-black text-emerald-400 hover:underline flex items-center gap-1.5"
+                                                        >
+                                                            <i className="fa-solid fa-phone"></i> {order.customerPhone}
+                                                        </a>
+
+                                                        <button 
+                                                            onClick={() => setWhatsappModalOrder(order)}
+                                                            className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg text-[11px] font-bold hover:bg-emerald-500/20 transition flex items-center gap-1"
+                                                        >
+                                                            <i className="fa-brands fa-whatsapp"></i> واتساب
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* PRODUCT & SMART UPSELL TOGGLE */}
+                                            <div className="space-y-2 border-t border-slate-800/80 pt-3">
+                                                <div className="text-xs font-bold text-white flex justify-between items-center">
+                                                    <span>{order.productName}</span>
+                                                    <span className="text-emerald-400 font-mono font-black">{order.unitPriceDZD} DA</span>
+                                                </div>
+                                                <div className="text-[11px] text-slate-400 flex justify-between">
+                                                    <span>الخاصية: <strong className="text-slate-200">{order.variant}</strong></span>
+                                                    <span>الكمية: <strong className="text-white">x{order.quantity}</strong></span>
+                                                </div>
+
+                                                {/* SMART UPSELL BUTTON (+100 DA Bonus) */}
+                                                <div className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 p-2.5 rounded-xl border border-purple-500/30 flex justify-between items-center">
+                                                    <div>
+                                                        <div className="text-[11px] font-bold text-purple-300 flex items-center gap-1">
+                                                            <i className="fa-solid fa-wand-magic-sparkles text-amber-400"></i> عرض توفير خاص (Upsell)
+                                                        </div>
+                                                        <div className="text-[9px] text-purple-400">+100 DA عمولة إضافية لكِ!</div>
+                                                    </div>
+
+                                                    <button 
+                                                        onClick={() => {
+                                                            const newUpsellState = !order.upsellAdded;
+                                                            const newQty = newUpsellState ? order.quantity + 1 : Math.max(1, order.quantity - 1);
+                                                            const newTotal = (newQty * order.unitPriceDZD) + order.shippingFeeDZD;
+                                                            handleUpdateOrderStatus(order.id, order.statusCall, {
+                                                                upsellAdded: newUpsellState,
+                                                                quantity: newQty,
+                                                                totalPriceDZD: newTotal
+                                                            });
+                                                        }}
+                                                        className={`px-3 py-1 rounded-lg text-xs font-black transition ${
+                                                            order.upsellAdded ? 'bg-purple-500 text-white shadow-neon-purple' : 'bg-slate-900 text-purple-400 border border-purple-500/30'
+                                                        }`}
+                                                    >
+                                                        {order.upsellAdded ? 'مفعل (x2) ✓' : 'إضافة +1'}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* LOCATION & DELIVERY TYPE */}
+                                            <div className="space-y-2 border-t border-slate-800/80 pt-3">
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <label className="text-[10px] text-slate-400 block font-bold">الولاية</label>
+                                                        <select 
+                                                            value={order.wilaya}
+                                                            onChange={(e) => {
+                                                                const foundW = ALGERIA_WILAYAS.find(w => w.name === e.target.value) || ALGERIA_WILAYAS[0];
+                                                                const fee = order.deliveryType === 'StopDesk' ? foundW.stopDeskFee : foundW.homeFee;
+                                                                const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                handleUpdateOrderStatus(order.id, order.statusCall, { wilaya: foundW.name, commune: foundW.communes[0], shippingFeeDZD: fee, totalPriceDZD: total });
+                                                            }}
+                                                            className="w-full p-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] text-white"
+                                                        >
+                                                            {ALGERIA_WILAYAS.map(w => (
+                                                                <option key={w.code} value={w.name}>{w.name}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="text-[10px] text-slate-400 block font-bold">التوصيل</label>
+                                                        <div className="grid grid-cols-2 gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
+                                                            <button 
+                                                                onClick={() => {
+                                                                    const fee = currentWilayaObj.homeFee;
+                                                                    const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                    handleUpdateOrderStatus(order.id, order.statusCall, { deliveryType: 'Domicile', shippingFeeDZD: fee, totalPriceDZD: total });
+                                                                }}
+                                                                className={`py-1 rounded text-[10px] font-bold transition ${order.deliveryType === 'Domicile' ? 'bg-emerald-400 text-slate-950' : 'text-slate-400'}`}
+                                                            >الدار</button>
+                                                            <button 
+                                                                onClick={() => {
+                                                                    const fee = currentWilayaObj.stopDeskFee;
+                                                                    const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                    handleUpdateOrderStatus(order.id, order.statusCall, { deliveryType: 'StopDesk', shippingFeeDZD: fee, totalPriceDZD: total });
+                                                                }}
+                                                                className={`py-1 rounded text-[10px] font-bold transition ${order.deliveryType === 'StopDesk' ? 'bg-emerald-400 text-slate-950' : 'text-slate-400'}`}
+                                                            >StopDesk</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-xl text-xs font-mono">
+                                                    <span className="text-slate-400">الشحن: <strong className="text-white">{order.shippingFeeDZD} DA</strong></span>
+                                                    <span className="text-slate-400">الإجمالي: <strong className="text-emerald-400 text-sm font-black">{order.totalPriceDZD} DA</strong></span>
+                                                </div>
+                                            </div>
+
+                                            {/* EDITABLE NOTES / REMARQUE BOX */}
+                                            <div className="border-t border-slate-800/80 pt-2">
+                                                <label className="text-[10px] font-bold text-amber-400 block mb-1">
+                                                    <i className="fa-solid fa-pen-to-square mr-1"></i> ملاحظة / استفسار الكوبيراتريس:
+                                                </label>
+                                                <input 
+                                                    type="text"
+                                                    placeholder="اكتبي أي ملاحظة هنا (مثال: اتصلوا بعد 16:00)..."
+                                                    value={order.notes || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setOrders(prev => prev.map(item => item.id === order.id ? { ...item, notes: val } : item));
+                                                    }}
+                                                    className="w-full p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-500/50"
+                                                />
+                                            </div>
+
+                                            {/* DIRECT CALL STATUS BUTTONS (EN COURS, PAS 1, PAS 2, PAS 3, INJOIGNABLE, ANNULER, CONFIRMER) */}
+                                            <div className="pt-2 border-t border-slate-800 space-y-2">
+                                                
+                                                {/* CONFIRM BUTTON */}
+                                                <button 
+                                                    onClick={() => handleUpdateOrderStatus(order.id, 'Confirme')}
+                                                    className="w-full py-2.5 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-neon-emerald transition active:scale-95"
+                                                >
+                                                    <i className="fa-solid fa-circle-check text-sm"></i> تأكيد الطلبية (+100 DA)
+                                                </button>
+
+                                                {/* STATUS GRID OPTIONS */}
+                                                <div className="grid grid-cols-3 gap-1.5">
+                                                    <button 
+                                                        onClick={() => handleUpdateOrderStatus(order.id, 'En_Cours')}
+                                                        className={`py-1.5 rounded-lg text-[10px] font-bold border transition ${order.statusCall === 'En_Cours' ? 'bg-blue-500/20 text-blue-400 border-blue-500/40' : 'bg-slate-900 text-slate-400 border-slate-800'}`}
+                                                    >En Cours</button>
+                                                    
+                                                    <button 
+                                                        onClick={() => handleUpdateOrderStatus(order.id, 'Pas_1')}
+                                                        className={`py-1.5 rounded-lg text-[10px] font-bold border transition ${order.statusCall === 'Pas_1' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-slate-900 text-slate-400 border-slate-800'}`}
+                                                    >Pas 1</button>
+
+                                                    <button 
+                                                        onClick={() => handleUpdateOrderStatus(order.id, 'Pas_2')}
+                                                        className={`py-1.5 rounded-lg text-[10px] font-bold border transition ${order.statusCall === 'Pas_2' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-slate-900 text-slate-400 border-slate-800'}`}
+                                                    >Pas 2</button>
+
+                                                    <button 
+                                                        onClick={() => handleUpdateOrderStatus(order.id, 'Pas_3')}
+                                                        className={`py-1.5 rounded-lg text-[10px] font-bold border transition ${order.statusCall === 'Pas_3' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-slate-900 text-slate-400 border-slate-800'}`}
+                                                    >Pas 3</button>
+
+                                                    <button 
+                                                        onClick={() => handleUpdateOrderStatus(order.id, 'Injoignable')}
+                                                        className={`py-1.5 rounded-lg text-[10px] font-bold border transition ${order.statusCall === 'Injoignable' ? 'bg-purple-500/20 text-purple-400 border-purple-500/40' : 'bg-slate-900 text-slate-400 border-slate-800'}`}
+                                                    >Injoignable</button>
+
+                                                    <button 
+                                                        onClick={() => setCancelModalOrder(order)}
+                                                        className="py-1.5 bg-rose-500/10 text-rose-400 font-bold rounded-lg text-[10px] border border-rose-500/20 hover:bg-rose-500/20 transition"
+                                                    >Annuler</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="glass-panel p-12 text-center rounded-3xl text-slate-500 space-y-3">
+                                <i className="fa-solid fa-filter-circle-xmark text-5xl text-slate-600"></i>
+                                <p className="text-base font-bold text-white">لا توجد طلبيات تطابق الفلاتر المحددة حالياً</p>
+                            </div>
+                        )}
+
+                    </main>
+
+                    {/* MODAL: WHATSAPP SENDER */}
+                    {whatsappModalOrder && (
+                        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full space-y-4 shadow-2xl">
+                                <h3 className="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                                    <i className="fa-brands fa-whatsapp"></i> إرسال رسالة واتساب للزبون
+                                </h3>
+
+                                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs font-mono space-y-1">
+                                    <div>الزبون: <strong className="text-white">{whatsappModalOrder.customerName}</strong></div>
+                                    <div>الهاتف: <strong className="text-emerald-400">{whatsappModalOrder.customerPhone}</strong></div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <button 
+                                        onClick={() => {
+                                            let phone = whatsappModalOrder.customerPhone.replace(/\s+/g, '');
+                                            if (phone.startsWith('0')) phone = '213' + phone.substring(1);
+                                            const msg = encodeURIComponent(`سلام عليكم ${whatsappModalOrder.customerName}، معاك خدمة الزبائن. نأكدو طلبيتك الخاصة بـ (${whatsappModalOrder.productName}) بمبلغ إجمالي ${whatsappModalOrder.totalPriceDZD} د.ج؟`);
+                                            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+                                            setWhatsappModalOrder(null);
+                                        }}
+                                        className="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left rounded-xl text-xs text-slate-200 transition font-bold"
+                                    >
+                                        📲 1. رسالة تأكيد الطلب المباشرة
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            let phone = whatsappModalOrder.customerPhone.replace(/\s+/g, '');
+                                            if (phone.startsWith('0')) phone = '213' + phone.substring(1);
+                                            const msg = encodeURIComponent(`سلام عليكم ${whatsappModalOrder.customerName}، حاولنا الاتصال بكم هاتفياً لتأكيد طلبكم (${whatsappModalOrder.productName}) ولم نتلقى إجابة. يرجى الرد لتحديد موعد الشحن.`);
+                                            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+                                            setWhatsappModalOrder(null);
+                                        }}
+                                        className="w-full p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left rounded-xl text-xs text-amber-400 transition font-bold"
+                                    >
+                                        📞 2. رسالة "حاولنا الاتصال بكم ولم نجد إجابة"
+                                    </button>
+                                </div>
+
+                                <button onClick={() => setWhatsappModalOrder(null)} className="w-full py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">إلغاء</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* MODAL: CANCELLATION REASON */}
+                    {cancelModalOrder && (
+                        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full space-y-4">
+                                <h3 className="text-lg font-bold text-rose-400"><i className="fa-solid fa-triangle-exclamation mr-2"></i> تحديد سبب الإلغاء الإجباري</h3>
+                                <select 
+                                    value={cancelReason}
+                                    onChange={(e) => setCancelReason(e.target.value)}
+                                    className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
+                                >
+                                    <option value="">-- اختر سبب الإلغاء --</option>
+                                    <option value="السعر غالي">السعر غالي (Prix Élevé)</option>
+                                    <option value="مدة التوصيل طويلة">مدة التوصيل طويلة</option>
+                                    <option value="غير رأيه / خطأ بالطلب">غير رأيه / خطأ بالطلب</option>
+                                </select>
+                                <div className="flex gap-3">
+                                    <button onClick={() => setCancelModalOrder(null)} className="flex-1 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">تراجع</button>
+                                    <button 
+                                        disabled={!cancelReason}
+                                        onClick={() => handleUpdateOrderStatus(cancelModalOrder.id, 'Annule', { cancelReason })}
+                                        className="flex-1 py-2 bg-rose-600 disabled:opacity-50 text-white font-bold rounded-xl text-xs"
+                                    >إلغاء الطلب</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
