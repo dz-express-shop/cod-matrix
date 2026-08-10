@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COD MATRIX - VeraVision Enterprise</title>
+    <title>COD MATRIX - EcoTrack Integrated Enterprise Platform</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,9 +34,8 @@
         };
     </script>
 
-    <!-- 🔴 1. مكتبة SUPABASE 🔴 -->
+    <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <!-- React & ReactDOM Standalone CDN -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -90,7 +89,6 @@
         ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #10B981; }
         
-        .tab-active { border-bottom: 2px solid #10B981; color: #10B981; background: rgba(16, 185, 129, 0.1); }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in-down { animation: fadeInDown 0.3s ease-out forwards; }
     </style>
@@ -102,14 +100,13 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // 🔴 🔴 🔴 2. إعدادات SUPABASE الخاصة بك (لا تغيرها) 🔴 🔴 🔴
+        // SUPABASE CREDENTIALS
         const SUPABASE_URL = 'https://fatgvakfpxsycrjleknt.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhdGd2YWtmcHhzeWNyamxla250Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjY2MjQsImV4cCI6MjEwMDIwMjYyNH0.7_DSLql8sjTSjnUSYVJZIwGVTPJ9lhOiG192oJKBOM0';
         
-        // تشغيل الاتصال الحي بقاعدة البيانات
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        // 🔴 🔴 🔴 ========================================= 🔴 🔴 🔴
 
+        // Sound Engine
         class SoundEngine {
             constructor() { this.ctx = null; }
             init() { if (!this.ctx && typeof window !== 'undefined') { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) this.ctx = new AudioCtx(); } }
@@ -136,33 +133,57 @@
         }
         const sfx = new SoundEngine();
 
-        const ALGERIA_WILAYAS = [
-            { code: '01', name: '01 - Adrar', homeFee: 900, stopDeskFee: 500, communes: ['Adrar', 'Reggane', 'Timimoun'] },
-            { code: '05', name: '05 - Batna', homeFee: 700, stopDeskFee: 400, communes: ['Batna', 'Tazoult', 'Barika', 'Ain Touta'] },
-            { code: '06', name: '06 - Béjaïa', homeFee: 650, stopDeskFee: 350, communes: ['Béjaïa', 'Amizour', 'Akbou'] },
-            { code: '09', name: '09 - Blida', homeFee: 500, stopDeskFee: 300, communes: ['Blida', 'Boufarik', 'Ouled Yaïch'] },
-            { code: '16', name: '16 - Alger', homeFee: 400, stopDeskFee: 250, communes: ['Bab Ezzouar', 'Hydra', 'Kouba', 'Cheraga', 'Zeralda'] },
-            { code: '19', name: '19 - Sétif', homeFee: 600, stopDeskFee: 350, communes: ['Sétif', 'El Eulma', 'Ain Arnat'] },
-            { code: '25', name: '25 - Constantine', homeFee: 600, stopDeskFee: 350, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli'] },
-            { code: '31', name: '31 - Oran', homeFee: 550, stopDeskFee: 300, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew'] }
+        // 🔴 ECOTRACK WILAYA MAPPING & OFFICIAL FEES MATRIX 🔴
+        const ECOTRACK_WILAYAS = [
+            { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900 },
+            { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450 },
+            { id: 3, name: '03 - Laghouat', homeFee: 950, stopDeskFee: 550 },
+            { id: 4, name: '04 - Oum El Bouaghi', homeFee: 850, stopDeskFee: 450 },
+            { id: 5, name: '05 - Batna', homeFee: 900, stopDeskFee: 500 },
+            { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450 },
+            { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550 },
+            { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650 },
+            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400 },
+            { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550 },
+            { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100 },
+            { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0 },
+            { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500 },
+            { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0 },
+            { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450 },
+            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300 },
+            { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500 },
+            { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0 },
+            { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450 },
+            { id: 20, name: '20 - Saïda', homeFee: 900, stopDeskFee: 0 },
+            { id: 21, name: '21 - Skikda', homeFee: 900, stopDeskFee: 450 },
+            { id: 22, name: '22 - Sidi Bel Abbès', homeFee: 900, stopDeskFee: 0 },
+            { id: 23, name: '23 - Annaba', homeFee: 850, stopDeskFee: 450 },
+            { id: 24, name: '24 - Guelma', homeFee: 900, stopDeskFee: 450 },
+            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450 },
+            { id: 26, name: '26 - Médéa', homeFee: 800, stopDeskFee: 0 },
+            { id: 27, name: '27 - Mostaganem', homeFee: 900, stopDeskFee: 450 },
+            { id: 28, name: '28 - M\'Sila', homeFee: 850, stopDeskFee: 500 },
+            { id: 29, name: '29 - Mascara', homeFee: 900, stopDeskFee: 0 },
+            { id: 30, name: '30 - Ouargla', homeFee: 950, stopDeskFee: 600 },
+            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450 },
+            { id: 35, name: '35 - Boumerdès', homeFee: 650, stopDeskFee: 0 },
+            { id: 42, name: '42 - Tipaza', homeFee: 650, stopDeskFee: 450 },
+            { id: 47, name: '47 - Ghardaïa', homeFee: 950, stopDeskFee: 450 }
         ];
 
-        // 🌟 تخصيص أعضاء فريقك الحقيقي (VeraVision Team)
         const INITIAL_USERS = [
-            { id: 'admin-karim', username: 'admin', password: 'admin123', name: 'كريم / أنيس (إدارة VeraVision)', role: 'admin' },
-            { id: 'conf-dalia', username: 'dalia', password: '123456', name: 'دالية (Confirmatrice)', role: 'confirmatrice', pendingDZD: 0, confirmedDZD: 0, xp: 0, level: 1 },
-            { id: 'suivi-nadir', username: 'nadir', password: '123456', name: 'نظير (مسؤول المتابعة)', role: 'suivi_agent' },
-            { id: 'stock-zaki', username: 'zaki', password: '123456', name: 'زكي (مسؤول المخزون)', role: 'stock_agent' }
+            { id: 'admin-karim', username: 'admin', password: 'admin123', name: 'كريم / أنيس (VeraVision Admin)', role: 'admin' },
+            { id: 'conf-dalia', username: 'dalia', password: '123456', name: 'دالية (Confirmatrice)', role: 'confirmatrice', pendingDZD: 0, confirmedDZD: 0, xp: 0 },
+            { id: 'suivi-nadir', username: 'nadir', password: '123456', name: 'نظير (Agent Suivi)', role: 'suivi_agent' },
+            { id: 'stock-zaki', username: 'zaki', password: '123456', name: 'زكي (Stock Manager)', role: 'stock_agent' }
         ];
 
         function App() {
-            // Auth State
             const [users, setUsers] = useState(INITIAL_USERS);
             const [currentUser, setCurrentUser] = useState(null);
             const [loginInput, setLoginInput] = useState({ username: '', password: '' });
             const [loginError, setLoginError] = useState('');
 
-            // Global App State (تبدأ فارغة لأنها ستجلب من Supabase)
             const [orders, setOrders] = useState([]);
             const [isLoading, setIsLoading] = useState(false);
             const [soundEnabled, setSoundEnabled] = useState(true);
@@ -170,10 +191,10 @@
             const [showRedFlash, setShowRedFlash] = useState(false);
             const [toast, setToast] = useState(null);
             
-            // Confirmatrice UI State
             const [isFilterOpen, setIsFilterOpen] = useState(false);
             const [expandedOrderId, setExpandedOrderId] = useState(null);
-            
+            const [ecoTrackModalOrder, setEcoTrackModalOrder] = useState(null);
+
             // Filters
             const [searchQuery, setSearchQuery] = useState('');
             const [startDate, setStartDate] = useState('');
@@ -185,29 +206,24 @@
             const [cancelModalOrder, setCancelModalOrder] = useState(null);
             const [cancelReason, setCancelReason] = useState('');
 
-            // 🔴 3. الاتصال الحي بقاعدة البيانات (Real-time Fetching) 🔴
+            // Realtime DB Sync
             useEffect(() => {
-                if (!currentUser) return; // لا تجلب الطلبات إلا إذا تم تسجيل الدخول
+                if (!currentUser) return;
 
                 setIsLoading(true);
                 const fetchOrders = async () => {
-                    const { data, error } = await supabase
-                        .from('orders')
-                        .select('*')
-                        .order('createdAt', { ascending: false });
-                    
+                    const { data } = await supabase.from('orders').select('*').order('createdAt', { ascending: false });
                     if (data) setOrders(data);
                     setIsLoading(false);
                 };
                 fetchOrders();
 
-                // الرادار: استماع فوري لأي طلب يدخل من صفحة الهبوط
                 const channel = supabase.channel('realtime_orders')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, payload => {
                         if (payload.eventType === 'INSERT') {
                             setOrders(prev => [payload.new, ...prev]);
-                            if (soundEnabled) sfx.playSuccess(); // رنة عند دخول طلب جديد
-                            showToast('طلب جديد!', 'تم استلام طلب جديد من الـ Landing Page', 'success');
+                            if (soundEnabled) sfx.playSuccess();
+                            showToast('طلب جديد!', 'تم استقبال طلب من الـ Landing Page', 'success');
                         } else if (payload.eventType === 'UPDATE') {
                             setOrders(prev => prev.map(o => o.id === payload.new.id ? payload.new : o));
                         }
@@ -217,22 +233,23 @@
                 return () => { supabase.removeChannel(channel); };
             }, [currentUser]);
 
-            // دالة تحديث الحالة (ترسل التحديث للـ UI ولـ Supabase معاً)
+            // Status Update Logic (Confirmation & Upsell & Penalties)
             const handleUpdateOrderStatus = async (orderId, newStatusCall, newStatusShipping, extraData = {}) => {
                 const prevOrder = orders.find(o => o.id === orderId);
                 const isNewConfirm = newStatusCall === 'Confirme' && prevOrder.statusCall !== 'Confirme';
                 const isNewCancel = newStatusCall === 'Annule' && prevOrder.statusCall !== 'Annule';
+                const upsellJustAdded = extraData.upsellAdded === true && !prevOrder.upsellAdded;
                 
-                let pendingDZDDifference = 0; let xpAdded = 0;
+                let pendingDZDDifference = 0;
+                let xpAdded = 0;
 
-                // التحديث السريع للشاشة (Smooth UI)
                 if (isNewConfirm) {
                     pendingDZDDifference += 100; xpAdded += 50;
                     if (window.confetti) confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#10B981', '#F59E0B'] });
                     if (soundEnabled) sfx.playSuccess();
                     showToast(`+100 DZD 💰`, `تم تأكيد الطلب بنجاح!`, 'success');
                     setExpandedOrderId(null);
-                } else if (extraData.upsellAdded === true && !prevOrder.upsellAdded) {
+                } else if (upsellJustAdded) {
                     pendingDZDDifference += 100; xpAdded += 20;
                     if (soundEnabled) sfx.playChaChing();
                     showToast(`+100 DZD 🔥`, `تمت إضافة العرض التوفيري!`, 'success');
@@ -251,6 +268,7 @@
                     cancelReason: extraData.cancelReason !== undefined ? extraData.cancelReason : prevOrder.cancelReason,
                     upsellAdded: extraData.upsellAdded !== undefined ? extraData.upsellAdded : prevOrder.upsellAdded,
                     wilaya: extraData.wilaya || prevOrder.wilaya,
+                    wilaya_id: extraData.wilaya_id || prevOrder.wilaya_id || 16,
                     commune: extraData.commune || prevOrder.commune,
                     deliveryType: extraData.deliveryType || prevOrder.deliveryType,
                     shippingFeeDZD: extraData.shippingFeeDZD !== undefined ? extraData.shippingFeeDZD : prevOrder.shippingFeeDZD,
@@ -260,10 +278,8 @@
                     assignedAgentId: currentUser.id
                 };
 
-                // تحديث الشاشة فوراً
                 setOrders(prev => prev.map(o => o.id === orderId ? { ...o, ...updatedOrderData } : o));
                 
-                // تحديث نقاط الكوبيراتريس
                 if (pendingDZDDifference !== 0 || xpAdded !== 0) {
                     setUsers(prev => prev.map(u => {
                         if (u.id === currentUser.id) {
@@ -275,29 +291,7 @@
                 }
 
                 setCancelModalOrder(null); setCancelReason('');
-
-                // 🔴 حفظ التعديل في Supabase (الدماغ) 🔴
                 await supabase.from('orders').update(updatedOrderData).eq('id', orderId);
-            };
-
-            // 🔴 إضافة طلب وهمي للتجربة (يظهر للأدمن فقط) 🔴
-            const insertTestOrder = async () => {
-                const dummyOrder = {
-                    orderNumber: 'ORD-' + Math.floor(Math.random() * 10000),
-                    customerName: 'تجربة زبون من الإعلان',
-                    customerPhone: '055' + Math.floor(1000000 + Math.random() * 9000000),
-                    wilaya: '16 - Alger',
-                    deliveryType: 'Domicile',
-                    productName: 'Tapyach Watch V2',
-                    variant: 'Standard',
-                    quantity: 1,
-                    unitPriceDZD: 4500,
-                    shippingFeeDZD: 400,
-                    totalPriceDZD: 4900,
-                    statusCall: 'En_Cours'
-                };
-                await supabase.from('orders').insert([dummyOrder]);
-                showToast('نجاح', 'تم إرسال طلب تجريبي للقاعدة', 'success');
             };
 
             const triggerScaryPenalty = () => {
@@ -362,10 +356,24 @@
                 return <span className={`text-[10px] px-2.5 py-0.5 rounded-md font-bold border whitespace-nowrap ${style}`}>{status ? status.replace('_', ' ') : 'N/A'}</span>;
             };
 
+            // EcoTrack Payload Generator Data Formatter
+            const generateEcoTrackPayload = (order) => {
+                return {
+                    client: order.customerName,
+                    phone: order.customerPhone,
+                    adresse: order.commune || order.wilaya,
+                    commune: order.commune || 'Centre',
+                    wilaya_id: order.wilaya_id || 16,
+                    montant: order.totalPriceDZD,
+                    type_id: 1, // 1: Livraison
+                    products: `${order.productName} (x${order.quantity})`,
+                    reference: order.orderNumber
+                };
+            };
+
             if (!currentUser) {
                 return (
                     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
                         <div className="glass-panel p-8 rounded-3xl border border-slate-800 max-w-md w-full space-y-8 shadow-2xl relative z-10">
                             <div className="text-center space-y-3">
                                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-400 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-4xl mx-auto shadow-neon-emerald">
@@ -373,7 +381,7 @@
                                 </div>
                                 <div>
                                     <h2 className="text-3xl font-black text-white tracking-tight">VeraVision COD</h2>
-                                    <p className="text-xs text-slate-400 uppercase tracking-widest mt-1 font-bold">Matrix System</p>
+                                    <p className="text-xs text-slate-400 uppercase tracking-widest mt-1 font-bold">EcoTrack Master Edition</p>
                                 </div>
                             </div>
 
@@ -386,7 +394,7 @@
                             <form onSubmit={handleLogin} className="space-y-5 text-right">
                                 <div>
                                     <label className="text-xs font-bold text-slate-400 block mb-1.5">اسم المستخدم (Username)</label>
-                                    <input type="text" placeholder="admin, dalia, zaki..."
+                                    <input type="text" placeholder="admin, dalia, yacine..."
                                         value={loginInput.username} onChange={(e) => setLoginInput({ ...loginInput, username: e.target.value })}
                                         className="w-full p-4 bg-slate-900/50 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors text-right" required dir="ltr" />
                                 </div>
@@ -421,48 +429,28 @@
                         </div>
                     )}
 
-                    {/* GLOBAL HEADER */}
+                    {/* HEADER */}
                     <header className="sticky top-0 z-30 glass-panel border-b border-slate-800 px-4 py-3 mb-6 shadow-md">
                         <div className="max-w-7xl mx-auto flex justify-between items-center">
-                            
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-neon-emerald">
                                     <i className="fa-solid fa-bolt"></i>
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <h1 className="font-extrabold text-lg text-white leading-none">VeraVision Matrix</h1>
-                                        {/* LIVE INDICATOR */}
-                                        <div className="hidden md:flex items-center gap-1.5 ml-3 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full">
-                                            <span className="relative flex h-2 w-2">
-                                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                            </span>
-                                            <span className="text-[9px] text-emerald-400 font-bold tracking-widest uppercase">Supabase Live</span>
-                                        </div>
+                                        <h1 className="font-extrabold text-lg text-white leading-none">COD MATRIX</h1>
+                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full">EcoTrack Ready</span>
                                     </div>
                                     <p className="text-[11px] text-slate-400 font-bold mt-1"><i className="fa-regular fa-user text-emerald-500 ml-1"></i>{currentUser.name}</p>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
-                                {currentUser.role === 'admin' && (
-                                    <button onClick={insertTestOrder} className="hidden md:flex px-3 py-1.5 bg-blue-500/20 text-blue-400 border border-blue-500/50 rounded-lg text-xs font-bold hover:bg-blue-500/30">
-                                        ➕ إضافة طلب تجريبي
-                                    </button>
-                                )}
-
                                 {currentUser.role === 'confirmatrice' && (
-                                    <>
-                                        <div className="hidden md:flex px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-xl items-center gap-2">
-                                            <div className="text-[10px] text-amber-500 font-bold">معلقة</div>
-                                            <div className="text-xs font-black text-amber-400">{currentUser.pendingDZD || 0} DA</div>
-                                        </div>
-                                        <div className="hidden md:flex px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl items-center gap-2">
-                                            <div className="text-[10px] text-emerald-400 font-bold">مؤكدة</div>
-                                            <div className="text-xs font-black text-emerald-400">{currentUser.confirmedDZD || 0} DA</div>
-                                        </div>
-                                    </>
+                                    <div className="flex px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-xl items-center gap-2">
+                                        <div className="text-[10px] text-amber-500 font-bold">المستحقات المعلقة</div>
+                                        <div className="text-xs font-black text-amber-400">{currentUser.pendingDZD || 0} DA</div>
+                                    </div>
                                 )}
                                 <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2 rounded-lg border text-xs transition ${soundEnabled ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-500 border-slate-700'}`}>
                                     <i className={`fa-solid ${soundEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
@@ -475,241 +463,243 @@
                     </header>
 
                     <main className="max-w-4xl mx-auto px-4 md:px-8">
-                        
-                        {/* =========================================
-                            ROLE 1: CONFIRMATRICE WORKSPACE
-                        ========================================= */}
-                        {currentUser.role === 'confirmatrice' || currentUser.role === 'admin' ? (
-                            <div className="space-y-4">
-                                
-                                {/* Top Controls */}
-                                <div className="flex justify-between items-center bg-slate-900/50 p-3 rounded-2xl border border-slate-800">
-                                    <div className="flex items-center gap-3">
-                                        <div className="text-sm font-black text-white">الطلبات الواردة</div>
-                                        <span className="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-bold">{filteredOrders.length}</span>
-                                        {isLoading && <i className="fa-solid fa-circle-notch fa-spin text-emerald-400 text-sm"></i>}
-                                    </div>
-                                    <button onClick={() => setIsFilterOpen(true)} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                                        <i className="fa-solid fa-filter text-emerald-400"></i> الفلترة (Filters)
-                                    </button>
+                        <div className="space-y-4">
+                            {/* Controls Bar */}
+                            <div className="flex justify-between items-center bg-slate-900/50 p-3 rounded-2xl border border-slate-800">
+                                <div className="flex items-center gap-3">
+                                    <div className="text-sm font-black text-white">قائمة التأكيد (Phase 1)</div>
+                                    <span className="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-bold">{filteredOrders.length}</span>
+                                    {isLoading && <i className="fa-solid fa-circle-notch fa-spin text-emerald-400 text-sm"></i>}
                                 </div>
+                                <button onClick={() => setIsFilterOpen(true)} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                    <i className="fa-solid fa-filter text-emerald-400"></i> الفلترة
+                                </button>
+                            </div>
 
-                                {/* RIGHT SIDEBAR FILTER (DRAWER) */}
-                                <div className={`fixed inset-y-0 right-0 z-50 w-80 bg-slate-950 border-l border-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                                    <div className="p-5 h-full flex flex-col">
-                                        <div className="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-                                            <h3 className="font-black text-emerald-400 text-lg flex items-center gap-2"><i className="fa-solid fa-sliders"></i> Smart Filters</h3>
-                                            <button onClick={() => setIsFilterOpen(false)} className="text-slate-500 hover:text-white p-2"><i className="fa-solid fa-xmark text-xl"></i></button>
+                            {/* RIGHT DRAWER FILTER */}
+                            <div className={`fixed inset-y-0 right-0 z-50 w-80 bg-slate-950 border-l border-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                                <div className="p-5 h-full flex flex-col">
+                                    <div className="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                                        <h3 className="font-black text-emerald-400 text-lg flex items-center gap-2"><i className="fa-solid fa-sliders"></i> Smart Filters</h3>
+                                        <button onClick={() => setIsFilterOpen(false)} className="text-slate-500 hover:text-white p-2"><i className="fa-solid fa-xmark text-xl"></i></button>
+                                    </div>
+                                    
+                                    <div className="space-y-5 overflow-y-auto flex-1 pr-2">
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-400 block mb-2">بحث سريع</label>
+                                            <input type="text" placeholder="اسم، هاتف، رقم..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:border-emerald-500 outline-none" />
                                         </div>
-                                        
-                                        <div className="space-y-5 overflow-y-auto flex-1 pr-2">
-                                            <div>
-                                                <label className="text-xs font-bold text-slate-400 block mb-2">بحث سريع</label>
-                                                <input type="text" placeholder="اسم، هاتف، رقم..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:border-emerald-500 outline-none" />
-                                            </div>
 
-                                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 space-y-3">
-                                                <label className="text-xs font-bold text-emerald-400 block"><i className="fa-regular fa-calendar"></i> فلترة مخصصة بالتاريخ</label>
-                                                <div>
-                                                    <label className="text-[10px] text-slate-500 block mb-1">من تاريخ (Start):</label>
-                                                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white" />
-                                                </div>
-                                                <div>
-                                                    <label className="text-[10px] text-slate-500 block mb-1">إلى تاريخ (End):</label>
-                                                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white" />
-                                                </div>
-                                            </div>
-
+                                        <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 space-y-3">
+                                            <label className="text-xs font-bold text-emerald-400 block"><i className="fa-regular fa-calendar"></i> تاريخ مخصص</label>
                                             <div>
-                                                <label className="text-xs font-bold text-slate-400 block mb-2">الولاية</label>
-                                                <select value={wilayaFilter} onChange={(e) => setWilayaFilter(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white outline-none">
-                                                    <option value="" disabled>-- اختر الولاية --</option>
-                                                    <option value="">(إلغاء فلتر الولاية)</option>
-                                                    {ALGERIA_WILAYAS.map(w => <option key={w.code} value={w.name}>{w.name}</option>)}
-                                                </select>
+                                                <label className="text-[10px] text-slate-500 block mb-1">من تاريخ:</label>
+                                                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white" />
                                             </div>
-
                                             <div>
-                                                <label className="text-xs font-bold text-slate-400 block mb-2">حالة الاتصال</label>
-                                                <select value={statusCallFilter} onChange={(e) => setStatusCallFilter(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white outline-none">
-                                                    <option value="All">الكل (All)</option>
-                                                    <option value="En_Cours">طلب جديد (En Cours)</option>
-                                                    <option value="Pas_1">لم يرد 1</option>
-                                                    <option value="Pas_2">لم يرد 2</option>
-                                                    <option value="Pas_3">لم يرد 3</option>
-                                                    <option value="Injoignable">مغلق (Injoignable)</option>
-                                                    <option value="Confirme">مؤكد (Confirmé)</option>
-                                                    <option value="Annule">ملغى (Annulé)</option>
-                                                </select>
+                                                <label className="text-[10px] text-slate-500 block mb-1">إلى تاريخ:</label>
+                                                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white" />
                                             </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-400 block mb-2">الولاية (EcoTrack Mapped)</label>
+                                            <select value={wilayaFilter} onChange={(e) => setWilayaFilter(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white outline-none">
+                                                <option value="">(جميع الولايات)</option>
+                                                {ECOTRACK_WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-400 block mb-2">حالة الاتصال</label>
+                                            <select value={statusCallFilter} onChange={(e) => setStatusCallFilter(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white outline-none">
+                                                <option value="All">الكل (All)</option>
+                                                <option value="En_Cours">طلب جديد (En Cours)</option>
+                                                <option value="Pas_1">لم يرد 1</option>
+                                                <option value="Pas_2">لم يرد 2</option>
+                                                <option value="Pas_3">لم يرد 3</option>
+                                                <option value="Injoignable">مغلق (Injoignable)</option>
+                                                <option value="Confirme">مؤكد (Confirmé)</option>
+                                                <option value="Annule">ملغى (Annulé)</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                {/* Filter Overlay */}
-                                {isFilterOpen && <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)}></div>}
+                            </div>
+                            {isFilterOpen && <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)}></div>}
 
-                                {/* SMART ACCORDION CARDS (VERTICAL LIST) */}
-                                <div className="flex flex-col gap-3">
-                                    {filteredOrders.length > 0 ? (
-                                        filteredOrders.map(order => {
-                                            const isExpanded = expandedOrderId === order.id;
-                                            const currentWilayaObj = ALGERIA_WILAYAS.find(w => w.name === order.wilaya) || ALGERIA_WILAYAS[0];
+                            {/* ORDERS LIST */}
+                            <div className="flex flex-col gap-3">
+                                {filteredOrders.length > 0 ? (
+                                    filteredOrders.map(order => {
+                                        const isExpanded = expandedOrderId === order.id;
+                                        const currentEcoWilaya = ECOTRACK_WILAYAS.find(w => w.name === order.wilaya) || ECOTRACK_WILAYAS[14];
 
-                                            return (
-                                                <div key={order.id} className="glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden transition-all duration-300">
-                                                    
-                                                    {/* COMPACT VIEW (ALWAYS VISIBLE) */}
-                                                    <div onClick={() => { setExpandedOrderId(isExpanded ? null : order.id); if(soundEnabled) sfx.playClick(); }} 
-                                                         className="p-4 flex flex-col md:flex-row justify-between md:items-center cursor-pointer hover:bg-slate-800/40 gap-3 md:gap-0">
-                                                        
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
-                                                                <i className="fa-solid fa-user text-xs"></i>
-                                                            </div>
-                                                            <div>
-                                                                <h4 className="font-bold text-white text-sm">{order.customerName}</h4>
-                                                                <div className="text-xs text-slate-500 font-mono mt-0.5">{order.orderNumber} • {order.createdAt ? order.createdAt.split('T')[0] : ''}</div>
-                                                            </div>
+                                        return (
+                                            <div key={order.id} className="glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden transition-all duration-300">
+                                                {/* COMPACT ROW */}
+                                                <div onClick={() => { setExpandedOrderId(isExpanded ? null : order.id); if(soundEnabled) sfx.playClick(); }} 
+                                                     className="p-4 flex flex-col md:flex-row justify-between md:items-center cursor-pointer hover:bg-slate-800/40 gap-3 md:gap-0">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
+                                                            <i className="fa-solid fa-user text-xs"></i>
                                                         </div>
-
-                                                        <div className="flex items-center justify-between md:justify-end gap-4 ml-12 md:ml-0">
-                                                            <div className="text-left">
-                                                                <div className="text-emerald-400 font-mono text-sm font-bold flex items-center gap-1.5"><i className="fa-solid fa-phone text-[10px]"></i>{order.customerPhone}</div>
-                                                                <div className="text-[10px] text-slate-400">{order.wilaya}</div>
-                                                            </div>
-                                                            <div className="flex items-center gap-3">
-                                                                {getStatusBadge(order.statusCall)}
-                                                                <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-slate-600 ml-2 transition-transform duration-300`}></i>
-                                                            </div>
+                                                        <div>
+                                                            <h4 className="font-bold text-white text-sm flex items-center gap-2">
+                                                                {order.customerName}
+                                                                {order.statusCall === 'Confirme' && <span className="text-[9px] bg-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded font-mono border border-cyan-500/30">EcoTrack Ready</span>}
+                                                            </h4>
+                                                            <div className="text-xs text-slate-500 font-mono mt-0.5">{order.orderNumber} • {order.createdAt ? order.createdAt.split('T')[0] : ''}</div>
                                                         </div>
                                                     </div>
 
-                                                    {/* EXPANDED VIEW (DETAILS & ACTIONS) */}
-                                                    {isExpanded && (
-                                                        <div className="p-4 border-t border-slate-800 bg-slate-900/30 space-y-4 animate-fade-in-down">
-                                                            
-                                                            {/* Actions Row */}
-                                                            <div className="flex gap-2">
-                                                                <a href={`tel:${order.customerPhone}`} className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
-                                                                    <i className="fa-solid fa-phone-volume text-emerald-400"></i> Appel (اتصال)
-                                                                </a>
-                                                                <a href={formatWhatsAppLink(order)} target="_blank" className="flex-1 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
-                                                                    <i className="fa-brands fa-whatsapp text-lg"></i> MSG WTSP (رسالة)
-                                                                </a>
-                                                            </div>
-
-                                                            {/* Editable Info Form */}
-                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                                                                
-                                                                {/* Product & Upsell */}
-                                                                <div className="space-y-2">
-                                                                    <div className="text-xs text-slate-500 block">المنتج <i className="fa-solid fa-pen text-[10px] ml-1"></i></div>
-                                                                    <div className="text-sm font-bold text-white">{order.productName} ({order.variant})</div>
-                                                                    <div className="flex justify-between items-center bg-purple-500/10 p-2 rounded-lg border border-purple-500/20 mt-2">
-                                                                        <div>
-                                                                            <span className="text-[10px] font-bold text-purple-400 block">عرض توفيري (Upsell)</span>
-                                                                            <span className="text-[9px] text-purple-300">+100 DA عمولة لكِ</span>
-                                                                        </div>
-                                                                        <button 
-                                                                            onClick={() => {
-                                                                                const newUpsell = !order.upsellAdded;
-                                                                                const newQty = newUpsell ? order.quantity + 1 : Math.max(1, order.quantity - 1);
-                                                                                const newTotal = (newQty * order.unitPriceDZD) + order.shippingFeeDZD;
-                                                                                handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { upsellAdded: newUpsell, quantity: newQty, totalPriceDZD: newTotal });
-                                                                            }}
-                                                                            className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition ${order.upsellAdded ? 'bg-purple-500 text-white' : 'bg-slate-900 text-purple-400 border border-purple-500/50'}`}
-                                                                        >
-                                                                            {order.upsellAdded ? 'مضاف ✓' : 'إضافة +1'}
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-
-                                                                {/* Location & Delivery */}
-                                                                <div className="space-y-2 border-t md:border-t-0 md:border-r border-slate-800 md:pr-4 pt-2 md:pt-0">
-                                                                    <label className="text-xs text-slate-500 block">الولاية والتوصيل <i className="fa-solid fa-pen text-[10px] ml-1"></i></label>
-                                                                    <select 
-                                                                        value={order.wilaya}
-                                                                        onChange={(e) => {
-                                                                            const foundW = ALGERIA_WILAYAS.find(w => w.name === e.target.value) || ALGERIA_WILAYAS[0];
-                                                                            const fee = order.deliveryType === 'StopDesk' ? foundW.stopDeskFee : foundW.homeFee;
-                                                                            const total = (order.quantity * order.unitPriceDZD) + fee;
-                                                                            handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { wilaya: foundW.name, commune: foundW.communes[0], shippingFeeDZD: fee, totalPriceDZD: total });
-                                                                        }}
-                                                                        className="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white"
-                                                                    >
-                                                                        {ALGERIA_WILAYAS.map(w => <option key={w.code} value={w.name}>{w.name}</option>)}
-                                                                    </select>
-                                                                    <div className="flex gap-1 mt-1">
-                                                                        <button onClick={() => {
-                                                                            const fee = currentWilayaObj.homeFee;
-                                                                            const total = (order.quantity * order.unitPriceDZD) + fee;
-                                                                            handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'Domicile', shippingFeeDZD: fee, totalPriceDZD: total });
-                                                                        }} className={`flex-1 py-1.5 rounded text-[10px] font-bold ${order.deliveryType === 'Domicile' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>المنزل (Domicile)</button>
-                                                                        <button onClick={() => {
-                                                                            const fee = currentWilayaObj.stopDeskFee;
-                                                                            const total = (order.quantity * order.unitPriceDZD) + fee;
-                                                                            handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'StopDesk', shippingFeeDZD: fee, totalPriceDZD: total });
-                                                                        }} className={`flex-1 py-1.5 rounded text-[10px] font-bold ${order.deliveryType === 'StopDesk' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>مكتب (StopDesk)</button>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-
-                                                            {/* Remarque Box */}
-                                                            <div>
-                                                                <label className="text-[10px] font-bold text-amber-400 block mb-1.5">ملاحظة الكوبيراتريس (Remarque):</label>
-                                                                <input 
-                                                                    type="text" 
-                                                                    placeholder="اكتبي ملاحظة للحفظ المباشر..."
-                                                                    value={order.notes || ''}
-                                                                    onChange={(e) => handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { notes: e.target.value })}
-                                                                    className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500/50"
-                                                                />
-                                                            </div>
-
-                                                            {/* STATUS TRIGGERS & CONFIRMATION */}
-                                                            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 pt-2 border-t border-slate-800">
-                                                                
-                                                                <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_1')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_1' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800'}`}>Pas 1</button>
-                                                                <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_2')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_2' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800'}`}>Pas 2</button>
-                                                                <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_3')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_3' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800'}`}>Pas 3</button>
-                                                                <button onClick={() => handleUpdateOrderStatus(order.id, 'Injoignable')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Injoignable' ? 'bg-purple-500/20 text-purple-400 border-purple-500/50' : 'bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800'}`}>Injoignable</button>
-                                                                
-                                                                <button onClick={() => setCancelModalOrder(order)} className="col-span-2 md:col-span-1 py-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 rounded-xl text-xs font-bold border border-rose-500/30 transition">Annuler ✗</button>
-                                                                
-                                                                {/* BIG GREEN CONFIRM */}
-                                                                <button onClick={() => handleUpdateOrderStatus(order.id, 'Confirme')} className="col-span-2 md:col-span-5 mt-2 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-neon-emerald transition active:scale-95 flex items-center justify-center gap-2">
-                                                                    <i className="fa-solid fa-circle-check text-lg"></i> تأكيد الطلبية (A TA2KID B VERT)
-                                                                </button>
-                                                            </div>
-
+                                                    <div className="flex items-center justify-between md:justify-end gap-4 ml-12 md:ml-0">
+                                                        <div className="text-left">
+                                                            <div className="text-emerald-400 font-mono text-sm font-bold flex items-center gap-1.5"><i className="fa-solid fa-phone text-[10px]"></i>{order.customerPhone}</div>
+                                                            <div className="text-[10px] text-slate-400">{order.wilaya}</div>
                                                         </div>
-                                                    )}
+                                                        <div className="flex items-center gap-3">
+                                                            {getStatusBadge(order.statusCall)}
+                                                            <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-slate-600 ml-2 transition-transform duration-300`}></i>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div className="glass-panel p-12 text-center rounded-3xl border border-slate-800">
-                                            {isLoading ? (
-                                                <i className="fa-solid fa-circle-notch fa-spin text-4xl text-emerald-500 mb-4 block"></i>
-                                            ) : (
-                                                <i className="fa-solid fa-box-open text-4xl text-slate-600 mb-4 block"></i>
-                                            )}
-                                            <p className="text-slate-400 font-bold text-sm">
-                                                {isLoading ? 'جاري الاتصال بـ Supabase وجلب الطلبات...' : 'لا توجد طلبات تطابق الفلتر الحالي، أو قاعدة البيانات فارغة.'}
-                                            </p>
-                                        </div>
-                                    )}
+
+                                                {/* EXPANDED DETAILS */}
+                                                {isExpanded && (
+                                                    <div className="p-4 border-t border-slate-800 bg-slate-900/30 space-y-4 animate-fade-in-down">
+                                                        <div className="flex gap-2">
+                                                            <a href={`tel:${order.customerPhone}`} className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                                                                <i className="fa-solid fa-phone-volume text-emerald-400"></i> Appel (اتصال)
+                                                            </a>
+                                                            <a href={formatWhatsAppLink(order)} target="_blank" className="flex-1 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                                                                <i className="fa-brands fa-whatsapp text-lg"></i> MSG WTSP (رسالة)
+                                                            </a>
+                                                        </div>
+
+                                                        {/* Editable Form */}
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                                            <div className="space-y-2">
+                                                                <div className="text-xs text-slate-500 block">المنتج والكمية</div>
+                                                                <div className="text-sm font-bold text-white">{order.productName} ({order.variant})</div>
+                                                                <div className="flex justify-between items-center bg-purple-500/10 p-2 rounded-lg border border-purple-500/20 mt-2">
+                                                                    <div>
+                                                                        <span className="text-[10px] font-bold text-purple-400 block">عرض توفيري (Upsell)</span>
+                                                                        <span className="text-[9px] text-purple-300">+100 DA عمولة لكِ</span>
+                                                                    </div>
+                                                                    <button 
+                                                                        onClick={() => {
+                                                                            const newUpsell = !order.upsellAdded;
+                                                                            const newQty = newUpsell ? order.quantity + 1 : Math.max(1, order.quantity - 1);
+                                                                            const newTotal = (newQty * order.unitPriceDZD) + order.shippingFeeDZD;
+                                                                            handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { upsellAdded: newUpsell, quantity: newQty, totalPriceDZD: newTotal });
+                                                                        }}
+                                                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition ${order.upsellAdded ? 'bg-purple-500 text-white' : 'bg-slate-900 text-purple-400 border border-purple-500/50'}`}
+                                                                    >
+                                                                        {order.upsellAdded ? 'مضاف ✓' : 'إضافة +1'}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="space-y-2 border-t md:border-t-0 md:border-r border-slate-800 md:pr-4 pt-2 md:pt-0">
+                                                                <label className="text-xs text-slate-500 block">الولاية (تسعيرة EcoTrack الرسمية)</label>
+                                                                <select 
+                                                                    value={order.wilaya}
+                                                                    onChange={(e) => {
+                                                                        const foundEco = ECOTRACK_WILAYAS.find(w => w.name === e.target.value) || ECOTRACK_WILAYAS[14];
+                                                                        const fee = order.deliveryType === 'StopDesk' ? foundEco.stopDeskFee : foundEco.homeFee;
+                                                                        const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                        handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { wilaya: foundEco.name, wilaya_id: foundEco.id, shippingFeeDZD: fee, totalPriceDZD: total });
+                                                                    }}
+                                                                    className="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white"
+                                                                >
+                                                                    {ECOTRACK_WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
+                                                                </select>
+
+                                                                <div className="flex gap-1 mt-1">
+                                                                    <button onClick={() => {
+                                                                        const fee = currentEcoWilaya.homeFee;
+                                                                        const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                        handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'Domicile', shippingFeeDZD: fee, totalPriceDZD: total });
+                                                                    }} className={`flex-1 py-1.5 rounded text-[10px] font-bold ${order.deliveryType === 'Domicile' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>البيت ({currentEcoWilaya.homeFee} DA)</button>
+                                                                    <button onClick={() => {
+                                                                        const fee = currentEcoWilaya.stopDeskFee;
+                                                                        const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                        handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'StopDesk', shippingFeeDZD: fee, totalPriceDZD: total });
+                                                                    }} className={`flex-1 py-1.5 rounded text-[10px] font-bold ${order.deliveryType === 'StopDesk' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>مكتب ({currentEcoWilaya.stopDeskFee} DA)</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Remarque Box */}
+                                                        <div>
+                                                            <label className="text-[10px] font-bold text-amber-400 block mb-1.5">ملاحظة الكوبيراتريس (Remarque):</label>
+                                                            <input 
+                                                                type="text" 
+                                                                placeholder="اكتبي ملاحظة للحفظ المباشر..."
+                                                                value={order.notes || ''}
+                                                                onChange={(e) => handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { notes: e.target.value })}
+                                                                className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500/50"
+                                                            />
+                                                        </div>
+
+                                                        {/* STATUS TRIGGERS & CONFIRMATION */}
+                                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 pt-2 border-t border-slate-800">
+                                                            <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_1')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_1' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Pas 1</button>
+                                                            <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_2')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_2' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Pas 2</button>
+                                                            <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_3')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_3' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Pas 3</button>
+                                                            <button onClick={() => handleUpdateOrderStatus(order.id, 'Injoignable')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Injoignable' ? 'bg-purple-500/20 text-purple-400 border-purple-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Injoignable</button>
+                                                            <button onClick={() => setCancelModalOrder(order)} className="col-span-2 md:col-span-1 py-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 rounded-xl text-xs font-bold border border-rose-500/30 transition">Annuler ✗</button>
+                                                            
+                                                            {/* BIG GREEN CONFIRM */}
+                                                            <button onClick={() => handleUpdateOrderStatus(order.id, 'Confirme', 'Non_Expedie')} className="col-span-2 md:col-span-5 mt-2 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-neon-emerald transition active:scale-95 flex items-center justify-center gap-2">
+                                                                <i className="fa-solid fa-circle-check text-lg"></i> تأكيد الطلبية (A TA2KID B VERT)
+                                                            </button>
+
+                                                            {/* EcoTrack Payload Preview Trigger (For Admin/Suivi) */}
+                                                            {order.statusCall === 'Confirme' && (
+                                                                <button onClick={() => setEcoTrackModalOrder(order)} className="col-span-2 md:col-span-5 py-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                                                                    <i className="fa-solid fa-paper-plane"></i> تجهيز التصدير إلى EcoTrack API (Payload Preview)
+                                                                </button>
+                                                            )}
+                                                        </div>
+
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="glass-panel p-12 text-center rounded-3xl border border-slate-800">
+                                        <p className="text-slate-400 font-bold text-sm">لا توجد طلبات تطابق الفلتر حالياً.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </main>
+
+                    {/* MODAL: ECOTRACK PAYLOAD PREVIEW */}
+                    {ecoTrackModalOrder && (
+                        <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="bg-slate-900 border border-cyan-500/50 p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-neon-cyan">
+                                <h3 className="text-lg font-black text-cyan-400 flex items-center gap-2">
+                                    <i className="fa-solid fa-box text-xl"></i> بيانات الشحنة لـ EcoTrack API
+                                </h3>
+                                <p className="text-xs text-slate-300">هذه هي البيانات المنسقة التي سيرسلها النظام تلقائياً لمنصة EcoTrack لمستند الشحن:</p>
+                                
+                                <pre className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto" dir="ltr">
+                                    {JSON.stringify(generateEcoTrackPayload(ecoTrackModalOrder), null, 2)}
+                                </pre>
+
+                                <div className="flex gap-3">
+                                    <button onClick={() => setEcoTrackModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">إغلاق</button>
+                                    <button onClick={() => { showToast('نجاح', 'تم تجهيز كود التتبع لـ EcoTrack', 'success'); setEcoTrackModalOrder(null); }} className="flex-1 py-3 bg-cyan-500 text-slate-950 font-black rounded-xl text-xs">
+                                        تأكيد وإرسال لـ EcoTrack
+                                    </button>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="glass-panel p-12 text-center rounded-3xl border border-slate-800 mt-10">
-                                <i className="fa-solid fa-person-digging text-4xl text-slate-600 mb-4 block"></i>
-                                <p className="text-slate-400 font-bold text-sm">واجهة ({currentUser.role}) قيد التطوير في المراحل القادمة.</p>
-                            </div>
-                        )}
-
-                    </main>
+                        </div>
+                    )}
 
                     {/* MODAL: CANCELLATION PENALTY WARNING */}
                     {cancelModalOrder && (
@@ -719,9 +709,8 @@
                                     <i className="fa-solid fa-triangle-exclamation animate-pulse"></i> تحذير: غرامة إلغاء الطلب
                                 </h3>
                                 <p className="text-xs text-slate-300 font-bold bg-rose-500/10 p-3 rounded-xl border border-rose-500/20 leading-relaxed">
-                                    هل أنت متأكدة؟ إلغاء هذا الطلب سيؤدي إلى خصم <strong className="text-rose-400">-10 DA</strong> من مستحقاتك المعلقة كعقوبة. حاولي إقناع الزبون بعرض بديل أو خصم قبل الإلغاء.
-                                </p>
-                                
+                                    هل أنت متأكدة؟ إلغاء هذا الطلب سيؤدي إلى خصم <strong className="text-rose-400">-10 DA</strong> من مستحقاتك المعلقة كعقوبة.
+                                </p>                                
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-400 block mb-1">سبب الإلغاء (إجباري)</label>
                                     <select value={cancelReason} onChange={(e) => setCancelReason(e.target.value)} className="w-full p-3 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-rose-500">
@@ -733,8 +722,8 @@
                                 </div>
 
                                 <div className="flex gap-3">
-                                    <button onClick={() => setCancelModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs transition hover:bg-slate-700">تراجع، سأحاول مجدداً</button>
-                                    <button disabled={!cancelReason} onClick={() => handleUpdateOrderStatus(cancelModalOrder.id, 'Annule', cancelModalOrder.statusShipping, { cancelReason })} className="flex-1 py-3 bg-rose-600 disabled:opacity-30 text-white font-black rounded-xl text-xs transition shadow-lg shadow-rose-900/50 active:scale-95">
+                                    <button onClick={() => setCancelModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">تراجع</button>
+                                    <button disabled={!cancelReason} onClick={() => handleUpdateOrderStatus(cancelModalOrder.id, 'Annule', cancelModalOrder.statusShipping, { cancelReason })} className="flex-1 py-3 bg-rose-600 disabled:opacity-30 text-white font-black rounded-xl text-xs">
                                         تأكيد الإلغاء (-10 DA)
                                     </button>
                                 </div>
