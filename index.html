@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COD MATRIX - VeraVision Platform (DHD Master API)</title>
+    <title>COD MATRIX - VeraVision Platform (Commune & DHD Integrated)</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -137,42 +137,42 @@
         }
         const sfx = new SoundEngine();
 
-        // OFFICIAL DHD / ECOTRACK WILAYAS (code_wilaya 1 TO 58)
+        // 🔴 OFFICIAL DHD / ECOTRACK WILAYAS & COMMUNES MAPPING 🔴
         const DHD_WILAYAS = [
-            { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900 },
-            { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450 },
-            { id: 3, name: '03 - Laghouat', homeFee: 950, stopDeskFee: 550 },
-            { id: 4, name: '04 - Oum El Bouaghi', homeFee: 850, stopDeskFee: 450 },
-            { id: 5, name: '05 - Batna', homeFee: 900, stopDeskFee: 500 },
-            { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450 },
-            { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550 },
-            { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650 },
-            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400 },
-            { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550 },
-            { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100 },
-            { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0 },
-            { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500 },
-            { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0 },
-            { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450 },
-            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300 },
-            { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500 },
-            { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0 },
-            { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450 },
-            { id: 20, name: '20 - Saïda', homeFee: 900, stopDeskFee: 0 },
-            { id: 21, name: '21 - Skikda', homeFee: 900, stopDeskFee: 450 },
-            { id: 22, name: '22 - Sidi Bel Abbès', homeFee: 900, stopDeskFee: 0 },
-            { id: 23, name: '23 - Annaba', homeFee: 850, stopDeskFee: 450 },
-            { id: 24, name: '24 - Guelma', homeFee: 900, stopDeskFee: 450 },
-            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450 },
-            { id: 26, name: '26 - Médéa', homeFee: 800, stopDeskFee: 0 },
-            { id: 27, name: '27 - Mostaganem', homeFee: 900, stopDeskFee: 450 },
-            { id: 28, name: '28 - M\'Sila', homeFee: 850, stopDeskFee: 500 },
-            { id: 29, name: '29 - Mascara', homeFee: 900, stopDeskFee: 0 },
-            { id: 30, name: '30 - Ouargla', homeFee: 950, stopDeskFee: 600 },
-            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450 },
-            { id: 35, name: '35 - Boumerdès', homeFee: 650, stopDeskFee: 0 },
-            { id: 42, name: '42 - Tipaza', homeFee: 650, stopDeskFee: 450 },
-            { id: 47, name: '47 - Ghardaïa', homeFee: 950, stopDeskFee: 450 }
+            { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef', 'Zaouiet Kounta'] },
+            { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450, communes: ['Chlef', 'Tenes', 'Boukadir', 'Oued Sly', 'Tenes', 'Ain Defla'] },
+            { id: 3, name: '03 - Laghouat', homeFee: 950, stopDeskFee: 550, communes: ['Laghouat', 'Aflou', 'Ksar El Hirane', 'Ain Madhi'] },
+            { id: 4, name: '04 - Oum El Bouaghi', homeFee: 850, stopDeskFee: 450, communes: ['Oum El Bouaghi', 'Ain Beida', 'Ain M\'lila', 'Ain Kercha'] },
+            { id: 5, name: '05 - Batna', homeFee: 900, stopDeskFee: 500, communes: ['Batna', 'Tazoult', 'Barika', 'Ain Touta', 'Merouana', 'Arris', 'N\'Gaous'] },
+            { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450, communes: ['Béjaïa', 'Amizour', 'Akbou', 'El Kseur', 'Sidi Aïch', 'Tichy', 'Aokas'] },
+            { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550, communes: ['Biskra', 'Tolga', 'Ouled Djellal', 'Sidi Okba', 'Sidi Khaled'] },
+            { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650, communes: ['Béchar', 'Abadla', 'Beni Ounif', 'Kenadsa'] },
+            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun', 'Meftah', 'Bougara'] },
+            { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550, communes: ['Bouira', 'Lakhdaria', 'Sour El Ghozlane', 'Ain Bessem', 'M\'Chedallah'] },
+            { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100, communes: ['Tamanrasset', 'In Salah', 'In Ghar'] },
+            { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0, communes: ['Tébessa', 'Cheria', 'El Aouinet', 'Oenza'] },
+            { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500, communes: ['Tlemcen', 'Maghnia', 'Mansourah', 'Chetouane', 'Remchi', 'Ghazaouet'] },
+            { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0, communes: ['Tiaret', 'Sougueur', 'Frenda', 'Ksar Chellala'] },
+            { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450, communes: ['Tizi Ouzou', 'Draa Ben Khedda', 'Azazga', 'Tigzirt', 'Boghni', 'Larbaa Nath Irathen'] },
+            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Bordj El Bahri', 'El Biar', 'Bachar Djerrah', 'Bir Mourad Raïs', 'Rouïba', 'Ain Taya', 'Ouled Fayet', 'Dely Ibrahim', 'Sidi M\'Hamed', 'Casbah', 'Babar', 'Reghaïa', 'Ain Benian', 'Saoula', 'Birtouta'] },
+            { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500, communes: ['Djelfa', 'Ain Oussera', 'Hassi Bahbah', 'Messaad'] },
+            { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0, communes: ['Jijel', 'Tazerout', 'El Milia', 'Taher'] },
+            { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450, communes: ['Sétif', 'El Eulma', 'Ain Arnat', 'Ain Oulmene', 'Bougaa', 'Ain Azel'] },
+            { id: 20, name: '20 - Saïda', homeFee: 900, stopDeskFee: 0, communes: ['Saïda', 'Ain El Hadjar', 'Youb'] },
+            { id: 21, name: '21 - Skikda', homeFee: 900, stopDeskFee: 450, communes: ['Skikda', 'El Harrouch', 'Collo', 'Azzaba'] },
+            { id: 22, name: '22 - Sidi Bel Abbès', homeFee: 900, stopDeskFee: 0, communes: ['Sidi Bel Abbès', 'Tefeschoun', 'SFisef', 'Ben Badis'] },
+            { id: 23, name: '23 - Annaba', homeFee: 850, stopDeskFee: 450, communes: ['Annaba', 'El Bouni', 'El Hadjar', 'Berrahal', 'Seraïdi'] },
+            { id: 24, name: '24 - Guelma', homeFee: 900, stopDeskFee: 450, communes: ['Guelma', 'Oued Zenati', 'Bouchegouf', 'Heliopolis'] },
+            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli', 'Hamma Bouziane', 'Didouche Mourad', 'Zighoud Youcef'] },
+            { id: 26, name: '26 - Médéa', homeFee: 800, stopDeskFee: 0, communes: ['Médéa', 'Berrouaghia', 'Ksar El Boukhari', 'Ouzera'] },
+            { id: 27, name: '27 - Mostaganem', homeFee: 900, stopDeskFee: 450, communes: ['Mostaganem', 'Ain Tedeles', 'Ain Nouissy', 'Hassi Mameche'] },
+            { id: 28, name: '28 - M\'Sila', homeFee: 850, stopDeskFee: 500, communes: ['M\'Sila', 'Bou Saâda', 'Sidi Aïssa', 'Berhoum'] },
+            { id: 29, name: '29 - Mascara', homeFee: 900, stopDeskFee: 0, communes: ['Mascara', 'Sig', 'Tighennif', 'Mohammadia'] },
+            { id: 30, name: '30 - Ouargla', homeFee: 950, stopDeskFee: 600, communes: ['Ouargla', 'Hassi Messaoud', 'Touggourt', 'Rouissat'] },
+            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew', 'Ain El Turk', 'Gardy', 'Oued Tlelat'] },
+            { id: 35, name: '35 - Boumerdès', homeFee: 650, stopDeskFee: 0, communes: ['Boumerdès', 'Bordj Menaïel', 'Khemis El Khechna', 'Boudouaou', 'Dellys'] },
+            { id: 42, name: '42 - Tipaza', homeFee: 650, stopDeskFee: 450, communes: ['Tipaza', 'Kolea', 'Bou Ismail', 'Cherchell', 'Hadout'] },
+            { id: 47, name: '47 - Ghardaïa', homeFee: 950, stopDeskFee: 450, communes: ['Ghardaïa', 'Metlili', 'El Guerrara', 'Bounoura'] }
         ];
 
         const INITIAL_USERS = [
@@ -196,8 +196,7 @@
             const [showRedFlash, setShowRedFlash] = useState(false);
             const [toast, setToast] = useState(null);
             
-            // TOP STATUS FILTER BAR STATE
-            const [topStatusFilter, setTopStatusFilter] = useState('ALL'); // ALL, NEW, PAS_1, PAS_2, PAS_3, INJ, CONFIRMER, DHD, WTSP, ANNULER
+            const [topStatusFilter, setTopStatusFilter] = useState('ALL');
             const [isFilterOpen, setIsFilterOpen] = useState(false);
             const [expandedOrderId, setExpandedOrderId] = useState(null);
             const [dhdModalOrder, setDhdModalOrder] = useState(null);
@@ -320,8 +319,14 @@
                 await supabase.from('orders').update(updatedOrderData).eq('id', orderId);
             };
 
-            // 🔴 REAL DIRECT EXPORT TO DHD / ECOTRACK OFFICIAL POSTMAN API 🔴
+            // 🔴 REAL DIRECT EXPORT TO DHD / ECOTRACK POSTMAN API SPEC 🔴
             const sendRealOrderToDHD = async (order) => {
+                // Validation check for Commune
+                if (!order.commune || order.commune.trim() === '') {
+                    showToast('خطأ في البيانات ❌', 'يرجى اختيار اسم البلدية الرسمية أولاً قبل التصدير لـ DHD', 'error');
+                    return;
+                }
+
                 setIsExportingDHD(true);
                 
                 const wilayaCode = parseInt(order.wilaya_id) || parseInt(order.wilaya.substring(0, 2)) || 16;
@@ -332,10 +337,10 @@
                     reference: order.orderNumber,
                     nom_client: order.customerName,
                     telephone: order.customerPhone,
-                    adresse: order.commune ? `${order.wilaya} - ${order.commune}` : order.wilaya,
-                    commune: order.commune || 'Centre',
+                    adresse: `${order.wilaya} - ${order.commune}`,
+                    commune: order.commune.trim(),
                     code_wilaya: wilayaCode,
-                    montant: order.totalPriceDZD,
+                    montant: parseFloat(order.totalPriceDZD),
                     type: 1, // 1 = Livraison
                     stop_desk: stopDeskVal,
                     produit: `${order.productName} (x${order.quantity})`,
@@ -345,7 +350,7 @@
                 };
 
                 try {
-                    showToast('جاري الاتصال بـ DHD...', 'جاري إرسال الطلب عبر API الرسمي', 'info');
+                    showToast('جاري الاتصال بـ DHD...', 'جاري رفع الطلب عبر API الرسمي', 'info');
 
                     const response = await fetch(`${DHD_API_URL}/api/v1/create/order`, {
                         method: 'POST',
@@ -393,10 +398,9 @@
                 setToast({ title, sub, type }); setTimeout(() => setToast(null), 4000);
             };
 
-            // Master Filter Engine (Top Status Bar + Drawer Search/Date/Wilaya)
+            // Master Filter Engine
             const filteredOrders = useMemo(() => {
                 return orders.filter(o => {
-                    // Top Status Filter Check
                     if (topStatusFilter === 'NEW' && o.statusCall !== 'En_Cours') return false;
                     if (topStatusFilter === 'PAS_1' && o.statusCall !== 'Pas_1') return false;
                     if (topStatusFilter === 'PAS_2' && o.statusCall !== 'Pas_2') return false;
@@ -549,7 +553,7 @@
 
                     <main className="max-w-4xl mx-auto px-4 md:px-8 space-y-4">
                         
-                        {/* 🔴 TOP COLOR-CODED DYNAMIC STATUS FILTER BAR 🔴 */}
+                        {/* TOP COLOR-CODED DYNAMIC STATUS FILTER BAR */}
                         <div className="glass-panel p-2.5 rounded-2xl border border-slate-800 overflow-x-auto scrollbar-none flex items-center gap-2">
                             {[
                                 { key: 'ALL', label: 'الكل', color: 'slate', icon: 'fa-layer-group', count: statusCounts.ALL },
@@ -623,7 +627,7 @@
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold text-slate-400 block mb-2">الولاية (DHD / EcoTrack Code)</label>
+                                        <label className="text-xs font-bold text-slate-400 block mb-2">الولاية (DHD Code)</label>
                                         <select value={wilayaFilter} onChange={(e) => setWilayaFilter(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white outline-none">
                                             <option value="">(جميع الولايات)</option>
                                             {DHD_WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
@@ -663,7 +667,7 @@
                                                 <div className="flex items-center justify-between md:justify-end gap-4 ml-12 md:ml-0">
                                                     <div className="text-left">
                                                         <div className="text-emerald-400 font-mono text-sm font-bold flex items-center gap-1.5"><i className="fa-solid fa-phone text-[10px]"></i>{order.customerPhone}</div>
-                                                        <div className="text-[10px] text-slate-400">{order.wilaya}</div>
+                                                        <div className="text-[10px] text-slate-400">{order.wilaya} ({order.commune || 'لم تحدد'})</div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
                                                         {getStatusBadge(order.statusCall)}
@@ -713,20 +717,44 @@
                                                             </div>
                                                         </div>
 
+                                                        {/* 🔴 DYNAMIC WILAYA & CASCADING COMMUNE SELECTOR 🔴 */}
                                                         <div className="space-y-2 border-t md:border-t-0 md:border-r border-slate-800 md:pr-4 pt-2 md:pt-0">
-                                                            <label className="text-xs text-slate-500 block">الولاية (رمز EcoTrack: {currentDhdWilaya.id})</label>
+                                                            <label className="text-xs text-slate-500 block font-bold">الولاية والبلدية (DHD Required)</label>
+                                                            
+                                                            {/* Wilaya Picker */}
                                                             <select 
                                                                 value={order.wilaya}
                                                                 onChange={(e) => {
                                                                     const foundDhd = DHD_WILAYAS.find(w => w.name === e.target.value) || DHD_WILAYAS[14];
+                                                                    const defaultCommune = foundDhd.communes[0];
                                                                     const fee = order.deliveryType === 'StopDesk' ? foundDhd.stopDeskFee : foundDhd.homeFee;
                                                                     const total = (order.quantity * order.unitPriceDZD) + fee;
-                                                                    handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { wilaya: foundDhd.name, wilaya_id: foundDhd.id, shippingFeeDZD: fee, totalPriceDZD: total });
+                                                                    handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { 
+                                                                        wilaya: foundDhd.name, 
+                                                                        wilaya_id: foundDhd.id, 
+                                                                        commune: defaultCommune,
+                                                                        shippingFeeDZD: fee, 
+                                                                        totalPriceDZD: total 
+                                                                    });
                                                                 }}
-                                                                className="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white"
+                                                                className="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white font-bold"
                                                             >
                                                                 {DHD_WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
                                                             </select>
+
+                                                            {/* Commune Cascading Picker */}
+                                                            <div>
+                                                                <label className="text-[10px] text-cyan-400 block font-bold mt-1">البلدية الرسمية (Commune) *</label>
+                                                                <select 
+                                                                    value={order.commune || currentDhdWilaya.communes[0]}
+                                                                    onChange={(e) => {
+                                                                        handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { commune: e.target.value });
+                                                                    }}
+                                                                    className="w-full p-2 bg-slate-900 border border-cyan-500/40 rounded-lg text-xs text-emerald-400 font-bold"
+                                                                >
+                                                                    {currentDhdWilaya.communes.map(c => <option key={c} value={c}>{c}</option>)}
+                                                                </select>
+                                                            </div>
 
                                                             <div className="flex gap-1 mt-1">
                                                                 <button onClick={() => {
@@ -796,15 +824,15 @@
                                 <h3 className="text-lg font-black text-cyan-400 flex items-center gap-2">
                                     <i className="fa-solid fa-truck-ramp-box text-xl"></i> تصدير الطلب إلى DHD Express API
                                 </h3>
-                                <p className="text-xs text-slate-300">سيتم إرسال الخانات الرسمية لموقع DHD (Postman Specs) عبر الـ Token الخاص بك:</p>
+                                <p className="text-xs text-slate-300">سيتم إرسال البيانات الرسمية بما في ذلك البلدية المحددة (`commune`):</p>
                                 
                                 <pre className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto" dir="ltr">
                                     {JSON.stringify({
                                         reference: dhdModalOrder.orderNumber,
                                         nom_client: dhdModalOrder.customerName,
                                         telephone: dhdModalOrder.customerPhone,
-                                        adresse: dhdModalOrder.commune || dhdModalOrder.wilaya,
-                                        commune: dhdModalOrder.commune || 'Centre',
+                                        adresse: `${dhdModalOrder.wilaya} - ${dhdModalOrder.commune}`,
+                                        commune: dhdModalOrder.commune || 'Bab Ezzouar',
                                         code_wilaya: dhdModalOrder.wilaya_id || 16,
                                         montant: dhdModalOrder.totalPriceDZD,
                                         type: 1,
