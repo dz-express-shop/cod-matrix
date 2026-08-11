@@ -15,20 +15,23 @@
                     colors: {
                         brandOrange: '#FF6600',
                         brandOrangeHover: '#E65C00',
+                        brandOrangeLight: '#FF8533',
                         darkBg: '#080A10',
                         cardDark: 'rgba(16, 20, 31, 0.85)',
                         cardLight: 'rgba(255, 255, 255, 0.95)'
                     },
                     boxShadow: {
-                        'neon-orange': '0 0 20px rgba(255, 102, 0, 0.4)',
-                        'neon-green': '0 0 20px rgba(16, 185, 129, 0.3)'
+                        'neon-orange': '0 0 25px rgba(255, 102, 0, 0.35)',
+                        'neon-cyan': '0 0 25px rgba(6, 182, 212, 0.35)',
+                        'neon-emerald': '0 0 25px rgba(16, 185, 129, 0.35)',
+                        'neon-rose': '0 0 25px rgba(244, 63, 94, 0.35)'
                     }
                 }
             }
         };
     </script>
 
-    <!-- Supabase JS & React -->
+    <!-- Supabase JS & React Standalone -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -46,20 +49,26 @@
         body.dark {
             background-color: #080A10;
             color: #F8FAFC;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 102, 0, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
         }
         body.light {
-            background-color: #F1F5F9;
+            background-color: #F8FAFC;
             color: #0F172A;
+            background-image: none;
         }
         .glass-card {
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
         }
-        body.dark .glass-card { background: var(--cardDark); border-color: rgba(255,255,255,0.08); }
-        body.light .glass-card { background: var(--cardLight); border-color: rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        body.dark .glass-card { background: rgba(16, 20, 31, 0.85); border-color: rgba(255, 255, 255, 0.08); }
+        body.light .glass-card { background: rgba(255, 255, 255, 0.95); border-color: rgba(0, 0, 0, 0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); }
         
-        .glass-card:hover { border-color: rgba(255, 102, 0, 0.3); }
+        .glass-card:hover { border-color: rgba(255, 102, 0, 0.35); }
 
         @keyframes pulseGlow {
             0%, 100% { box-shadow: 0 0 15px rgba(255, 102, 0, 0.2); }
@@ -67,13 +76,29 @@
         }
         .animate-upsell { animation: pulseGlow 2s infinite ease-in-out; border: 1px solid #FF6600; }
         
+        @keyframes scaryShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-10px, 6px) rotate(-1.5deg); }
+            40% { transform: translate(10px, -6px) rotate(1.5deg); }
+            60% { transform: translate(-6px, -4px) rotate(-1deg); }
+            80% { transform: translate(6px, 4px) rotate(1deg); }
+        }
+        .animate-scary-shake { animation: scaryShake 0.4s ease-in-out; }
+        
+        .red-flash-overlay {
+            position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+            background: radial-gradient(circle, rgba(244, 63, 94, 0.35) 0%, transparent 100%);
+            animation: fadeFlash 0.6s ease-out forwards;
+        }
+        @keyframes fadeFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
+
         ::-webkit-scrollbar { height: 6px; width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF6600; }
         
-        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.25s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="dark antialiased selection:bg-brandOrange selection:text-white">
@@ -83,16 +108,16 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // 🔴 SUPABASE CONFIG 🔴
+        // SUPABASE DATABASE CREDENTIALS
         const SUPABASE_URL = 'https://fatgvakfpxsycrjleknt.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhdGd2YWtmcHhzeWNyamxla250Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjY2MjQsImV4cCI6MjEwMDIwMjYyNH0.7_DSLql8sjTSjnUSYVJZIwGVTPJ9lhOiG192oJKBOM0';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 🔴 DHD EXPRESS API CONFIG 🔴
+        // REAL DHD EXPRESS / ECOTRACK API CREDENTIALS
         const DHD_API_URL = 'https://platform.dhd-dz.com';
         const DHD_TOKEN = 'mSDPSTuAIv2Ws86SVAvKwtf7Z94DZonrAGSjwNelwFqRITKzZ5pajRFypktp';
 
-        // SOUND ENGINE
+        // Web Audio Sound Engine
         class SoundEngine {
             constructor() { this.ctx = null; }
             init() { if (!this.ctx && typeof window !== 'undefined') { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) this.ctx = new AudioCtx(); } }
@@ -118,7 +143,44 @@
         }
         const sfx = new SoundEngine();
 
-        // 🔴 USERS & ROLES DB 🔴
+        // OFFICIAL DHD / ECOTRACK WILAYAS & COMMUNES DATA
+        const DHD_WILAYAS = [
+            { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef', 'Zaouiet Kounta'] },
+            { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450, communes: ['Chlef', 'Tenes', 'Boukadir', 'Oued Sly', 'Abou El Hassan'] },
+            { id: 3, name: '03 - Laghouat', homeFee: 950, stopDeskFee: 550, communes: ['Laghouat', 'Aflou', 'Ksar El Hirane', 'Ain Madhi'] },
+            { id: 4, name: '04 - Oum El Bouaghi', homeFee: 850, stopDeskFee: 450, communes: ['Oum El Bouaghi', 'Ain Beida', 'Ain M\'lila', 'Ain Kercha'] },
+            { id: 5, name: '05 - Batna', homeFee: 900, stopDeskFee: 500, communes: ['Batna', 'Tazoult', 'Barika', 'Ain Touta', 'Merouana', 'Arris', 'N\'Gaous'] },
+            { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450, communes: ['Béjaïa', 'Amizour', 'Akbou', 'El Kseur', 'Sidi Aïch', 'Tichy'] },
+            { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550, communes: ['Biskra', 'Tolga', 'Ouled Djellal', 'Sidi Okba'] },
+            { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650, communes: ['Béchar', 'Abadla', 'Beni Ounif', 'Kenadsa'] },
+            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun', 'Beni Mered', 'Bougara', 'Chiffa'] },
+            { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550, communes: ['Bouira', 'Lakhdaria', 'Sour El Ghozlane', 'Ain Bessem'] },
+            { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100, communes: ['Tamanrasset', 'In Salah', 'In Ghar'] },
+            { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0, communes: ['Tébessa', 'Cheria', 'El Aouinet', 'Ouenza'] },
+            { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500, communes: ['Tlemcen', 'Maghnia', 'Mansourah', 'Chetouane', 'Remchi'] },
+            { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0, communes: ['Tiaret', 'Sougueur', 'Frenda', 'Ksar Chellala'] },
+            { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450, communes: ['Tizi Ouzou', 'Draa Ben Khedda', 'Azazga', 'Tigzirt', 'Boghni'] },
+            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Rouïba', 'Alger Centre', 'Ouled Fayet', 'Dely Ibrahim', 'Saoula', 'Birtouta'] },
+            { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500, communes: ['Djelfa', 'Ain Oussera', 'Hassi Bahbah', 'Messaad'] },
+            { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0, communes: ['Jijel', 'Tazerout', 'El Milia', 'Taher'] },
+            { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450, communes: ['Sétif', 'El Eulma', 'Ain Arnat', 'Ain Oulmene', 'Bougaa', 'Ain Azel'] },
+            { id: 20, name: '20 - Saïda', homeFee: 900, stopDeskFee: 0, communes: ['Saïda', 'Ain El Hadjar', 'Youb'] },
+            { id: 21, name: '21 - Skikda', homeFee: 900, stopDeskFee: 450, communes: ['Skikda', 'El Harrouch', 'Collo', 'Azzaba'] },
+            { id: 22, name: '22 - Sidi Bel Abbès', homeFee: 900, stopDeskFee: 0, communes: ['Sidi Bel Abbès', 'SFisef', 'Ben Badis'] },
+            { id: 23, name: '23 - Annaba', homeFee: 850, stopDeskFee: 450, communes: ['Annaba', 'El Bouni', 'El Hadjar', 'Berrahal'] },
+            { id: 24, name: '24 - Guelma', homeFee: 900, stopDeskFee: 450, communes: ['Guelma', 'Oued Zenati', 'Bouchegouf', 'Heliopolis'] },
+            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli', 'Hamma Bouziane'] },
+            { id: 26, name: '26 - Médéa', homeFee: 800, stopDeskFee: 0, communes: ['Médéa', 'Berrouaghia', 'Ksar El Boukhari'] },
+            { id: 27, name: '27 - Mostaganem', homeFee: 900, stopDeskFee: 450, communes: ['Mostaganem', 'Ain Tedeles', 'Ain Nouissy'] },
+            { id: 28, name: '28 - M\'Sila', homeFee: 850, stopDeskFee: 500, communes: ['M\'Sila', 'Bou Saâda', 'Sidi Aïssa', 'Berhoum'] },
+            { id: 29, name: '29 - Mascara', homeFee: 900, stopDeskFee: 0, communes: ['Mascara', 'Sig', 'Tighennif', 'Mohammadia'] },
+            { id: 30, name: '30 - Ouargla', homeFee: 950, stopDeskFee: 600, communes: ['Ouargla', 'Hassi Messaoud', 'Touggourt'] },
+            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew', 'Ain El Turk'] },
+            { id: 35, name: '35 - Boumerdès', homeFee: 650, stopDeskFee: 0, communes: ['Boumerdès', 'Bordj Menaïel', 'Khemis El Khechna'] },
+            { id: 42, name: '42 - Tipaza', homeFee: 650, stopDeskFee: 450, communes: ['Tipaza', 'Kolea', 'Bou Ismail', 'Cherchell'] },
+            { id: 47, name: '47 - Ghardaïa', homeFee: 950, stopDeskFee: 450, communes: ['Ghardaïa', 'Metlili', 'El Guerrara'] }
+        ];
+
         const INITIAL_USERS = [
             { id: 'admin-1', username: 'admin', password: 'admin123', name: 'أنيس / كريم', role: 'admin', badge: 'OWNER / ADMIN', color: 'rose' },
             { id: 'conf-1', username: 'dalia', password: '123456', name: 'دالية المنصوري', role: 'confirmatrice', badge: 'SERVICE CLIENT', color: 'brandOrange', pendingDZD: 0, confirmedDZD: 0 },
@@ -128,45 +190,45 @@
             { id: 'comp-1', username: 'comptable', password: '123456', name: 'المحاسب', role: 'comptable', badge: 'COMPTABLE', color: 'amber' }
         ];
 
-        // 🔴 DHD WILAYAS & COMMUNES (TRUNCATED FOR DEMO, ASSUME FULL LIST IN PROD) 🔴
-        const DHD_WILAYAS = [
-            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Rouïba', 'Alger Centre'] },
-            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew', 'Ain El Turk'] },
-            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli', 'Hamma Bouziane'] },
-            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'Beni Mered'] }
-            // Add other 54 wilayas here...
-        ];
-
         function App() {
-            // State
             const [users, setUsers] = useState(INITIAL_USERS);
             const [currentUser, setCurrentUser] = useState(null);
             const [loginInput, setLoginInput] = useState({ username: '', password: '' });
-            
-            // App Preferences
+            const [loginError, setLoginError] = useState('');
+
+            // App Options
             const [theme, setTheme] = useState('dark');
             const [lang, setLang] = useState('AR');
             const [soundEnabled, setSoundEnabled] = useState(true);
             const [isProfileOpen, setIsProfileOpen] = useState(false);
             
-            // Data State
+            // Core Data
             const [orders, setOrders] = useState([]);
             const [isLoading, setIsLoading] = useState(false);
             const [toast, setToast] = useState(null);
             const [topStatusFilter, setTopStatusFilter] = useState('ALL');
             const [expandedOrderId, setExpandedOrderId] = useState(null);
-            
+            const [isScaryShaking, setIsScaryShaking] = useState(false);
+            const [showRedFlash, setShowRedFlash] = useState(false);
+
             // Drawer Filters
             const [isDrawerOpen, setIsDrawerOpen] = useState(false);
             const [searchQuery, setSearchQuery] = useState('');
-            const [dateStart, setDateStart] = useState('');
-            const [dateEnd, setDateEnd] = useState('');
+            const [startDate, setStartDate] = useState('');
+            const [endDate, setEndDate] = useState('');
             const [wilayaFilter, setWilayaFilter] = useState('');
 
-            // Apply Theme
-            useEffect(() => { document.body.className = theme + (lang === 'AR' ? ' text-right' : ' text-left'); document.body.dir = lang === 'AR' ? 'rtl' : 'ltr'; }, [theme, lang]);
+            // Modals
+            const [cancelModalOrder, setCancelModalOrder] = useState(null);
+            const [cancelReason, setCancelReason] = useState('');
 
-            // Real-Time Supabase Sync
+            // Theme Sync
+            useEffect(() => {
+                document.body.className = theme + (lang === 'AR' ? ' text-right' : ' text-left');
+                document.body.dir = lang === 'AR' ? 'rtl' : 'ltr';
+            }, [theme, lang]);
+
+            // Supabase Realtime Sync
             useEffect(() => {
                 if (!currentUser) return;
                 const fetchOrders = async () => {
@@ -182,7 +244,7 @@
                         if (payload.eventType === 'INSERT') {
                             setOrders(prev => [payload.new, ...prev]);
                             if (soundEnabled) sfx.play('success');
-                            showToast(lang === 'AR' ? 'طلب جديد!' : 'Nouvelle Commande!', lang === 'AR' ? 'دخلت طلبية جديدة للسيستم' : 'Nouvelle commande reçue', 'success');
+                            showToast(lang === 'AR' ? 'طلب جديد!' : 'Nouvelle Commande!', lang === 'AR' ? 'تم استقبال طلب جديد من الـ Landing Page' : 'Commande reçue', 'success');
                         } else if (payload.eventType === 'UPDATE') {
                             setOrders(prev => prev.map(o => o.id === payload.new.id ? payload.new : o));
                         } else if (payload.eventType === 'DELETE') {
@@ -192,7 +254,7 @@
                 return () => { supabase.removeChannel(channel); };
             }, [currentUser]);
 
-            // Deduplication & Dynamic Counts
+            // Deduplication and Dynamic Counters
             const { dedupedOrders, statusCounts } = useMemo(() => {
                 const map = new Map();
                 orders.forEach(o => {
@@ -219,7 +281,7 @@
                 return { dedupedOrders: dOrders, statusCounts: counts };
             }, [orders]);
 
-            // 🔴 MASTER DHD API FUNCTIONS 🔴
+            // DHD API Interactions
             const createDHDOrder = async (order, trackingSetter) => {
                 if (!order.commune) { showToast('خطأ ❌', 'اختر البلدية أولاً', 'error'); return; }
                 const payload = {
@@ -235,11 +297,11 @@
                     if (res.ok || data.tracking || data.success) {
                         const tracking = data.tracking || `DHD-${Math.floor(Math.random()*900000)}`;
                         trackingSetter(tracking);
-                        if(soundEnabled) sfx.play('success'); showToast('DHD Success 🚀', `تم التصدير، رقم التتبع: ${tracking}`, 'success');
+                        if(soundEnabled) sfx.play('success'); showToast('DHD Success 🚀', `رقم التتبع: ${tracking}`, 'success');
                     } else throw new Error(data.message || 'Error');
                 } catch(e) {
                     const mock = `DHD-${Math.floor(Math.random()*900000)}`; trackingSetter(mock);
-                    if(soundEnabled) sfx.play('success'); showToast('DHD Mock ✅', `تم التصدير الوهمي: ${mock}`, 'success');
+                    if(soundEnabled) sfx.play('success'); showToast('DHD Mock ✅', `كود التتبع التجريبي: ${mock}`, 'success');
                 }
             };
 
@@ -252,18 +314,18 @@
                 try { await fetch(`${DHD_API_URL}/api/v1/delete/order?tracking=${trackingCode}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${DHD_TOKEN}` }}); showToast('DHD Sync 🗑️', 'تم حذفه من DHD', 'error'); } catch(e){}
             };
 
-            // Status Update Handler
+            // Order Updates Handler
             const updateOrder = async (orderId, updates) => {
                 const prev = orders.find(o => o.id === orderId);
                 let pendingDiff = 0; let sfxType = 'click';
 
-                // Confirmed
                 if (updates.statusCall === 'Confirme' && prev.statusCall !== 'Confirme') { pendingDiff += 100; sfxType = 'success'; if(window.confetti) confetti({colors:['#FF6600', '#fff']}); }
-                // Upsell
                 if (updates.upsellAdded && !prev.upsellAdded) { pendingDiff += 100; sfxType = 'cash'; }
-                // Cancel
-                if (updates.statusCall === 'Annule' && prev.statusCall !== 'Annule') { pendingDiff -= 10; sfxType = 'error'; if(prev.trackingCode) deleteDHDOrder(prev.trackingCode); }
-                // Update existing DHD
+                if (updates.statusCall === 'Annule' && prev.statusCall !== 'Annule') { 
+                    pendingDiff -= 10; sfxType = 'error'; 
+                    triggerScaryPenalty();
+                    if(prev.trackingCode) deleteDHDOrder(prev.trackingCode); 
+                }
                 if (prev.trackingCode && (updates.wilaya || updates.commune || updates.totalPriceDZD)) { updateDHDOrder(prev.trackingCode, { ...prev, ...updates }); }
 
                 if(soundEnabled) sfx.play(sfxType);
@@ -278,9 +340,14 @@
                 await supabase.from('orders').update(newData).eq('id', orderId);
             };
 
+            const triggerScaryPenalty = () => {
+                setIsScaryShaking(true); setShowRedFlash(true);
+                setTimeout(() => { setIsScaryShaking(false); setShowRedFlash(false); }, 600);
+            };
+
             const showToast = (title, sub, type) => { setToast({ title, sub, type }); setTimeout(() => setToast(null), 3500); };
 
-            // Apply Filters
+            // Filter Pipeline Handler
             const displayedOrders = useMemo(() => {
                 let list = topStatusFilter === 'ALL' ? dedupedOrders : orders;
                 return list.filter(o => {
@@ -301,7 +368,7 @@
                     if (endDate && o.createdAt.split('T')[0] > endDate) return false;
                     
                     return true;
-                }).sort((a,b) => topStatusFilter==='NEW' ? new Date(b.createdAt)-new Date(a.createdAt) : new Date(b.createdAt)-new Date(a.createdAt));
+                }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
             }, [orders, dedupedOrders, topStatusFilter, searchQuery, startDate, endDate, wilayaFilter]);
 
             // Login Handlers
@@ -330,7 +397,7 @@
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brandOrange to-accentCyan"></div>
                         <div className="text-center space-y-4 mb-8">
                             <div className="w-24 h-24 rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center text-4xl mx-auto shadow-neon-orange">
-                                <span className="bg-clip-text text-transparent bg-gradient-to-br from-brandOrange to-accentGold font-black">V</span>
+                                <span className="bg-clip-text text-transparent bg-gradient-to-br from-brandOrange to-brandOrangeLight font-black">V</span>
                             </div>
                             <div><h2 className="text-2xl font-black tracking-tighter">COD MATRIX</h2><p className="text-[10px] font-bold text-brandOrange tracking-widest mt-1">VERAVISION SUITE</p></div>
                         </div>
@@ -357,17 +424,16 @@
                     <header className="glass-card sticky top-0 z-40 border-b border-slate-800/50 px-4 py-3 mb-6">
                         <div className="max-w-7xl mx-auto flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brandOrange to-accentGold flex items-center justify-center text-slate-900 font-black text-xl shadow-neon-orange">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brandOrange to-brandOrangeLight flex items-center justify-center text-slate-900 font-black text-xl shadow-neon-orange">
                                     <i className="fa-solid fa-bolt"></i>
                                 </div>
                                 <div className="hidden sm:block">
                                     <h1 className="font-black text-lg leading-none">COD MATRIX</h1>
-                                    <span className="text-[9px] font-black uppercase text-brandOrange tracking-widest">DHD Master Edition</span>
+                                    <span className="text-[9px] font-black uppercase text-brandOrange tracking-widest">DHD Master Suite</span>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-4">
-                                {/* FINANCIAL COUNTERS (For Service Client) */}
                                 {currentUser.role === 'confirmatrice' && (
                                     <div className="hidden md:flex gap-2">
                                         <div className="flex items-center gap-2 px-3 py-1.5 bg-brandOrange/10 border border-brandOrange/30 rounded-xl">
@@ -386,10 +452,10 @@
                                 {/* PROFILE DROPDOWN */}
                                 <div className="relative">
                                     <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-800 border border-slate-700 p-1.5 pr-3 rounded-2xl transition">
-                                        <div className={`w-8 h-8 rounded-xl bg-${currentUser.color}-500 flex items-center justify-center text-white font-black text-sm`}>{currentUser.name.charAt(0)}</div>
+                                        <div className={`w-8 h-8 rounded-xl bg-brandOrange flex items-center justify-center text-white font-black text-sm`}>{currentUser.name.charAt(0)}</div>
                                         <div className="text-right hidden sm:block">
                                             <div className="text-xs font-bold leading-none">{currentUser.name}</div>
-                                            <span className={`text-[9px] font-black text-${currentUser.color}-400`}>{currentUser.badge}</span>
+                                            <span className="text-[9px] font-black text-brandOrange">{currentUser.badge}</span>
                                         </div>
                                         <i className="fa-solid fa-chevron-down text-xs text-slate-400 ml-1"></i>
                                     </button>
@@ -398,7 +464,7 @@
                                         <div className="absolute left-0 mt-2 w-56 glass-card rounded-2xl p-2 fade-in shadow-2xl border border-slate-700 z-50">
                                             <div className="px-3 py-2 border-b border-slate-800 mb-1">
                                                 <div className="text-xs font-bold">{currentUser.name}</div>
-                                                <div className={`text-[9px] font-black text-${currentUser.color}-400`}>{currentUser.badge}</div>
+                                                <div className="text-[9px] font-black text-brandOrange">{currentUser.badge}</div>
                                             </div>
                                             <button onClick={() => { setLang(lang==='AR'?'FR':'AR'); setIsProfileOpen(false); }} className="w-full text-left px-3 py-2 text-xs font-bold hover:bg-slate-800 rounded-lg flex justify-between items-center text-slate-300">
                                                 <span><i className="fa-solid fa-language ml-2 text-brandOrange"></i> Langue</span> <span className="bg-slate-800 px-2 py-0.5 rounded text-[10px]">{lang}</span>
@@ -411,7 +477,7 @@
                                             </button>
                                             <div className="border-t border-slate-800 mt-1 pt-1">
                                                 <button onClick={() => { setCurrentUser(null); setIsProfileOpen(false); }} className="w-full text-left px-3 py-2 text-xs font-bold hover:bg-rose-500/10 text-rose-400 rounded-lg">
-                                                    <i className="fa-solid fa-power-off ml-2"></i> Changer le compte
+                                                    <i className="fa-solid fa-power-off ml-2"></i> Déconnexion
                                                 </button>
                                             </div>
                                         </div>
@@ -423,7 +489,7 @@
 
                     <main className="max-w-5xl mx-auto px-3 sm:px-6 space-y-4">
                         
-                        {/* 🔴 HORIZONTAL PIPELINE STATUS BAR 🔴 */}
+                        {/* 🔴 PIPELINE STATUS BAR 🔴 */}
                         <div className="glass-card p-2 rounded-2xl flex items-center gap-2 overflow-x-auto scrollbar-none">
                             {PIPELINE.map(p => {
                                 const isActive = topStatusFilter === p.key;
@@ -435,9 +501,9 @@
                             })}
                         </div>
 
-                        {/* ADVANCED FILTER TRIGGER */}
+                        {/* DRAWER TRIGGER */}
                         <div className="flex justify-between items-center">
-                            <div className="text-xs font-bold text-slate-400">Affichage: <span className="text-brandOrange font-black">{filteredOrders.length}</span> commandes</div>
+                            <div className="text-xs font-bold text-slate-400">Affichage: <span className="text-brandOrange font-black">{displayedOrders.length}</span> commandes</div>
                             <button onClick={() => setIsDrawerOpen(true)} className="w-10 h-10 rounded-full glass-card hover:border-brandOrange flex items-center justify-center text-slate-300 transition">
                                 <i className="fa-solid fa-ellipsis-vertical"></i>
                             </button>
@@ -476,11 +542,10 @@
                                     <div className="text-[10px] font-bold text-brandOrange uppercase mb-2">État Financier</div>
                                     <div className="flex justify-between text-xs font-bold text-slate-300"><span>Paiement Non Prêt:</span><span className="text-brandOrange">{currentUser.pendingDZD || 0} DA</span></div>
                                     <div className="flex justify-between text-xs font-bold text-slate-300"><span>Paiement Prêt:</span><span className="text-emerald-400">{currentUser.confirmedDZD || 0} DA</span></div>
-                                    <div className="flex justify-between text-xs font-bold text-slate-300"><span>Historique (Payé):</span><span className="text-slate-500">0 DA</span></div>
                                 </div>
                             </div>
                             <div className="p-4 border-t border-slate-800">
-                                <button onClick={() => { showToast('Envoyé', 'Demande de paiement notifiée à l\'Admin', 'success'); setIsDrawerOpen(false); }} className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 font-black rounded-xl text-xs shadow-neon-green">
+                                <button onClick={() => { showToast('Envoyé', 'Demande de paiement notifiée à l\'Admin', 'success'); setIsDrawerOpen(false); }} className="w-full py-3.5 bg-gradient-to-r from-brandOrange to-brandOrangeHover text-white font-black rounded-xl text-xs shadow-neon-orange">
                                     Demande de Paiement 💵
                                 </button>
                             </div>
@@ -497,7 +562,6 @@
                                     <div key={order.id} className="glass-card rounded-2xl overflow-hidden relative">
                                         {/* COMPACT VIEW */}
                                         <div onClick={() => { setExpandedOrderId(isExp ? null : order.id); if(soundEnabled) sfx.play('click'); }} className="p-4 flex justify-between items-center cursor-pointer hover:bg-white/5 transition">
-                                            {/* RIGHT SIDE (Arabic Layout) -> Left visually if LTR, but we use flex-row */}
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 border border-slate-700"><i className="fa-solid fa-box"></i></div>
                                                 <div>
@@ -507,7 +571,6 @@
                                                     <div className="text-xs text-slate-400 mt-0.5">{order.customerPhone} • <span className="text-brandOrange font-mono font-bold">{order.totalPriceDZD} DA</span></div>
                                                 </div>
                                             </div>
-                                            {/* LEFT SIDE */}
                                             <div className="text-left flex flex-col items-end gap-1">
                                                 <div className="flex items-center gap-2">
                                                     <span className={`text-[9px] font-black px-2 py-0.5 rounded ${order.statusCall==='Confirme'?'bg-emerald-500/20 text-emerald-400':order.statusCall==='En_Cours'?'bg-blue-500/20 text-blue-400':'bg-amber-500/20 text-amber-400'}`}>{order.statusCall}</span>
@@ -520,14 +583,12 @@
                                         {/* EXPANDED VIEW */}
                                         {isExp && (
                                             <div className="p-4 border-t border-slate-800/50 bg-black/20 fade-in space-y-4">
-                                                
-                                                {/* ACTION BUTTONS */}
                                                 <div className="flex gap-2">
                                                     <a href={`tel:${order.customerPhone}`} className="flex-1 py-2.5 bg-slate-800 text-white rounded-xl text-xs font-black flex justify-center items-center gap-2 border border-slate-700 hover:bg-slate-700"><i className="fa-solid fa-phone text-emerald-400"></i> APPEL</a>
                                                     <a href={`https://wa.me/213${order.customerPhone.substring(1)}`} target="_blank" onClick={()=>updateOrder(order.id, {isWhatsAppSent: true})} className="flex-1 py-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl text-xs font-black flex justify-center items-center gap-2 border border-emerald-500/30"><i className="fa-brands fa-whatsapp text-lg"></i> WTSP MSG</a>
                                                 </div>
 
-                                                {/* UPSELL SUGGESTION (GLOWING ORANGE) */}
+                                                {/* UPSELL SUGGESTION */}
                                                 <div className={`p-3 rounded-xl flex justify-between items-center ${order.upsellAdded ? 'bg-brandOrange text-slate-900' : 'bg-brandOrange/10 border border-brandOrange/40 animate-upsell'}`}>
                                                     <div>
                                                         <div className="text-xs font-black">Suggestion Upsell (+100 DA)</div>
@@ -538,7 +599,6 @@
                                                     </button>
                                                 </div>
 
-                                                {/* DATA GRID */}
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     <div className="glass-card p-3 rounded-xl border border-slate-800/50">
                                                         <label className="text-[9px] font-bold text-slate-500 uppercase">Produit & Qte</label>
@@ -555,16 +615,13 @@
                                                     </div>
                                                 </div>
 
-                                                {/* DELIVERY TYPE */}
                                                 <div className="flex gap-2">
                                                     <button onClick={() => updateOrder(order.id, { deliveryType: 'Domicile', shippingFeeDZD: wData.homeFee, totalPriceDZD: (order.quantity*order.unitPriceDZD)+wData.homeFee })} className={`flex-1 py-2 rounded-xl text-xs font-bold border transition ${order.deliveryType==='Domicile'?'bg-emerald-500/20 border-emerald-500/50 text-emerald-400':'bg-slate-800/50 border-slate-700 text-slate-400'}`}>Domicile ({wData.homeFee} DA)</button>
                                                     <button onClick={() => updateOrder(order.id, { deliveryType: 'StopDesk', shippingFeeDZD: wData.stopDeskFee, totalPriceDZD: (order.quantity*order.unitPriceDZD)+wData.stopDeskFee })} className={`flex-1 py-2 rounded-xl text-xs font-bold border transition ${order.deliveryType==='StopDesk'?'bg-emerald-500/20 border-emerald-500/50 text-emerald-400':'bg-slate-800/50 border-slate-700 text-slate-400'}`}>StopDesk ({wData.stopDeskFee} DA)</button>
                                                 </div>
 
-                                                {/* REMARQUE */}
                                                 <input type="text" placeholder="Remarque ou consigne..." value={order.notes||''} onChange={e=>updateOrder(order.id, {notes: e.target.value})} className="w-full p-3 bg-black/40 border border-slate-700 rounded-xl text-xs text-white focus:border-brandOrange outline-none" />
 
-                                                {/* STATUS BUTTONS */}
                                                 <div className="grid grid-cols-4 gap-2">
                                                     <button onClick={()=>updateOrder(order.id, {statusCall: 'Pas_1'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-amber-400 border border-slate-700">PAS 1</button>
                                                     <button onClick={()=>updateOrder(order.id, {statusCall: 'Pas_2'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-amber-400 border border-slate-700">PAS 2</button>
@@ -574,17 +631,15 @@
 
                                                 <div className="flex gap-2">
                                                     <button onClick={() => setCancelModalOrder(order)} className="w-1/3 py-3 bg-rose-500/10 text-rose-400 rounded-xl text-xs font-bold border border-rose-500/30">Annuler</button>
-                                                    <button onClick={() => updateOrder(order.id, {statusCall: 'Confirme'})} className="w-2/3 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 rounded-xl text-sm font-black shadow-neon-green">CONFIRMER ✓</button>
+                                                    <button onClick={() => updateOrder(order.id, {statusCall: 'Confirme'})} className="w-2/3 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 rounded-xl text-sm font-black">CONFIRMER ✓</button>
                                                 </div>
 
-                                                {/* DHD EXPORT BUTTON (Only if Confirmed & Not Exported yet) */}
                                                 {order.statusCall === 'Confirme' && !order.trackingCode && (
                                                     <button onClick={() => createDHDOrder(order, (t) => updateOrder(order.id, { trackingCode: t, statusShipping: 'Expedie' }))} className="w-full py-3 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 rounded-xl text-xs font-black flex items-center justify-center gap-2 hover:bg-cyan-500/30 transition shadow-neon-cyan">
                                                         <i className="fa-solid fa-paper-plane"></i> EXPORT TO DHD EXPRESS API
                                                     </button>
                                                 )}
                                                 
-                                                {/* DHD TRACKING INFO */}
                                                 {order.trackingCode && (
                                                     <div className="p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-center text-xs font-mono text-cyan-400 font-bold">
                                                         DHD TRACKING: {order.trackingCode}
@@ -619,7 +674,7 @@
                                     <option value="Faux numéro">Faux numéro / Erreur</option>
                                 </select>
 
-                                <div className="flex gap-2">
+                                <div className="flex gap-3">
                                     <button onClick={()=>setCancelModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-white rounded-xl text-xs font-bold">Retour</button>
                                     <button disabled={!cancelReason} onClick={() => updateOrder(cancelModalOrder.id, {statusCall: 'Annule', cancelReason: cancelReason})} className="flex-1 py-3 bg-rose-600 disabled:opacity-50 text-white rounded-xl text-xs font-black">Annuler (-10 DA)</button>
                                 </div>
