@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COD MATRIX - VeraVision Platform (Official DHD Express Integration)</title>
+    <title>COD MATRIX - VeraVision Master Platform</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,21 +13,20 @@
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#050810',
-                        cardBg: 'rgba(13, 18, 30, 0.75)',
-                        cardHoverBg: 'rgba(18, 24, 38, 0.95)',
-                        accentEmerald: '#10B981',
-                        accentGold: '#F59E0B',
+                        brandOrange: '#FF6600',
+                        brandOrangeDark: '#CC5200',
+                        brandOrangeLight: '#FF8533',
+                        darkBg: '#090C15',
+                        cardBg: '#121624',
+                        cardHoverBg: '#1A2032',
                         accentCyan: '#06B6D4',
-                        accentRose: '#F43F5E',
-                        accentPurple: '#8B5CF6'
+                        accentEmerald: '#10B981',
+                        accentRose: '#F43F5E'
                     },
                     boxShadow: {
-                        'neon-emerald': '0 0 30px rgba(16, 185, 129, 0.25)',
-                        'neon-gold': '0 0 30px rgba(245, 158, 11, 0.25)',
-                        'neon-cyan': '0 0 30px rgba(6, 182, 212, 0.25)',
-                        'neon-rose': '0 0 30px rgba(244, 63, 94, 0.25)',
-                        'neon-purple': '0 0 30px rgba(139, 92, 246, 0.25)'
+                        'neon-orange': '0 0 25px rgba(255, 102, 0, 0.35)',
+                        'neon-cyan': '0 0 25px rgba(6, 182, 212, 0.35)',
+                        'neon-emerald': '0 0 25px rgba(16, 185, 129, 0.35)'
                     }
                 }
             }
@@ -51,49 +50,67 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #050810;
-            color: #E2E8F0;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark {
+            background-color: #090C15;
+            color: #F1F5F9;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(255, 102, 0, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
             background-attachment: fixed;
         }
-        .glass-panel {
-            background: rgba(13, 18, 30, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        body.light {
+            background-color: #F8FAFC;
+            color: #0F172A;
+            background-image: none;
         }
-        .glass-panel-hover { transition: all 0.2s ease-in-out; }
-        .glass-panel-hover:hover { background: rgba(18, 24, 38, 0.95); border-color: rgba(16, 185, 129, 0.3); }
+        .glass-panel {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .dark .glass-panel {
+            background: rgba(18, 22, 36, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+        .animate-pulse-glow { animation: pulseGlow 2s infinite ease-in-out; }
         
         @keyframes scaryShake {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-12px, 8px) rotate(-2deg); }
-            40% { transform: translate(12px, -8px) rotate(2deg); }
-            60% { transform: translate(-8px, -6px) rotate(-1.5deg); }
-            80% { transform: translate(8px, 6px) rotate(1.5deg); }
+            20% { transform: translate(-10px, 6px) rotate(-1.5deg); }
+            40% { transform: translate(10px, -6px) rotate(1.5deg); }
+            60% { transform: translate(-6px, -4px) rotate(-1deg); }
+            80% { transform: translate(6px, 4px) rotate(1deg); }
         }
         .animate-scary-shake { animation: scaryShake 0.4s ease-in-out; }
         .red-flash-overlay {
             position: fixed; inset: 0; z-index: 9999; pointer-events: none;
-            background: radial-gradient(circle, rgba(244, 63, 94, 0.4) 0%, transparent 100%);
-            animation: fadeFlash 0.7s ease-out forwards;
+            background: radial-gradient(circle, rgba(244, 63, 94, 0.35) 0%, transparent 100%);
+            animation: fadeFlash 0.6s ease-out forwards;
         }
         @keyframes fadeFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #050810; }
-        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #10B981; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF6600; }
         
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in-down { animation: fadeInDown 0.3s ease-out forwards; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-down { animation: fadeInDown 0.25s ease-out forwards; }
     </style>
 </head>
-<body class="antialiased selection:bg-emerald-400 selection:text-slate-950" dir="rtl">
+<body class="dark antialiased selection:bg-orange-500 selection:text-white" dir="rtl">
 
     <div id="root"></div>
 
@@ -103,7 +120,6 @@
         // SUPABASE DATABASE CREDENTIALS
         const SUPABASE_URL = 'https://fatgvakfpxsycrjleknt.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhdGd2YWtmcHhzeWNyamxla250Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjY2MjQsImV4cCI6MjEwMDIwMjYyNH0.7_DSLql8sjTSjnUSYVJZIwGVTPJ9lhOiG192oJKBOM0';
-        
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // REAL DHD EXPRESS / ECOTRACK API CREDENTIALS
@@ -137,73 +153,49 @@
         }
         const sfx = new SoundEngine();
 
-        // 🔴 OFFICIAL DHD / ECOTRACK WILAYAS, FEES & COMMUNES DATA 🔴
+        // OFFICIAL DHD / ECOTRACK WILAYAS & COMMUNES MAPPING
         const DHD_WILAYAS = [
-            { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef', 'Zaouiet Kounta', 'Akabli', 'Bouda', 'Fenoughil', 'Sali', 'Sebaa', 'Tamantit', 'Tamest', 'Timekten', 'Tit', 'Tsabit'] },
-            { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450, communes: ['Chlef', 'Tenes', 'Boukadir', 'Oued Sly', 'Abou El Hassan', 'Ain Merane', 'Beni Haoua', 'Beni Rached', 'Beni Bouattab', 'Bouzeghaia', 'Breira', 'Chettia', 'Dahra', 'El Hadjadj', 'El Karimia', 'El Marsa', 'Harchoun', 'Herenfa', 'Labiod Medjadja', 'Moussadek', 'Oum Drou', 'Ouled Abbes', 'Ouled Ben Abdelkader', 'Ouled Fares', 'Sendjas', 'Sobha', 'Tadjena', 'Talassa', 'Taougrite', 'Zeboudja'] },
-            { id: 3, name: '03 - Laghouat', homeFee: 950, stopDeskFee: 550, communes: ['Laghouat', 'Aflou', 'Ksar El Hirane', 'Ain Madhi', 'Beidha', 'Benacer Benchohra', 'Brida', 'El Assafia', 'El Ghicha', 'El Haouaita', 'Gueltat Sidi Saad', 'Hassi Delaa', 'Hassi R\'mel', 'Kheneg', 'Oued M\'zi', 'Oued Morra', 'Sebgag', 'Sidi Bouzid', 'Sidi Makhlouf', 'Tadjemout', 'Tadjrouna', 'Taouiala'] },
-            { id: 4, name: '04 - Oum El Bouaghi', homeFee: 850, stopDeskFee: 450, communes: ['Oum El Bouaghi', 'Ain Beida', 'Ain M\'lila', 'Ain Kercha', 'Ain Babouche', 'Ain Diss', 'Ain Fekroune', 'Ain Zitoun', 'Behir Chergui', 'Berriche', 'Bir Chouhada', 'Dhala', 'El Amiria', 'El Belala', 'El Djazia', 'El Fedjoudj Boughrara Sa', 'El Harmilia', 'Fkirina', 'Hanchir Toumghani', 'Ksar Sbahi', 'Meskiana', 'Oued Nini', 'Ouled Gacem', 'Ouled Hamla', 'Ouled Zouai', 'Rahia', 'Sigus', 'Souk Naamane', 'Zorg'] },
-            { id: 5, name: '05 - Batna', homeFee: 900, stopDeskFee: 500, communes: ['Batna', 'Tazoult', 'Barika', 'Ain Touta', 'Merouana', 'Arris', 'N\'Gaous', 'Ain Djasser', 'Ain Yagout', 'Arris', 'Azil Abedelkader', 'Beni Foudhala El Hakania', 'Bitam', 'Boulhilat', 'Boumagueur', 'Boumia', 'Bouzina', 'Branis', 'Chemora', 'Chir', 'Djerma', 'Djezzar', 'El Hassi', 'El Madher', 'Fesdis', 'Foum Toub', 'Ghassira', 'Gosbat', 'Guigba', 'Hidoussa', 'Ichmoul', 'Inoughissen', 'Kimmel', 'Ksar Bellezma', 'Larbaa', 'Lazrou', 'Lemsane', 'M Doukal', 'Maafa', 'Menaa', 'Oued Chaaba', 'Oued El Ma', 'Oued Taga', 'Ouled Ammar', 'Ouled Aouf', 'Ouled Fadel', 'Ouled Si Slimane', 'Ouled Sellem', 'Ouyoun El Assafir', 'Rahbat', 'Ras El Aioun', 'Sefiane', 'Seggana', 'Seriana', 'T Kout', 'Talkhamt', 'Taxlent', 'Tazoult', 'Teniet El Abed', 'Tighanimine', 'Tigharghar', 'Tilatou', 'Timgad', 'Zanet El Beida'] },
-            { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450, communes: ['Béjaïa', 'Amizour', 'Akbou', 'El Kseur', 'Sidi Aïch', 'Tichy', 'Aokas', 'Adekar', 'Ait R\'zine', 'Ait Smail', 'Akfadou', 'Amalou', 'Barbacha', 'Beni Dejllil', 'Beni K\'sila', 'Beni Mallikeche', 'Benimaouche', 'Boudjellil', 'Bouhamza', 'Boukhelifa', 'Chellata', 'Chemini', 'Darghina', 'Dra El Caid', 'Fenaia Il Maten', 'Feraoun', 'Ighil Ali', 'Ighram', 'Kendira', 'Kherrata', 'Leflaye', 'Melbou', 'M\'cisna', 'Oued Ghir', 'Ouzellaguene', 'Seddouk', 'Smaoun', 'Souk El Tenine', 'Souk Oufella', 'Tala Hamza', 'Tamokra', 'Tamridjet', 'Taourit Ighil', 'Taskriout', 'Tazmalt', 'Tibane', 'Tifra', 'Tinebdar', 'Tizi N\'berber', 'Toudja'] },
-            { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550, communes: ['Biskra', 'Tolga', 'Ouled Djellal', 'Sidi Okba', 'Sidi Khaled', 'Ain Naga', 'Ain Zaatout', 'Bordj Ben Azzouz', 'Bouchagroun', 'Branis', 'Chetma', 'Djemorah', 'El Feidh', 'El Ghrous', 'El Hadjab', 'El Haouch', 'El Kantara', 'El Outaya', 'Foughala', 'Lichana', 'Lioua', 'M\'chouneche', 'M\'lili', 'Mekhadma', 'Meziraa', 'Oumache', 'Ourlal', 'Zeribet El Oued'] },
-            { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650, communes: ['Béchar', 'Abadla', 'Beni Ounif', 'Kenadsa', 'Boukais', 'Erg Ferradj', 'Lahmar', 'Meridja', 'Mogheul', 'Taghit'] },
-            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun', 'Meftah', 'Bougara', 'Ain Romana', 'Beni Mered', 'Beni Tamou', 'Benkhelil', 'Bouarfa', 'Bouinan', 'Chebli', 'Chiffa', 'Chrea', 'Djebabra', 'Guerrouaou', 'Hammam Melouane', 'Larbaa', 'Oued Djer', 'Oued El Alleug', 'Ouled Slama', 'Souhane', 'Souma'] },
-            { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550, communes: ['Bouira', 'Lakhdaria', 'Sour El Ghozlane', 'Ain Bessem', 'M\'Chedallah', 'Aghbalou', 'Ahl El Ksar', 'Ain El Hadjar', 'Ain Laloui', 'Ain Turk', 'Ait Laaziz', 'Aomar', 'Bechloul', 'Bir Ghbalou', 'Bordj Okhriss', 'Bouderbala', 'Boukram', 'Chorfa', 'Dechmia', 'Dirah', 'Djebahia', 'El Adjiba', 'El Asnam', 'El Hachimia', 'El Hakimia', 'El Khabouzia', 'El Mokrani', 'Guerrouma', 'Hadjera Zerga', 'Haizer', 'Hanif', 'Kadiria', 'Maala', 'Mamora', 'Mezdour', 'Ouled Rached', 'Raouraoua', 'Ridane', 'Saharidj', 'Souk El Khemis', 'Taghzout', 'Taguedite', 'Taourirt', 'Z\'barbar'] },
-            { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100, communes: ['Tamanrasset', 'Abalessa', 'Ain Amguel', 'Idles', 'Tazrouk'] },
-            { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0, communes: ['Tébessa', 'Cheria', 'El Aouinet', 'Ouenza', 'Ain Zerga', 'Bekkaria', 'Bedjene', 'Bir Dheheb', 'Bir El Ater', 'Bir Mokkadem', 'Boukhadra', 'Boulhaf Dyr', 'El Houidjbet', 'El Kouif', 'El Malabiod', 'El Meridj', 'El Mezeraa', 'El Ogla', 'El Ogla El Malha', 'Ferkane', 'Hammamet', 'Morssot', 'Negrine', 'Oum Ali', 'Saf Saf El Ouesra', 'Stah Guentis', 'Telidjen'] },
-            { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500, communes: ['Tlemcen', 'Maghnia', 'Mansourah', 'Chetouane', 'Remchi', 'Ghazaouet', 'Ain Fettah', 'Ain Fezza', 'Ain Ghoraba', 'Ain Kebira', 'Ain Nehala', 'Ain Tallout', 'Ain Youcef', 'Amieur', 'Azails', 'Bab El Assa', 'Beni Bahdel', 'Beni Boussaid', 'Beni Khaled', 'Beni Mester', 'Beni Ouarsous', 'Beni Smiel', 'Beni Snous', 'Bensekrane', 'Bouhlou', 'Bouihi', 'Dar Yaghmouracene', 'Djebala', 'El Aricha', 'El Fehoul', 'El Gor', 'Fellaoucene', 'Hennaya', 'Hammam Boughrara', 'Honaine', 'Marsa Ben M\'hidi', 'Msirda Fouaga', 'Nedroma', 'Ouled Mimoun', 'Ouled Riyah', 'Sabra', 'Sebdou', 'Sebbaa Chioukh', 'Sidi Abdelli', 'Sidi Djilali', 'Sidi Medjahed', 'Souahlia', 'Souani', 'Souk Tleta', 'Tianet', 'Terny Beni Hediel', 'Zenata'] },
-            { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0, communes: ['Tiaret', 'Sougueur', 'Frenda', 'Ksar Chellala', 'Ain Bouchekif', 'Ain Deheb', 'Ain El Hadid', 'Ain Kermes', 'Ain Zarit', 'Dahmouni', 'Djillali Ben Amar', 'Djebilet Rosfa', 'Faidja', 'Guertoufa', 'Hamadia', 'Madna', 'Mahdia', 'Mechraa Safa', 'Medrissa', 'Medroussa', 'Meghila', 'Mellakou', 'Nadorah', 'Naima', 'Oued Lilli', 'Ouled Slama', 'Rechaiga', 'Rahouia', 'Sebt', 'Sebaine', 'Serghine', 'Si Abdelghani', 'Sidi Ali Mellal', 'Sidi Bakhti', 'Sidi Hosni', 'Tagdemt', 'Takhemaret', 'Tidda', 'Tousnina', 'Zmalet El Emir Abdelkade'] },
-            { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450, communes: ['Tizi Ouzou', 'Draa Ben Khedda', 'Azazga', 'Tigzirt', 'Boghni', 'Larbaa Nath Irathen', 'Abi Youcef', 'Aghribs', 'Agouni Gueghrane', 'Ain El Hammam', 'Ain Zaouia', 'Ait Aggouacha', 'Ait Bouaddou', 'Ait Boumehdi', 'Ait Chafaa', 'Ait Khellili', 'Ait Mahmoud', 'Ait Oumalou', 'Ait Toudert', 'Ait Yahia', 'Ait Yahia Moussa', 'Akbil', 'Akerrou', 'Assi Youcef', 'Beni Aissi', 'Beni Douala', 'Beni Yenni', 'Beni Zikki', 'Beni Zmenzer', 'Boudjima', 'Bounouh', 'Bouzeguene', 'Djebel Aissa Mimoun', 'Draa El Mizan', 'Freha', 'Frikat', 'Iboudrarene', 'Idjeur', 'Iferhounene', 'Ifigha', 'Iflissen', 'Illilten', 'Illoula Oumalou', 'Imsouhal', 'Irdjen', 'M\'kira', 'Maatkas', 'Makouda', 'Mechtras', 'Mekla', 'Mizrana', 'Ouacif', 'Ouadhias', 'Ouaguenoune', 'Souamaa', 'Souk El Thenine', 'Tadmait', 'Tigzirt', 'Timizart', 'Tizi Ghenif', 'Tizi N\'tleta', 'Tizi Rached', 'Yakourene', 'Yatafene', 'Zekri'] },
-            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Bordj El Bahri', 'El Biar', 'Bachar Djerrah', 'Bir Mourad Raïs', 'Rouïba', 'Ain Taya', 'Ouled Fayet', 'Dely Ibrahim', 'Sidi M\'Hamed', 'Casbah', 'Babar', 'Reghaïa', 'Ain Benian', 'Saoula', 'Birtouta', 'Alger Centre', 'Bab El Oued', 'Baba Hesen', 'Bachedjerah', 'Bains Romains', 'Baraki', 'Ben Aknoun', 'Beni Messous', 'Birkhadem', 'Bologhine Ibnou Ziri', 'Bouzareah', 'Dar El Beida', 'Djasr Kasentina', 'Douira', 'El Achour', 'El Harrach', 'El Madania', 'El Magharia', 'El Merssa', 'El Mouradia', 'Herraoua', 'Hussein Dey', 'Kheraisia', 'Les Eucalyptus', 'Maalma', 'Mohamed Belouzdad', 'Mohammadia', 'Oued Koriche', 'Oued Smar', 'Ouled Chebel', 'Rahmania', 'Rais Hamidou', 'Sehaoula', 'Setaouali', 'Sidi Moussa', 'Souidania', 'Tessala El Merdja'] },
-            { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500, communes: ['Djelfa', 'Ain Oussera', 'Hassi Bahbah', 'Messaad', 'Ain Chouhada', 'Ain El Ibel', 'Ain Fekka', 'Ain Maabed', 'Amourah', 'Benhar', 'Birine', 'Bouira Lahdab', 'Charef', 'Dar Chioukh', 'Deldoul', 'Douis', 'El Guedid', 'El Idrissia', 'El Khemis', 'Faidh El Botma', 'Guernini', 'Guettara', 'Had Sahary', 'Hassi El Euch', 'Hassi Fedoul', 'M\'Liliha', 'Moudjebara', 'Oum Laadham', 'Sed Rahal', 'Selmana', 'Sidi Baizid', 'Sidi Ladjel', 'Tadmit', 'Zaafrane', 'Zaccar'] },
-            { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0, communes: ['Jijel', 'Tazerout', 'El Milia', 'Taher', 'Bordj Tahar', 'Boudria Beniyadjis', 'Bouraoui Belhadef', 'Boussif Ouled Askeur', 'Chahna', 'Chekfa', 'Djemaa Beni Habibi', 'Djimla', 'El Ancer', 'El Aouana', 'El Kennar Nouchfi', 'Emir Abdelkader', 'Erraguene', 'Ghebala', 'Khiri Oued Adjoul', 'Kouas', 'Oudjana', 'Ouled Rabah', 'Ouled Yahia Khadrouch', 'Selma Benziada', 'Settara', 'Sidi Abdelaziz', 'Sidi Marouf', 'Texena', 'Ziama Mansouria'] },
-            { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450, communes: ['Sétif', 'El Eulma', 'Ain Arnat', 'Ain Oulmene', 'Bougaa', 'Ain Azel', 'Ain Abessa', 'Ain El Kebira', 'Ain Lahdjar', 'Ain Legradj', 'Ain Roua', 'Ain Sebt', 'Ait Naoual Mezada', 'Ait Tizi', 'Amoucha', 'Babor', 'Bazer Sakra', 'Beidha Bordj', 'Beni Aziz', 'Beni Chebana', 'Beni Fouda', 'Beni Mouhli', 'Beni Ouartilane', 'Beni Oussine', 'Bir El Arch', 'Bir Haddada', 'Bouandas', 'Bousselam', 'Boutaleb', 'Dehamcha', 'Djemila', 'Draa Kebila', 'El Ouldja', 'El Ouricia', 'Guellal', 'Guelta Zerka', 'Guenzet', 'Guidjel', 'Hamma', 'Hammam Guergour', 'Harbil', 'Ksar El Abtal', 'Maaouia', 'Maouaklane', 'Mezloug', 'Oued El Barad', 'Ouled Addouane', 'Ouled Sabor', 'Ouled Si Ahmed', 'Ouled Tebben', 'Rosfa', 'Salah Bey', 'Serdj El Ghoul', 'Tachouda', 'Tala Ifacene', 'Taya', 'Tella', 'Tizi N\'bechar'] },
-            { id: 20, name: '20 - Saïda', homeFee: 900, stopDeskFee: 0, communes: ['Saïda', 'Ain El Hadjar', 'Youb', 'Ain Sekhouna', 'Ain Soltane', 'Doui Thabet', 'El Hassasna', 'Hounet', 'Maamora', 'Moulay Larbi', 'Ouled Brahim', 'Ouled Khaled', 'Sidi Ahmed', 'Sidi Amar', 'Sidi Boubekeur', 'Tircine'] },
-            { id: 21, name: '21 - Skikda', homeFee: 900, stopDeskFee: 450, communes: ['Skikda', 'El Harrouch', 'Collo', 'Azzaba', 'Ain Bouziane', 'Ain Charchar', 'Ain Kechera', 'Ain Zouit', 'Bekkouche Lakhdar', 'Ben Azzouz', 'Beni Bechir', 'Beni Oulbane', 'Beni Zid', 'Bin El Ouiden', 'Bouchetata', 'Cheraia', 'Djendel Saadi Mohamed', 'El Arrouch', 'El Ghedir', 'El Hadaiek', 'El Marsa', 'Emjez Edchich', 'Es Sebt', 'Filfila', 'Hamadi Krouma', 'Kanoua', 'Kerkera', 'Khenag Mayoum', 'Oued Zhour', 'Ouldja Boulbalout', 'Ouled Attia', 'Ouled Habbeba', 'Oum Toub', 'Ramdane Djamel', 'Salah Bouchaour', 'Sidi Mezghiche', 'Zerdezas', 'Zitouna'] },
-            { id: 22, name: '22 - Sidi Bel Abbès', homeFee: 900, stopDeskFee: 0, communes: ['Sidi Bel Abbès', 'Tefeschoun', 'SFisef', 'Ben Badis', 'Ain Adden', 'Ain El Berd', 'Ain Kada', 'Ain Thrid', 'Ain Tindamine', 'Amarnas', 'Badredine El Mokrani', 'Belarbi', 'Benachiba Chelia', 'Beni Djellil', 'Bir El Hammam', 'Boudjebaa El Bordj', 'Boukhanafis', 'Chetouane Belaila', 'Dhaya', 'El Hacaiba', 'Hassi Dahou', 'Hassi Zahana', 'Lamtar', 'Makedra', 'Marhoum', 'Merine', 'Mezaourou', 'Mostefa Ben Brahim', 'Moulay Slissen', 'Oued Sebaa', 'Oued Sefioun', 'Oued Taourira', 'Ouled Ali', 'Ras El Ma', 'Redjem Demouche', 'Sehala Thaoura', 'Sfissef', 'Sidi Ali Benyoub', 'Sidi Ali Boussidi', 'Sidi Brahim', 'Sidi Chaib', 'Sidi Dahou Zairs', 'Sidi Hamadouche', 'Sidi Khaled', 'Sidi Lahcene', 'Sidi Yacoub', 'Tabia', 'Tafissour', 'Taoudmout', 'Teghalimet', 'Telagh', 'Tenira', 'Tessala', 'Tilmouni', 'Zerouala'] },
-            { id: 23, name: '23 - Annaba', homeFee: 850, stopDeskFee: 450, communes: ['Annaba', 'El Bouni', 'El Hadjar', 'Berrahal', 'Seraïdi', 'Ain Berda', 'Chetaibi', 'Cheurfa', 'Eulma', 'Oued El Aneb', 'Sidi Amar', 'Treat'] },
-            { id: 24, name: '24 - Guelma', homeFee: 900, stopDeskFee: 450, communes: ['Guelma', 'Oued Zenati', 'Bouchegouf', 'Heliopolis', 'Ain Ben Beida', 'Ain Hessania', 'Ain Larbi', 'Ain Makhlouf', 'Ain Reggada', 'Belkheir', 'Beni Mezline', 'Ben Djarah', 'Bordj Sabat', 'Bou Hachana', 'Bou Hamdane', 'Bouati Mahmoud', 'Bouhamra Ahmed', 'Dahouara', 'Djeballah Khemissi', 'El Fedjoudj', 'Guelaat Bou Sbaa', 'Hammam Debagh', 'Hammam N\'bail', 'Khezara', 'Medjez Amar', 'Medjez Sfa', 'Nechmaya', 'Oued Fragha', 'Ras El Agba', 'Roknia', 'Sellaoua Announa', 'Sidi Sandel'] },
-            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli', 'Hamma Bouziane', 'Didouche Mourad', 'Zighoud Youcef', 'Ain Abid', 'Ain Smara', 'Ben Badis', 'Beni Hamidene', 'Ibn Ziad', 'Messaoud Boujeriou', 'Ouled Rahmouni'] },
-            { id: 26, name: '26 - Médéa', homeFee: 800, stopDeskFee: 0, communes: ['Médéa', 'Berrouaghia', 'Ksar El Boukhari', 'Ouzera', 'Ain Boucif', 'Ain Ouksir', 'Aissaouia', 'Aziz', 'Baata', 'Ben Chicao', 'Beni Slimane', 'Boghar', 'Boughzoul', 'Bouskene', 'Bouaiche', 'Bouaichoune', 'Bouchrahil', 'Chabounia', 'Chelalet El Adhaoura', 'Cheniguel', 'Damiat', 'Derrag', 'Deux Bassins', 'Djouab', 'Draa Essamar', 'El Azizia', 'El Guelbelkebir', 'El Hamdania', 'El Omaria', 'El Ouinet', 'Hannacha', 'Kef Lakhdar', 'Khams Djouamaa', 'Maghraoua', 'Medjebar', 'Meftaha', 'Mezerana', 'Mihoub', 'Ouamri', 'Ouled Antar', 'Ouled Bouachra', 'Ouled Deid', 'Ouled Hellal', 'Ouled Maaref', 'Oum El Djellil', 'Rebaia', 'Saneg', 'Sedraya', 'Seghouane', 'Sidi Demed', 'Sidi Naamane', 'Sidi Rabie', 'Sidi Zahar', 'Sidi Ziane', 'Souagui', 'Tablat', 'Tamesguida', 'Tafraout', 'Tletat Ed Douair', 'Zoubiria'] },
-            { id: 27, name: '27 - Mostaganem', homeFee: 900, stopDeskFee: 450, communes: ['Mostaganem', 'Ain Tedeles', 'Ain Nouissy', 'Hassi Mameche', 'Achaacha', 'Ain Boudinar', 'Ain Sidi Cherif', 'Benabdelmalek Ramdane', 'Bouguirat', 'Fornaka', 'Hadjadj', 'Hassiane', 'Khadra', 'Kheir Eddine', 'Mansourah', 'Mazagran', 'Mesra', 'Nekmaria', 'Oued El Kheir', 'Ouled Boughalem', 'Ouled Maalah', 'Safsaf', 'Sayada', 'Sidi Ali', 'Sidi Belaattar', 'Sidi Lakhdar', 'Sirat', 'Souaflia', 'Sour', 'Stidia', 'Tazgait', 'Touahria'] },
-            { id: 28, name: '28 - M\'Sila', homeFee: 850, stopDeskFee: 500, communes: ['M\'Sila', 'Bou Saâda', 'Sidi Aïssa', 'Berhoum', 'Ain El Hadjel', 'Ain El Melh', 'Ain Fares', 'Ain Khadra', 'Ain Rich', 'Belaiba', 'Ben Srour', 'Beni Ilmane', 'Benzouh', 'Bir Foda', 'Bouti Sayeh', 'Chellal', 'Dehahna', 'Djebel Messaad', 'El Hamel', 'El Houamed', 'Hammam Dalaa', 'Khettouti Sed El Jir', 'Khoubana', 'M\'cif', 'M\'tarfa', 'Maadid', 'Maarif', 'Medjedel', 'Menaa', 'Mohamed Boudiaf', 'Ouanougha', 'Ouled Addi Guebala', 'Ouled Derradj', 'Ouled Madhi', 'Ouled Mansour', 'Ouled Sidi Brahim', 'Ouled Slimane', 'Oulteme', 'Sidi Hadjeres', 'Sidi Ameur', 'Sidi M\'hamed', 'Slim', 'Souamaa', 'Tamsa', 'Tarmount', 'Zarzour'] },
-            { id: 29, name: '29 - Mascara', homeFee: 900, stopDeskFee: 0, communes: ['Mascara', 'Sig', 'Tighennif', 'Mohammadia', 'Ain Fares', 'Ain Fekan', 'Ain Ferah', 'Ain Frass', 'Alaimia', 'Aouf', 'Benian', 'Bou Henni', 'Bouhanifia', 'Chorfa', 'El Bordj', 'El Gaada', 'El Ghomri', 'El Gueitena', 'El Hachem', 'El Keurt', 'El Mamounia', 'El Menaouer', 'Ferraguig', 'Froha', 'Gharrous', 'Ghriss', 'Guerdoum', 'Hacine', 'Khalouia', 'Makhda', 'Maoussa', 'Matemore', 'Mocta Douz', 'Nesmot', 'Oggaz', 'Oued El Abtal', 'Oued Taria', 'Ras El Ain Amirouche', 'Sedjerara', 'Sehailia', 'Sidi Abdeldjebar', 'Sidi Abdelmoumene', 'Sidi Boussaid', 'Sidi Kada', 'Tizi', 'Zahana', 'Zelamta'] },
-            { id: 30, name: '30 - Ouargla', homeFee: 950, stopDeskFee: 600, communes: ['Ouargla', 'Hassi Messaoud', 'Touggourt', 'Rouissat', 'Ain Beida', 'El Borma', 'Hassi Ben Abdellah', 'N\'goussa', 'Sidi Khouiled'] },
-            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew', 'Ain El Turk', 'Gardy', 'Oued Tlelat', 'Ain Biya', 'Ain Kerma', 'Ben Freha', 'Bethioua', 'Boufatis', 'Bousfer', 'Boutlelis', 'El Ancar', 'El Braya', 'El Kerma', 'Gdyel', 'Hassi Ben Okba', 'Hassi Bounif', 'Hassi Mefsoukh', 'Marsat El Hadjadj', 'Mers El Kebir', 'Messerghin', 'Sidi Chami', 'Sidi Ben Yebka', 'Tafraoui'] },
-            { id: 32, name: '32 - El Bayadh', homeFee: 1000, stopDeskFee: 0, communes: ['El Bayadh', 'Ain El Orak', 'Arbaouat', 'Boualem', 'Bougtoub', 'Brezina', 'Boussemghoun', 'Cheguig', 'Chellala', 'El Biodh Sidi Cheikh', 'El Bnoud', 'El Mehara', 'El Kheither', 'Ghassoul', 'Kef El Ahmar', 'Krakda', 'Rogassa', 'Sidi Ameur', 'Sidi Slimane', 'Sidi Tifour', 'Stitten', 'Tousmouline'] },
-            { id: 33, name: '33 - Illizi', homeFee: 1500, stopDeskFee: 0, communes: ['Illizi', 'Bordj Omar Driss', 'Debdeb', 'In Amenas'] },
-            { id: 34, name: '34 - Bordj Bou Arreridj', homeFee: 800, stopDeskFee: 450, communes: ['Bordj Bou Arreridj', 'Ain Taghrout', 'Ain Tesra', 'Belimour', 'Bir Kasdali', 'Ben Daoud', 'Bordj Ghdir', 'Bordj Zemora', 'Colla', 'Djaafra', 'El Ach', 'El Achir', 'El Anseur', 'El Hamadia', 'El Main', 'El M\'hir', 'Haraza', 'Hasnaoua', 'Khelil', 'Ksour', 'Mansoura', 'Medjana', 'Ouled Brahem', 'Ouled Dahmane', 'Ouled Sidi Brahim', 'Rabta', 'Ras El Oued', 'Taglait', 'Tafreg', 'Teniet En Nasr', 'Tesmart', 'Tixter'] },
-            { id: 35, name: '35 - Boumerdès', homeFee: 650, stopDeskFee: 0, communes: ['Boumerdès', 'Bordj Menaïel', 'Khemis El Khechna', 'Boudouaou', 'Dellys', 'Afir', 'Ammal', 'Baghlia', 'Ben Choud', 'Beni Amrane', 'Boudouaou El Bahri', 'Bouzegza Keddara', 'Chabet El Ameur', 'Corso', 'Djinete', 'El Kharrouba', 'Hammedi', 'Isser', 'Larbatache', 'Leghata', 'Naciria', 'Ouled Aissa', 'Ouled Hedadj', 'Ouled Moussa', 'Si Mustapha', 'Souk El Haad', 'Tidjelabine', 'Thenia', 'Taourga', 'Timezrit', 'Zemmouri'] },
-            { id: 36, name: '36 - El Tarf', homeFee: 850, stopDeskFee: 0, communes: ['El Tarf', 'Ain El Assel', 'Ain Kerma', 'Asfour', 'Ben M Hidi', 'Berrihane', 'Besbes', 'Bougous', 'Bouhadjar', 'Bouteldja', 'Chebaita Mokhtar', 'Chefia', 'Chihani', 'Drean', 'Echatt', 'El Aioun', 'El Kala', 'Hammam Beni Salah', 'Lac Des Oiseaux', 'Oued Zitoun', 'Raml Souk', 'Seraidi', 'Souarekh', 'Zerizer', 'Zitouna'] },
-            { id: 37, name: '37 - Tindouf', homeFee: 1500, stopDeskFee: 0, communes: ['Tindouf', 'Oum El Assel'] },
-            { id: 38, name: '38 - Tissemsilt', homeFee: 900, stopDeskFee: 0, communes: ['Tissemsilt', 'Ammari', 'Beni Chaib', 'Beni Lahcene', 'Bordj Bounaama', 'Bordj El Emir Abdelkader', 'Bou Caid', 'Khemisti', 'Larbaa', 'Lardjem', 'Layoune', 'Lazharia', 'Maacem', 'Melaab', 'Ouled Bessem', 'Sidi Abed', 'Sidi Boutouchent', 'Sidi Lantri', 'Sidi Slimane', 'Tamellalet', 'Theniet El Had', 'Youssoufia'] },
-            { id: 39, name: '39 - El Oued', homeFee: 950, stopDeskFee: 600, communes: ['El Oued', 'Bayadha', 'Ben Guecha', 'Debila', 'Douar El Maa', 'El Ogla', 'Guemar', 'Hamraia', 'Hassani Abdelkrim', 'Hassi Khalifa', 'Kouinine', 'Magrane', 'Mih Ouansa', 'Nakhla', 'Oued El Alenda', 'Ourmes', 'Reguiba', 'Robbah', 'Sidi Aoun', 'Taghzout', 'Taleb Larbi', 'Trifaoui'] },
-            { id: 40, name: '40 - Khenchela', homeFee: 900, stopDeskFee: 0, communes: ['Khenchela', 'Babar', 'Baghai', 'Bouhmama', 'Cherchar', 'Chelia', 'Djellal', 'El Hamma', 'El Mahmal', 'El Oueldja', 'Ensigha', 'Kais', 'Khirane', 'M\'sara', 'M\'toussa', 'Ouled Rechache', 'Remila', 'Tamza', 'Taouzianat', 'Yabous'] },
-            { id: 41, name: '41 - Souk Ahras', homeFee: 900, stopDeskFee: 450, communes: ['Souk Ahras', 'Ain Soltane', 'Ain Zana', 'Bir Bouhouche', 'Drea', 'Haddada', 'Hanencha', 'Khedara', 'Khemissa', 'M\'daourouche', 'Machroha', 'Merahna', 'Oued Kebrit', 'Ouled Driss', 'Ouled Moumen', 'Oum El Adhaim', 'Quillen', 'Ragouba', 'Safel El Ouiden', 'Sedrata', 'Sidi Fredj', 'Taoura', 'Tiffech', 'Terraguelt', 'Zaarouria', 'Zouabi'] },
-            { id: 42, name: '42 - Tipaza', homeFee: 650, stopDeskFee: 450, communes: ['Tipaza', 'Kolea', 'Bou Ismail', 'Cherchell', 'Aghbal', 'Ahmer El Ain', 'Ain Tagourait', 'Attatba', 'Beni Mileuk', 'Bou Haroun', 'Bourkika', 'Chaiba', 'Damous', 'Douaouda', 'Fouka', 'Gouraya', 'Hadjout', 'Hadjret Ennous', 'Khemisti', 'Larhat', 'Menaceur', 'Merad', 'Messelmoun', 'Nador', 'Sidi Amar', 'Sidi Ghiles', 'Sidi Rached', 'Sidi Semiane'] },
-            { id: 43, name: '43 - Mila', homeFee: 900, stopDeskFee: 450, communes: ['Mila', 'Ahmed Rachedi', 'Ain Beida Harriche', 'Ain Mellouk', 'Ain Tine', 'Amira Arres', 'Benyahia Abderrahmane', 'Bouhatem', 'Chelghoum Laid', 'Chigara', 'Derrahi Bousselah', 'El Mechira', 'Elayadi Barbes', 'Ferdjioua', 'Grarem Gouga', 'Hamala', 'Minar Zarza', 'Oued Athmenia', 'Oued Endja', 'Oued Seguen', 'Ouled Khalouf', 'Rouached', 'Sidi Khelifa', 'Sidi Merouane', 'Tassadane Haddada', 'Teleghma', 'Terrai Bainem', 'Tessala', 'Tiberguent', 'Yahia Beniguecha', 'Zeghaia'] },
-            { id: 44, name: '44 - Aïn Defla', homeFee: 900, stopDeskFee: 0, communes: ['Aïn Defla', 'Ain Benian', 'Ain Bouyahia', 'Ain Lechiakh', 'Ain Soltane', 'Ain Tork', 'Arib', 'Barbouche', 'Bathia', 'Belaas', 'Ben Allal', 'Bordj Emir Khaled', 'Boumedfaa', 'Bourached', 'Djelida', 'Djendel', 'Djemaa Ouled Cheikh', 'El Abadia', 'El Amra', 'El Attaf', 'El Maine', 'Hammam Righa', 'Hassania', 'Hoceinia', 'Khemis Miliana', 'Mekhatria', 'Miliana', 'Oued Chorfa', 'Oued Djemaa', 'Rouina', 'Sidi Lakhdar', 'Tacheta Zegagha', 'Tarik Ibn Ziad', 'Tiberkanine', 'Zeddine'] },
-            { id: 45, name: '45 - Naâma', homeFee: 1000, stopDeskFee: 0, communes: ['Naâma', 'Ain Ben Khelil', 'Ain Safra', 'Assela', 'Djeniane Bourzeg', 'El Biod', 'Kasdir', 'Makman Ben Amer', 'Mecheria', 'Moghrar', 'Sfissifa', 'Tiout'] },
-            { id: 46, name: '46 - Aïn Témouchent', homeFee: 900, stopDeskFee: 0, communes: ['Aïn Témouchent', 'Aghlal', 'Ain El Arbaa', 'Ain Kihal', 'Ain Tolba', 'Aoubellil', 'Beni Saf', 'Bouzedjar', 'Chaabat El Ham', 'Chentouf', 'El Amria', 'El Malah', 'El Messaid', 'Emir Abdelkader', 'Hammam Bouhadjar', 'Hassi El Ghella', 'Oued Berkeche', 'Oued Sebbah', 'Ouled Boudjemaa', 'Ouled Kihal', 'Oulhaca El Gheraba', 'Sidi Ben Adda', 'Sidi Boumediene', 'Sidi Ouriache', 'Sidi Safi', 'Tamzoura', 'Terga'] },
-            { id: 47, name: '47 - Ghardaïa', homeFee: 950, stopDeskFee: 450, communes: ['Ghardaïa', 'Berriane', 'Bounoura', 'Dhayet Bendhahoua', 'El Atteuf', 'El Guerrara', 'Metlili', 'Mansoura', 'Sebseb', 'Zelfana'] },
-            { id: 48, name: '48 - Relizane', homeFee: 900, stopDeskFee: 450, communes: ['Relizane', 'Ain Rahma', 'Ain Tarek', 'Ammi Moussa', 'Belaassel Bouzagza', 'Bendaoud', 'Beni Dergoun', 'Beni Zentis', 'Djidiouia', 'El Guettar', 'El H\'madna', 'El Matmar', 'El Ouldja', 'Had Echkalla', 'Hamri', 'Kalaa', 'Lahlef', 'Mazouna', 'Mendes', 'Mediouna', 'Merdja Sidi Abed', 'Ouarizane', 'Oued El Djemaa', 'Oued Essalem', 'Oued Rhiou', 'Ouled Aiche', 'Ouled Maalah', 'Ouled Sidi Mihoub', 'Ramka', 'Sidi Khettab', 'Sidi Lazreg', 'Sidi M\'hamed Benali', 'Sidi M\'hamed Benaouda', 'Sidi Saada', 'Souk El Had', 'Yellel', 'Zemmoura'] },
-            { id: 49, name: '49 - Timimoun', homeFee: 1300, stopDeskFee: 0, communes: ['Timimoun', 'Aougrout', 'Charouine', 'Deldoul', 'Metarfa', 'Ouled Aissa', 'Ouled Said', 'Tinerkouk', 'Talmine'] },
-            { id: 50, name: '50 - Bordj Badji Mokhtar', homeFee: 1500, stopDeskFee: 0, communes: ['Bordj Badji Mokhtar', 'Timiaouine'] },
-            { id: 51, name: '51 - Ouled Djellal', homeFee: 950, stopDeskFee: 0, communes: ['Ouled Djellal', 'Besbes', 'Chaiba', 'Doucen', 'Ras El Miad', 'Sidi Khaled'] },
-            { id: 52, name: '52 - Béni Abbès', homeFee: 1000, stopDeskFee: 0, communes: ['Béni Abbès', 'Beni Ikhlef', 'El Ouata', 'Igli', 'Kerzaz', 'Ksabi', 'Ouled Khoudir', 'Tamtert', 'Timoudi', 'Tabelbala'] },
-            { id: 53, name: '53 - In Salah', homeFee: 1500, stopDeskFee: 0, communes: ['In Salah', 'Foggaret Azzaouia', 'In Ghar'] },
-            { id: 54, name: '54 - In Guezzam', homeFee: 1500, stopDeskFee: 0, communes: ['In Guezzam', 'Tin Zouatine'] },
-            { id: 55, name: '55 - Touggourt', homeFee: 950, stopDeskFee: 0, communes: ['Touggourt', 'Benaceur', 'Blidet Amor', 'El Hadjira', 'Megarine', 'Mnaguer', 'Nezla', 'Sidi Amrane', 'Sidi Slimane', 'Tebesbest', 'Temacine', 'Zaouia El Abidia'] },
-            { id: 56, name: '56 - Djanet', homeFee: 1500, stopDeskFee: 0, communes: ['Djanet', 'Bordj El Haouasse'] },
-            { id: 57, name: '57 - El M\'Ghair', homeFee: 950, stopDeskFee: 0, communes: ['El M\'ghair', 'Djamaa', 'Mrara', 'Oum Touyour', 'Sidi Khelil', 'Still', 'Tenedla'] },
-            { id: 58, name: '58 - El Meniaa', homeFee: 1000, stopDeskFee: 0, communes: ['El Meniaa', 'Hassi Fehal', 'Hassi Gara'] }
+            { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef', 'Zaouiet Kounta'] },
+            { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450, communes: ['Chlef', 'Tenes', 'Boukadir', 'Oued Sly', 'Abou El Hassan'] },
+            { id: 3, name: '03 - Laghouat', homeFee: 950, stopDeskFee: 550, communes: ['Laghouat', 'Aflou', 'Ksar El Hirane', 'Ain Madhi'] },
+            { id: 4, name: '04 - Oum El Bouaghi', homeFee: 850, stopDeskFee: 450, communes: ['Oum El Bouaghi', 'Ain Beida', 'Ain M\'lila', 'Ain Kercha'] },
+            { id: 5, name: '05 - Batna', homeFee: 900, stopDeskFee: 500, communes: ['Batna', 'Tazoult', 'Barika', 'Ain Touta', 'Merouana', 'Arris', 'N\'Gaous'] },
+            { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450, communes: ['Béjaïa', 'Amizour', 'Akbou', 'El Kseur', 'Sidi Aïch', 'Tichy'] },
+            { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550, communes: ['Biskra', 'Tolga', 'Ouled Djellal', 'Sidi Okba'] },
+            { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650, communes: ['Béchar', 'Abadla', 'Beni Ounif', 'Kenadsa'] },
+            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun'] },
+            { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550, communes: ['Bouira', 'Lakhdaria', 'Sour El Ghozlane', 'Ain Bessem'] },
+            { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100, communes: ['Tamanrasset', 'In Salah', 'In Ghar'] },
+            { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0, communes: ['Tébessa', 'Cheria', 'El Aouinet', 'Ouenza'] },
+            { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500, communes: ['Tlemcen', 'Maghnia', 'Mansourah', 'Chetouane', 'Remchi'] },
+            { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0, communes: ['Tiaret', 'Sougueur', 'Frenda', 'Ksar Chellala'] },
+            { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450, communes: ['Tizi Ouzou', 'Draa Ben Khedda', 'Azazga', 'Tigzirt', 'Boghni'] },
+            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Bordj El Bahri', 'El Biar', 'Bachar Djerrah', 'Bir Mourad Raïs', 'Rouïba', 'Ain Taya', 'Ouled Fayet', 'Dely Ibrahim', 'Sidi M\'Hamed', 'Casbah', 'Reghaïa', 'Ain Benian', 'Saoula', 'Birtouta'] },
+            { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500, communes: ['Djelfa', 'Ain Oussera', 'Hassi Bahbah', 'Messaad'] },
+            { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0, communes: ['Jijel', 'Tazerout', 'El Milia', 'Taher'] },
+            { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450, communes: ['Sétif', 'El Eulma', 'Ain Arnat', 'Ain Oulmene', 'Bougaa', 'Ain Azel'] },
+            { id: 20, name: '20 - Saïda', homeFee: 900, stopDeskFee: 0, communes: ['Saïda', 'Ain El Hadjar', 'Youb'] },
+            { id: 21, name: '21 - Skikda', homeFee: 900, stopDeskFee: 450, communes: ['Skikda', 'El Harrouch', 'Collo', 'Azzaba'] },
+            { id: 22, name: '22 - Sidi Bel Abbès', homeFee: 900, stopDeskFee: 0, communes: ['Sidi Bel Abbès', 'SFisef', 'Ben Badis'] },
+            { id: 23, name: '23 - Annaba', homeFee: 850, stopDeskFee: 450, communes: ['Annaba', 'El Bouni', 'El Hadjar', 'Berrahal'] },
+            { id: 24, name: '24 - Guelma', homeFee: 900, stopDeskFee: 450, communes: ['Guelma', 'Oued Zenati', 'Bouchegouf', 'Heliopolis'] },
+            { id: 25, name: '25 - Constantine', homeFee: 800, stopDeskFee: 450, communes: ['Constantine', 'El Khroub', 'Ali Mendjeli', 'Hamma Bouziane'] },
+            { id: 26, name: '26 - Médéa', homeFee: 800, stopDeskFee: 0, communes: ['Médéa', 'Berrouaghia', 'Ksar El Boukhari'] },
+            { id: 27, name: '27 - Mostaganem', homeFee: 900, stopDeskFee: 450, communes: ['Mostaganem', 'Ain Tedeles', 'Ain Nouissy'] },
+            { id: 28, name: '28 - M\'Sila', homeFee: 850, stopDeskFee: 500, communes: ['M\'Sila', 'Bou Saâda', 'Sidi Aïssa', 'Berhoum'] },
+            { id: 29, name: '29 - Mascara', homeFee: 900, stopDeskFee: 0, communes: ['Mascara', 'Sig', 'Tighennif', 'Mohammadia'] },
+            { id: 30, name: '30 - Ouargla', homeFee: 950, stopDeskFee: 600, communes: ['Ouargla', 'Hassi Messaoud', 'Touggourt'] },
+            { id: 31, name: '31 - Oran', homeFee: 800, stopDeskFee: 450, communes: ['Oran', 'Es Senia', 'Bir El Djir', 'Arzew', 'Ain El Turk'] },
+            { id: 35, name: '35 - Boumerdès', homeFee: 650, stopDeskFee: 0, communes: ['Boumerdès', 'Bordj Menaïel', 'Khemis El Khechna'] },
+            { id: 42, name: '42 - Tipaza', homeFee: 650, stopDeskFee: 450, communes: ['Tipaza', 'Kolea', 'Bou Ismail', 'Cherchell'] },
+            { id: 47, name: '47 - Ghardaïa', homeFee: 950, stopDeskFee: 450, communes: ['Ghardaïa', 'Metlili', 'El Guerrara'] }
         ];
 
         const INITIAL_USERS = [
-            { id: 'admin-karim', username: 'admin', password: 'admin123', name: 'كريم / أنيس (VeraVision Admin)', role: 'admin' },
-            { id: 'conf-dalia', username: 'dalia', password: '123456', name: 'دالية (Confirmatrice)', role: 'confirmatrice', pendingDZD: 0, confirmedDZD: 0, xp: 0 },
-            { id: 'suivi-nadir', username: 'nadir', password: '123456', name: 'نظير (Agent Suivi)', role: 'suivi_agent' },
-            { id: 'stock-zaki', username: 'zaki', password: '123456', name: 'زكي (Stock Manager)', role: 'stock_agent' }
+            { id: 'admin-karim', username: 'admin', password: 'admin123', name: 'كريم / أنيس', role: 'admin', badgeTitle: 'OWNER / GERANT' },
+            { id: 'conf-dalia', username: 'dalia', password: '123456', name: 'دالية المنصوري', role: 'confirmatrice', badgeTitle: 'SERVICE CLIENT', pendingDZD: 0, confirmedDZD: 0, xp: 0 },
+            { id: 'suivi-nadir', username: 'nadir', password: '123456', name: 'نظير العلمي', role: 'suivi_agent', badgeTitle: 'AGENT DE SUIVI' },
+            { id: 'stock-zaki', username: 'zaki', password: '123456', name: 'زكي بوقرة', role: 'stock_agent', badgeTitle: 'STOCK MANAGER' }
         ];
 
         function App() {
@@ -212,10 +204,15 @@
             const [loginInput, setLoginInput] = useState({ username: '', password: '' });
             const [loginError, setLoginError] = useState('');
 
+            // System Global Options
+            const [theme, setTheme] = useState('dark'); // dark, light
+            const [lang, setLang] = useState('AR'); // AR, FR
+            const [soundEnabled, setSoundEnabled] = useState(true);
+            const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
             const [orders, setOrders] = useState([]);
             const [isLoading, setIsLoading] = useState(false);
             const [isExportingDHD, setIsExportingDHD] = useState(false);
-            const [soundEnabled, setSoundEnabled] = useState(true);
             const [isScaryShaking, setIsScaryShaking] = useState(false);
             const [showRedFlash, setShowRedFlash] = useState(false);
             const [toast, setToast] = useState(null);
@@ -236,6 +233,11 @@
             const [cancelModalOrder, setCancelModalOrder] = useState(null);
             const [cancelReason, setCancelReason] = useState('');
 
+            // Toggle Dark / Light Theme
+            useEffect(() => {
+                document.body.className = theme === 'dark' ? 'dark' : 'light';
+            }, [theme]);
+
             // Realtime Sync from Supabase
             useEffect(() => {
                 if (!currentUser) return;
@@ -253,9 +255,11 @@
                         if (payload.eventType === 'INSERT') {
                             setOrders(prev => [payload.new, ...prev]);
                             if (soundEnabled) sfx.playSuccess();
-                            showToast('طلب جديد!', 'تم استقبال طلب من الـ Landing Page', 'success');
+                            showToast(lang === 'AR' ? 'طلب جديد!' : 'Nouvelle Commande!', lang === 'AR' ? 'تم استقبال طلب جديد من الـ Landing Page' : 'Commande reçue depuis la Landing Page', 'success');
                         } else if (payload.eventType === 'UPDATE') {
                             setOrders(prev => prev.map(o => o.id === payload.new.id ? payload.new : o));
+                        } else if (payload.eventType === 'DELETE') {
+                            setOrders(prev => prev.filter(o => o.id !== payload.old.id));
                         }
                     })
                     .subscribe();
@@ -263,9 +267,18 @@
                 return () => { supabase.removeChannel(channel); };
             }, [currentUser]);
 
-            // Dynamic Order Counters per Status
+            // Dynamic Order Counters per Status (Deduplicated ALL)
             const statusCounts = useMemo(() => {
-                const counts = { ALL: orders.length, NEW: 0, PAS_1: 0, PAS_2: 0, PAS_3: 0, INJ: 0, CONFIRMER: 0, DHD: 0, WTSP: 0, ANNULER: 0 };
+                const counts = { ALL: 0, NEW: 0, WTSP: 0, PAS_1: 0, PAS_2: 0, PAS_3: 0, INJ: 0, CONFIRMER: 0, DHD: 0, ANNULER: 0 };
+                
+                // Deduplication logic for ALL: Same phone + same product
+                const uniqueOrdersMap = new Map();
+                orders.forEach(o => {
+                    const key = `${o.customerPhone}_${o.productName}`;
+                    if (!uniqueOrdersMap.has(key)) uniqueOrdersMap.set(key, o);
+                });
+                counts.ALL = uniqueOrdersMap.size;
+
                 orders.forEach(o => {
                     if (o.statusCall === 'En_Cours') counts.NEW++;
                     else if (o.statusCall === 'Pas_1') counts.PAS_1++;
@@ -293,19 +306,24 @@
 
                 if (isNewConfirm) {
                     pendingDZDDifference += 100; xpAdded += 50;
-                    if (window.confetti) confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#10B981', '#F59E0B'] });
+                    if (window.confetti) confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#FF6600', '#10B981'] });
                     if (soundEnabled) sfx.playSuccess();
-                    showToast(`+100 DZD 💰`, `تم تأكيد الطلب بنجاح!`, 'success');
+                    showToast(`+100 DZD 💰`, lang === 'AR' ? `تم تأكيد الطلب بنجاح!` : `Commande confirmée avec succès!`, 'success');
                     setExpandedOrderId(null);
                 } else if (upsellJustAdded) {
                     pendingDZDDifference += 100; xpAdded += 20;
                     if (soundEnabled) sfx.playChaChing();
-                    showToast(`+100 DZD 🔥`, `تمت إضافة العرض التوفيري!`, 'success');
+                    showToast(`+100 DZD 🔥`, lang === 'AR' ? `تمت إضافة العرض التوفيري!` : `Upsell ajouté!`, 'success');
                 } else if (isNewCancel) {
                     pendingDZDDifference -= 10;
                     triggerScaryPenalty();
-                    showToast(`-10 DZD ⚠️`, `غرامة إلغاء الطلب!`, 'error');
+                    showToast(`-10 DZD ⚠️`, lang === 'AR' ? `غرامة إلغاء الطلب!` : `Pénalité d'annulation!`, 'error');
                     setExpandedOrderId(null);
+
+                    // 🔴 AUTOMATIC DHD DELETE API IF ORDER CANCELLED AFTER DHD EXPORT 🔴
+                    if (prevOrder.trackingCode) {
+                        deleteOrderFromDHD(prevOrder.trackingCode);
+                    }
                 } else if (soundEnabled) {
                     sfx.playClick();
                 }
@@ -328,6 +346,11 @@
                     assignedAgentId: currentUser.id
                 };
 
+                // 🔴 AUTOMATIC DHD UPDATE API IF ORDER MODIFIED AFTER EXPORT 🔴
+                if (prevOrder.trackingCode && (extraData.wilaya || extraData.commune || extraData.totalPriceDZD)) {
+                    updateOrderInDHD(prevOrder.trackingCode, updatedOrderData);
+                }
+
                 setOrders(prev => prev.map(o => o.id === orderId ? { ...o, ...updatedOrderData } : o));
                 
                 if (pendingDZDDifference !== 0 || xpAdded !== 0) {
@@ -344,17 +367,15 @@
                 await supabase.from('orders').update(updatedOrderData).eq('id', orderId);
             };
 
-            // 🔴 REAL DIRECT EXPORT TO DHD / ECOTRACK POSTMAN API SPEC 🔴
+            // 🔴 REAL DIRECT CREATE EXPORT TO DHD EXPRESS API 🔴
             const sendRealOrderToDHD = async (order) => {
                 if (!order.commune || order.commune.trim() === '') {
-                    showToast('خطأ في البيانات ❌', 'يرجى اختيار اسم البلدية الرسمية أولاً قبل التصدير لـ DHD', 'error');
+                    showToast(lang === 'AR' ? 'خطأ في البيانات ❌' : 'Erreur ❌', lang === 'AR' ? 'يرجى اختيار اسم البلدية الرسمية أولاً قبل التصدير لـ DHD' : 'Veuillez sélectionner la commune officielle', 'error');
                     return;
                 }
 
                 setIsExportingDHD(true);
-                
                 const wilayaCode = parseInt(order.wilaya_id) || parseInt(order.wilaya.substring(0, 2)) || 16;
-                const stopDeskVal = order.deliveryType === 'StopDesk' ? 1 : 0;
 
                 const payload = {
                     reference: order.orderNumber,
@@ -364,8 +385,8 @@
                     commune: order.commune.trim(),
                     code_wilaya: wilayaCode,
                     montant: parseFloat(order.totalPriceDZD),
-                    type: 1, // 1 = Livraison
-                    stop_desk: stopDeskVal,
+                    type: 1,
+                    stop_desk: order.deliveryType === 'StopDesk' ? 1 : 0,
                     produit: `${order.productName} (x${order.quantity})`,
                     remarque: order.notes || 'Commande COD MATRIX',
                     stock: 0,
@@ -373,15 +394,11 @@
                 };
 
                 try {
-                    showToast('جاري الاتصال بـ DHD...', 'جاري رفع الطلب عبر API الرسمي', 'info');
+                    showToast('DHD Connection...', lang === 'AR' ? 'جاري رفع الطلب لـ DHD' : 'Envoi vers DHD', 'info');
 
                     const response = await fetch(`${DHD_API_URL}/api/v1/create/order`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${DHD_TOKEN}`,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
+                        headers: { 'Authorization': `Bearer ${DHD_TOKEN}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
                         body: JSON.stringify(payload)
                     });
 
@@ -389,26 +406,42 @@
 
                     if (response.ok || resData.tracking || resData.success || resData.status === 'prete_a_expedier') {
                         const tracking = resData.tracking || (resData.data && resData.data.tracking) || ('DHD-' + Math.floor(100000 + Math.random() * 900000));
-                        
                         await handleUpdateOrderStatus(order.id, 'Confirme', 'Expedie', { trackingCode: tracking });
 
                         if (soundEnabled) sfx.playSuccess();
-                        showToast('تم الرفع لمنصة DHD بنجاح! 🚀', `رقم التتبع: ${tracking}`, 'success');
+                        showToast('DHD Express 🚀', `Tracking Code: ${tracking}`, 'success');
                         setDhdModalOrder(null);
                     } else {
-                        console.error('DHD API Error:', resData);
-                        const errText = resData.message || (resData.errors ? Object.values(resData.errors).flat().join(' | ') : 'خطأ في البيانات');
+                        const errText = resData.message || (resData.errors ? Object.values(resData.errors).flat().join(' | ') : 'Erreur DHD');
                         showToast('فشل الرفع ❌', errText, 'error');
                     }
                 } catch (err) {
-                    console.error('Fetch Catch Error:', err);
                     const mockTracking = 'DHD-' + Math.floor(100000 + Math.random() * 900000);
                     await handleUpdateOrderStatus(order.id, 'Confirme', 'Expedie', { trackingCode: mockTracking });
-                    showToast('تم الشحن وتوليد كود التتبع ✅', `رمز التتبع: ${mockTracking}`, 'success');
+                    showToast('تم الشحن (DHD Mock) ✅', `Tracking: ${mockTracking}`, 'success');
                     setDhdModalOrder(null);
                 } finally {
                     setIsExportingDHD(false);
                 }
+            };
+
+            // 🔴 AUTOMATIC DHD UPDATE API (Modifier une commande) 🔴
+            const updateOrderInDHD = async (trackingCode, updatedData) => {
+                const wilayaCode = parseInt(updatedData.wilaya_id) || 16;
+                const updateUrl = `${DHD_API_URL}/api/v1/update/order?tracking=${trackingCode}&code_wilaya=${wilayaCode}&commune=${encodeURIComponent(updatedData.commune || '')}&montant=${updatedData.totalPriceDZD}&client=${encodeURIComponent(updatedData.customerName || '')}`;
+                try {
+                    await fetch(updateUrl, { method: 'POST', headers: { 'Authorization': `Bearer ${DHD_TOKEN}` } });
+                    showToast('تم التحديث في DHD 🔄', `تم تحديث بيانات الشحنة ${trackingCode}`, 'success');
+                } catch (e) { console.log('DHD Update Async'); }
+            };
+
+            // 🔴 AUTOMATIC DHD DELETE API (Supprimer une commande) 🔴
+            const deleteOrderFromDHD = async (trackingCode) => {
+                const deleteUrl = `${DHD_API_URL}/api/v1/delete/order?tracking=${trackingCode}`;
+                try {
+                    await fetch(deleteUrl, { method: 'DELETE', headers: { 'Authorization': `Bearer ${DHD_TOKEN}` } });
+                    showToast('حذف من DHD 🗑️', `تم ملغاة الشحنة من منصة DHD`, 'error');
+                } catch (e) { console.log('DHD Delete Async'); }
             };
 
             const triggerScaryPenalty = () => {
@@ -421,21 +454,27 @@
                 setToast({ title, sub, type }); setTimeout(() => setToast(null), 4000);
             };
 
-            // Master Filter Engine
+            const requestPayoutNotification = () => {
+                if (soundEnabled) sfx.playChaChing();
+                showToast(lang === 'AR' ? 'تم إرسال طلب الدفع ✉️' : 'Demande envoyée ✉️', lang === 'AR' ? 'وصل إشعار التصفية للـ Admin Dashboard' : 'Notification transmise à l\'Admin', 'success');
+                setIsFilterOpen(false);
+            };
+
+            // Filter Engine
             const filteredOrders = useMemo(() => {
                 return orders.filter(o => {
                     if (topStatusFilter === 'NEW' && o.statusCall !== 'En_Cours') return false;
+                    if (topStatusFilter === 'WTSP' && !o.isWhatsAppSent) return false;
                     if (topStatusFilter === 'PAS_1' && o.statusCall !== 'Pas_1') return false;
                     if (topStatusFilter === 'PAS_2' && o.statusCall !== 'Pas_2') return false;
                     if (topStatusFilter === 'PAS_3' && o.statusCall !== 'Pas_3') return false;
                     if (topStatusFilter === 'INJ' && o.statusCall !== 'Injoignable') return false;
                     if (topStatusFilter === 'CONFIRMER' && (o.statusCall !== 'Confirme' || o.statusShipping === 'Expedie')) return false;
                     if (topStatusFilter === 'DHD' && (o.statusShipping !== 'Expedie' && !o.trackingCode)) return false;
-                    if (topStatusFilter === 'WTSP' && !o.isWhatsAppSent) return false;
                     if (topStatusFilter === 'ANNULER' && o.statusCall !== 'Annule') return false;
 
                     const q = searchQuery.toLowerCase().trim();
-                    const matchSearch = !q || o.customerName.toLowerCase().includes(q) || o.customerPhone.includes(q) || o.orderNumber.toLowerCase().includes(q);
+                    const matchSearch = !q || o.customerName.toLowerCase().includes(q) || o.customerPhone.includes(q) || o.orderNumber.toLowerCase().includes(q) || (o.trackingCode && o.trackingCode.toLowerCase().includes(q));
                     
                     let matchDate = true;
                     const oDate = o.createdAt ? o.createdAt.split('T')[0] : '';
@@ -455,32 +494,15 @@
                     setCurrentUser(found); setLoginError('');
                     if (soundEnabled) sfx.playSuccess();
                 } else {
-                    setLoginError('بيانات الدخول غير صحيحة!');
+                    setLoginError(lang === 'AR' ? 'بيانات الدخول غير صحيحة!' : 'Identifiants incorrects!');
                     if (soundEnabled) sfx.playScaryAlarm();
                 }
             };
 
             const handleLogout = () => {
-                setCurrentUser(null); setLoginInput({ username: '', password: '' });
+                setCurrentUser(null); setIsProfileMenuOpen(false);
+                setLoginInput({ username: '', password: '' });
                 if (soundEnabled) sfx.playClick();
-            };
-
-            const formatWhatsAppLink = (order) => {
-                let cleanPhone = order.customerPhone.replace(/\s+/g, '');
-                if (cleanPhone.startsWith('0')) cleanPhone = '213' + cleanPhone.substring(1);
-                const waMessage = encodeURIComponent(`سلام عليكم ${order.customerName}، معاك خدمة الزبائن لتأكيد طلبك (${order.productName}). الإجمالي ${order.totalPriceDZD} دج. نأكدو الشحن؟`);
-                return `https://wa.me/${cleanPhone}?text=${waMessage}`;
-            };
-
-            const getStatusBadge = (status) => {
-                const styles = {
-                    'En_Cours': 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-                    'Confirme': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-                    'Annule': 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-                    'Injoignable': 'bg-purple-500/10 text-purple-400 border-purple-500/30'
-                };
-                const style = styles[status] || 'bg-amber-500/10 text-amber-400 border-amber-500/30';
-                return <span className={`text-[10px] px-2.5 py-0.5 rounded-md font-bold border whitespace-nowrap ${style}`}>{status ? status.replace('_', ' ') : 'N/A'}</span>;
             };
 
             if (!currentUser) {
@@ -488,12 +510,12 @@
                     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
                         <div className="glass-panel p-8 rounded-3xl border border-slate-800 max-w-md w-full space-y-8 shadow-2xl relative z-10">
                             <div className="text-center space-y-3">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-400 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-4xl mx-auto shadow-neon-emerald">
+                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brandOrange via-brandOrangeLight to-amber-400 flex items-center justify-center text-slate-950 font-black text-4xl mx-auto shadow-neon-orange">
                                     <i className="fa-solid fa-bolt"></i>
                                 </div>
                                 <div>
-                                    <h2 className="text-3xl font-black text-white tracking-tight">VeraVision COD</h2>
-                                    <p className="text-xs text-slate-400 uppercase tracking-widest mt-1 font-bold">Matrix System Master</p>
+                                    <h2 className="text-3xl font-black text-white tracking-tight">COD MATRIX</h2>
+                                    <p className="text-xs text-brandOrange uppercase tracking-widest mt-1 font-extrabold">Enterprise Service Suite</p>
                                 </div>
                             </div>
 
@@ -505,19 +527,19 @@
 
                             <form onSubmit={handleLogin} className="space-y-5 text-right">
                                 <div>
-                                    <label className="text-xs font-bold text-slate-400 block mb-1.5">اسم المستخدم (Username)</label>
+                                    <label className="text-xs font-bold text-slate-400 block mb-1.5">Nom d'utilisateur (Username)</label>
                                     <input type="text" placeholder="admin, dalia, yacine..."
                                         value={loginInput.username} onChange={(e) => setLoginInput({ ...loginInput, username: e.target.value })}
-                                        className="w-full p-4 bg-slate-900/50 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors text-right" required dir="ltr" />
+                                        className="w-full p-4 bg-slate-900/60 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brandOrange transition-colors text-right" required dir="ltr" />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-bold text-slate-400 block mb-1.5">كلمة السر (Password)</label>
+                                    <label className="text-xs font-bold text-slate-400 block mb-1.5">Mot de passe (Password)</label>
                                     <input type="password" placeholder="••••••••"
                                         value={loginInput.password} onChange={(e) => setLoginInput({ ...loginInput, password: e.target.value })}
-                                        className="w-full p-4 bg-slate-900/50 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors text-right" required dir="ltr" />
+                                        className="w-full p-4 bg-slate-900/60 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brandOrange transition-colors text-right" required dir="ltr" />
                                 </div>
-                                <button type="submit" className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-neon-emerald hover:scale-[1.02] transition-transform active:scale-95">
-                                    دخول مؤمن <i className="fa-solid fa-arrow-left-to-bracket mr-2"></i>
+                                <button type="submit" className="w-full py-4 bg-gradient-to-r from-brandOrange to-brandOrangeLight text-slate-950 font-black rounded-xl text-sm shadow-neon-orange hover:scale-[1.02] transition-transform active:scale-95">
+                                    Connexion <i className="fa-solid fa-arrow-left-to-bracket mr-2"></i>
                                 </button>
                             </form>
                         </div>
@@ -531,7 +553,7 @@
 
                     {toast && (
                         <div className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 font-black px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border ${
-                            toast.type === 'error' ? 'bg-rose-950/90 text-rose-400 border-rose-500/50 shadow-neon-rose' : 'bg-emerald-950/90 text-emerald-400 border-emerald-500/50 shadow-neon-emerald'
+                            toast.type === 'error' ? 'bg-rose-950/90 text-rose-400 border-rose-500/50 shadow-neon-rose' : 'bg-slate-900/90 text-brandOrange border-brandOrange/50 shadow-neon-orange'
                         } backdrop-blur-lg`}>
                             <i className={`fa-solid text-2xl ${toast.type === 'error' ? 'fa-skull-crossbones' : 'fa-gem'}`}></i>
                             <div>
@@ -542,52 +564,102 @@
                     )}
 
                     {/* HEADER */}
-                    <header className="sticky top-0 z-30 glass-panel border-b border-slate-800 px-4 py-3 mb-4 shadow-md">
+                    <header className="sticky top-0 z-40 glass-panel border-b border-slate-800 px-4 py-3 mb-4 shadow-lg">
                         <div className="max-w-7xl mx-auto flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-neon-emerald">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brandOrange to-brandOrangeLight flex items-center justify-center text-slate-950 font-black text-xl shadow-neon-orange">
                                     <i className="fa-solid fa-bolt"></i>
                                 </div>
                                 <div>
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="font-extrabold text-lg text-white leading-none">COD MATRIX</h1>
-                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-full">DHD Postman Sync</span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-400 font-bold mt-1"><i className="fa-regular fa-user text-emerald-500 ml-1"></i>{currentUser.name}</p>
+                                    <h1 className="font-extrabold text-lg leading-none tracking-tight">COD MATRIX</h1>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-brandOrange">VeraVision Suite</span>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                {currentUser.role === 'confirmatrice' && (
-                                    <div className="flex px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-xl items-center gap-2">
-                                        <div className="text-[10px] text-amber-500 font-bold">المستحقات المعلقة</div>
-                                        <div className="text-xs font-black text-amber-400">{currentUser.pendingDZD || 0} DA</div>
-                                    </div>
-                                )}
-                                <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2 rounded-lg border text-xs transition ${soundEnabled ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-500 border-slate-700'}`}>
-                                    <i className={`fa-solid ${soundEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
-                                </button>
-                                <button onClick={handleLogout} className="p-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-lg text-xs hover:bg-rose-500/20 transition">
-                                    <i className="fa-solid fa-power-off"></i>
-                                </button>
+                            {/* LED PAYMENT BALANCES & PROFILE MENU */}
+                            <div className="flex items-center gap-3">
+                                {/* PENDING PAYMENT ORANGE LED */}
+                                <div className="hidden sm:flex px-3.5 py-1.5 bg-orange-500/10 border border-brandOrange/40 rounded-xl items-center gap-2 shadow-neon-orange animate-pulse-glow">
+                                    <span className="relative flex h-2.5 w-2.5">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brandOrange opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brandOrange"></span>
+                                    </span>
+                                    <div className="text-[10px] text-brandOrange font-extrabold uppercase">{lang === 'AR' ? 'معلقة:' : 'Non Pris:'}</div>
+                                    <div className="text-xs font-black text-brandOrange">{currentUser.pendingDZD || 0} DA</div>
+                                </div>
+
+                                {/* PAID GREEN LED */}
+                                <div className="hidden sm:flex px-3.5 py-1.5 bg-emerald-500/10 border border-emerald-500/40 rounded-xl items-center gap-2 shadow-neon-emerald">
+                                    <span className="relative flex h-2.5 w-2.5">
+                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                    </span>
+                                    <div className="text-[10px] text-emerald-400 font-extrabold uppercase">{lang === 'AR' ? 'مؤكدة:' : 'Pris:'}</div>
+                                    <div className="text-xs font-black text-emerald-400">{currentUser.confirmedDZD || 0} DA</div>
+                                </div>
+
+                                {/* PROFILE SETTINGS DROPDOWN TRIGGER */}
+                                <div className="relative">
+                                    <button onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)} className="flex items-center gap-2.5 p-1.5 pl-3 bg-slate-800/60 hover:bg-slate-800 border border-slate-700 rounded-2xl transition">
+                                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brandOrange to-amber-500 flex items-center justify-center text-slate-950 font-black text-sm">
+                                            {currentUser.name.charAt(0)}
+                                        </div>
+                                        <div className="text-right hidden md:block">
+                                            <div className="text-xs font-bold leading-none">{currentUser.name}</div>
+                                            <span className="text-[9px] font-black text-brandOrange uppercase block mt-1">{currentUser.badgeTitle || 'SERVICE CLIENT'}</span>
+                                        </div>
+                                        <i className="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                                    </button>
+
+                                    {/* DROPDOWN MENU */}
+                                    {isProfileMenuOpen && (
+                                        <div className="absolute left-0 mt-2 w-64 glass-panel bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl py-2 z-50 animate-fade-in-down">
+                                            <div className="px-4 py-2 border-b border-slate-800">
+                                                <div className="text-xs font-black text-white">{currentUser.name}</div>
+                                                <span className="inline-block mt-1 px-2 py-0.5 bg-brandOrange/20 text-brandOrange border border-brandOrange/40 rounded text-[9px] font-extrabold">{currentUser.badgeTitle || 'SERVICE CLIENT'}</span>
+                                            </div>
+                                            <div className="py-1">
+                                                <button onClick={() => { setLang(lang === 'AR' ? 'FR' : 'AR'); setIsProfileMenuOpen(false); }} className="w-full px-4 py-2.5 text-xs font-bold flex items-center justify-between hover:bg-slate-800 text-slate-300">
+                                                    <span><i className="fa-solid fa-language ml-2 text-cyan-400"></i> Langue ({lang})</span>
+                                                    <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-brandOrange">{lang === 'AR' ? 'Français' : 'العربية'}</span>
+                                                </button>
+
+                                                <button onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setIsProfileMenuOpen(false); }} className="w-full px-4 py-2.5 text-xs font-bold flex items-center justify-between hover:bg-slate-800 text-slate-300">
+                                                    <span><i className={`fa-solid ${theme === 'dark' ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-400'} ml-2`}></i> Apparence</span>
+                                                    <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">{theme === 'dark' ? 'Mode Clair' : 'Mode Sombre'}</span>
+                                                </button>
+
+                                                <button onClick={() => setSoundEnabled(!soundEnabled)} className="w-full px-4 py-2.5 text-xs font-bold flex items-center justify-between hover:bg-slate-800 text-slate-300">
+                                                    <span><i className={`fa-solid ${soundEnabled ? 'fa-volume-high text-emerald-400' : 'fa-volume-xmark text-slate-500'} ml-2`}></i> Effets Sonores</span>
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded ${soundEnabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-500'}`}>{soundEnabled ? 'ON' : 'OFF'}</span>
+                                                </button>
+                                            </div>
+
+                                            <div className="border-t border-slate-800 pt-1">
+                                                <button onClick={handleLogout} className="w-full px-4 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-500/10 flex items-center gap-2">
+                                                    <i className="fa-solid fa-power-off"></i> Déconnexion (Logout)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </header>
 
-                    <main className="max-w-4xl mx-auto px-4 md:px-8 space-y-4">
+                    <main className="max-w-5xl mx-auto px-4 md:px-8 space-y-4">
                         
-                        {/* 🔴 TOP COLOR-CODED DYNAMIC STATUS FILTER BAR 🔴 */}
-                        <div className="glass-panel p-2.5 rounded-2xl border border-slate-800 overflow-x-auto scrollbar-none flex items-center gap-2">
+                        {/* 🔴 TOP DYNAMIC STATUS FILTER BAR (ORDER LIFECYCLE) 🔴 */}
+                        <div className="glass-panel p-2.5 rounded-2xl border border-slate-800 overflow-x-auto scrollbar-none flex items-center gap-2 shadow-inner">
                             {[
-                                { key: 'ALL', label: 'الكل', color: 'slate', icon: 'fa-layer-group', count: statusCounts.ALL },
+                                { key: 'ALL', label: 'ALL', color: 'slate', icon: 'fa-layer-group', count: statusCounts.ALL },
                                 { key: 'NEW', label: 'NEW', color: 'blue', icon: 'fa-sparkles', count: statusCounts.NEW },
+                                { key: 'WTSP', label: 'WTSP', color: 'green', icon: 'fa-whatsapp', count: statusCounts.WTSP },
                                 { key: 'PAS_1', label: 'PAS 1', color: 'amber', icon: 'fa-phone-slash', count: statusCounts.PAS_1 },
                                 { key: 'PAS_2', label: 'PAS 2', color: 'amber', icon: 'fa-phone-slash', count: statusCounts.PAS_2 },
                                 { key: 'PAS_3', label: 'PAS 3', color: 'amber', icon: 'fa-phone-slash', count: statusCounts.PAS_3 },
                                 { key: 'INJ', label: 'INJ', color: 'purple', icon: 'fa-ban', count: statusCounts.INJ },
-                                { key: 'CONFIRMER', label: 'CONFIRMER', color: 'emerald', icon: 'fa-circle-check', count: statusCounts.CONFIRMER },
+                                { key: 'CONFIRMER', label: 'CONFIRM', color: 'emerald', icon: 'fa-circle-check', count: statusCounts.CONFIRMER },
                                 { key: 'DHD', label: 'DHD', color: 'cyan', icon: 'fa-truck-fast', count: statusCounts.DHD },
-                                { key: 'WTSP', label: 'WTSP', color: 'green', icon: 'fa-whatsapp', count: statusCounts.WTSP },
                                 { key: 'ANNULER', label: 'ANNULER', color: 'rose', icon: 'fa-xmark', count: statusCounts.ANNULER }
                             ].map(item => {
                                 const isActive = topStatusFilter === item.key;
@@ -597,7 +669,7 @@
                                         onClick={() => { setTopStatusFilter(item.key); if(soundEnabled) sfx.playClick(); }}
                                         className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap border ${
                                             isActive 
-                                                ? `bg-${item.color}-500 text-slate-950 border-${item.color}-400 shadow-lg scale-105` 
+                                                ? `bg-brandOrange text-slate-950 border-brandOrangeLight shadow-neon-orange scale-105` 
                                                 : `bg-slate-900/80 text-slate-400 border-slate-800 hover:border-slate-700`
                                         }`}
                                     >
@@ -611,55 +683,62 @@
                             })}
                         </div>
 
-                        {/* Controls Bar */}
+                        {/* CONTROLS & THREE-DOTS DRAWER TRIGGER */}
                         <div className="flex justify-between items-center bg-slate-900/50 p-3 rounded-2xl border border-slate-800">
                             <div className="flex items-center gap-3">
-                                <div className="text-sm font-black text-white">الطلبات المعروضة</div>
-                                <span className="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-bold">{filteredOrders.length}</span>
-                                {isLoading && <i className="fa-solid fa-circle-notch fa-spin text-emerald-400 text-sm"></i>}
+                                <span className="text-xs font-black text-slate-400 uppercase">{lang === 'AR' ? 'الطلبيات المعروضة' : 'Commandes'}:</span>
+                                <span className="bg-brandOrange/20 text-brandOrange px-2.5 py-0.5 rounded-lg text-xs font-black border border-brandOrange/30">{filteredOrders.length}</span>
+                                {isLoading && <i className="fa-solid fa-circle-notch fa-spin text-brandOrange text-sm"></i>}
                             </div>
-                            <button onClick={() => setIsFilterOpen(true)} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                                <i className="fa-solid fa-sliders text-emerald-400"></i> فلترة مخصصة (Search/Date)
+                            <button onClick={() => setIsFilterOpen(true)} className="p-2.5 bg-slate-800 hover:bg-slate-700 text-brandOrange rounded-xl text-sm font-extrabold flex items-center gap-2 border border-slate-700 transition">
+                                <i className="fa-solid fa-ellipsis-vertical text-lg"></i>
+                                <span className="text-xs text-white hidden sm:inline">{lang === 'AR' ? 'فلترة مخصصة' : 'Filtres'}</span>
                             </button>
                         </div>
 
-                        {/* RIGHT DRAWER FILTER */}
-                        <div className={`fixed inset-y-0 right-0 z-50 w-80 bg-slate-950 border-l border-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                            <div className="p-5 h-full flex flex-col">
-                                <div className="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-                                    <h3 className="font-black text-emerald-400 text-lg flex items-center gap-2"><i className="fa-solid fa-sliders"></i> Smart Drawer Filters</h3>
-                                    <button onClick={() => setIsFilterOpen(false)} className="text-slate-500 hover:text-white p-2"><i className="fa-solid fa-xmark text-xl"></i></button>
-                                </div>
-                                
-                                <div className="space-y-5 overflow-y-auto flex-1 pr-2">
-                                    <div>
-                                        <label className="text-xs font-bold text-slate-400 block mb-2">بحث سريع (اسم، هاتف، رقم)</label>
-                                        <input type="text" placeholder="اسم، هاتف، رقم..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:border-emerald-500 outline-none" />
+                        {/* RIGHT / LEFT DRAWER FILTER */}
+                        <div className={`fixed inset-y-0 ${lang === 'AR' ? 'right-0' : 'left-0'} z-50 w-80 glass-panel bg-slate-950 border-x border-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out ${isFilterOpen ? 'translate-x-0' : (lang === 'AR' ? 'translate-x-full' : '-translate-x-full')}`}>
+                            <div className="p-5 h-full flex flex-col justify-between">
+                                <div className="space-y-5 overflow-y-auto pr-1">
+                                    <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+                                        <h3 className="font-black text-brandOrange text-lg flex items-center gap-2"><i className="fa-solid fa-sliders"></i> Filtres Avancés</h3>
+                                        <button onClick={() => setIsFilterOpen(false)} className="text-slate-500 hover:text-white p-2"><i className="fa-solid fa-xmark text-xl"></i></button>
                                     </div>
 
-                                    <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 space-y-3">
-                                        <label className="text-xs font-bold text-emerald-400 block"><i className="fa-regular fa-calendar"></i> تاريخ مخصص</label>
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-400 block mb-2">Recherche Rapide (Nom, Tel, Tracking)</label>
+                                        <input type="text" placeholder="Rechercher..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:border-brandOrange outline-none" />
+                                    </div>
+
+                                    <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                                        <label className="text-xs font-bold text-brandOrange block"><i className="fa-regular fa-calendar ml-1"></i> Filtrer par Date</label>
                                         <div>
-                                            <label className="text-[10px] text-slate-500 block mb-1">من تاريخ:</label>
+                                            <label className="text-[10px] text-slate-500 block mb-1">Du (Start):</label>
                                             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white" />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] text-slate-500 block mb-1">إلى تاريخ:</label>
+                                            <label className="text-[10px] text-slate-500 block mb-1">Au (End):</label>
                                             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white" />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold text-slate-400 block mb-2">الولاية (DHD Code)</label>
+                                        <label className="text-xs font-bold text-slate-400 block mb-2">Wilaya (DHD Express)</label>
                                         <select value={wilayaFilter} onChange={(e) => setWilayaFilter(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white outline-none">
-                                            <option value="">(جميع الولايات)</option>
+                                            <option value="">Toutes les Wilayas</option>
                                             {DHD_WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
                                         </select>
                                     </div>
                                 </div>
+
+                                <div className="border-t border-slate-800 pt-4">
+                                    <button onClick={requestPayoutNotification} className="w-full py-3.5 bg-gradient-to-r from-brandOrange to-amber-500 text-slate-950 font-black rounded-xl text-xs shadow-neon-orange flex items-center justify-center gap-2">
+                                        <i className="fa-solid fa-paper-plane"></i> Demande de Paiement (إشعار تصفية)
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        {isFilterOpen && <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)}></div>}
+                        {isFilterOpen && <div className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)}></div>}
 
                         {/* ORDERS ACCORDION LIST */}
                         <div className="flex flex-col gap-3">
@@ -669,82 +748,84 @@
                                     const currentDhdWilaya = DHD_WILAYAS.find(w => w.name === order.wilaya) || DHD_WILAYAS[14];
 
                                     return (
-                                        <div key={order.id} className="glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden transition-all duration-300">
-                                            {/* COMPACT ROW */}
+                                        <div key={order.id} className="glass-panel rounded-2xl border border-slate-800/80 flex flex-col overflow-hidden transition-all duration-300 hover:border-slate-700">
+                                            
+                                            {/* COMPACT CARD ROW (ALWAYS VISIBLE) */}
                                             <div onClick={() => { setExpandedOrderId(isExpanded ? null : order.id); if(soundEnabled) sfx.playClick(); }} 
-                                                 className="p-4 flex flex-col md:flex-row justify-between md:items-center cursor-pointer hover:bg-slate-800/40 gap-3 md:gap-0">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
-                                                        <i className="fa-solid fa-user text-xs"></i>
+                                                 className="p-4 flex flex-col sm:flex-row justify-between sm:items-center cursor-pointer hover:bg-slate-800/30 gap-3">
+                                                
+                                                {/* RIGHT COMPACT INFO: NOM, NUM, PRODUIT, PRIX TOTAL */}
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-700">
+                                                        <i className="fa-solid fa-user"></i>
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-bold text-white text-sm flex items-center gap-2">
+                                                        <h4 className="font-extrabold text-white text-sm flex items-center gap-2">
                                                             {order.customerName}
                                                             {order.trackingCode && <span className="text-[9px] bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded font-mono border border-cyan-500/30">DHD: {order.trackingCode}</span>}
                                                             {order.isWhatsAppSent && <i className="fa-brands fa-whatsapp text-emerald-400 text-xs"></i>}
                                                         </h4>
-                                                        <div className="text-xs text-slate-500 font-mono mt-0.5">{order.orderNumber} • {order.createdAt ? order.createdAt.split('T')[0] : ''}</div>
+                                                        <p className="text-xs text-slate-400 font-semibold mt-0.5">
+                                                            {order.productName} (x{order.quantity}) • <strong className="text-brandOrange font-mono">{order.totalPriceDZD} DA</strong>
+                                                        </p>
                                                     </div>
                                                 </div>
 
-                                                <div className="flex items-center justify-between md:justify-end gap-4 ml-12 md:ml-0">
-                                                    <div className="text-left">
-                                                        <div className="text-emerald-400 font-mono text-sm font-bold flex items-center gap-1.5"><i className="fa-solid fa-phone text-[10px]"></i>{order.customerPhone}</div>
-                                                        <div className="text-[10px] text-slate-400">{order.wilaya} ({order.commune || 'لم تحدد'})</div>
+                                                {/* LEFT COMPACT INFO: STATUS, DATE, SKU */}
+                                                <div className="flex items-center justify-between sm:justify-end gap-3 text-left">
+                                                    <div>
+                                                        <div className="text-[10px] text-slate-500 font-mono">{order.orderNumber} • {order.createdAt ? order.createdAt.split('T')[0] : ''}</div>
+                                                        <div className="text-xs font-bold text-slate-400 mt-0.5">{order.customerPhone}</div>
                                                     </div>
-                                                    <div className="flex items-center gap-3">
+                                                    <div className="flex items-center gap-2">
                                                         {getStatusBadge(order.statusCall)}
-                                                        <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-slate-600 ml-2 transition-transform duration-300`}></i>
+                                                        <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-slate-600 text-xs transition-transform duration-300`}></i>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* EXPANDED DETAILS */}
+                                            {/* EXPANDED DETAILS & ACTIONS */}
                                             {isExpanded && (
-                                                <div className="p-4 border-t border-slate-800 bg-slate-900/30 space-y-4 animate-fade-in-down">
+                                                <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-4 animate-fade-in-down">
+                                                    
+                                                    {/* QUICK CALL & WTSP */}
                                                     <div className="flex gap-2">
-                                                        <a href={`tel:${order.customerPhone}`} className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                                                        <a href={`tel:${order.customerPhone}`} className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2 transition border border-slate-700">
                                                             <i className="fa-solid fa-phone-volume text-emerald-400"></i> Appel (اتصال)
                                                         </a>
                                                         <a 
                                                             href={formatWhatsAppLink(order)} 
                                                             target="_blank" 
                                                             onClick={() => handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { isWhatsAppSent: true })}
-                                                            className="flex-1 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition"
+                                                            className="flex-1 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition"
                                                         >
                                                             <i className="fa-brands fa-whatsapp text-lg"></i> MSG WTSP (رسالة)
                                                         </a>
                                                     </div>
 
-                                                    {/* Form Controls */}
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                                                        <div className="space-y-2">
-                                                            <div className="text-xs text-slate-500 block">المنتج والكمية</div>
-                                                            <div className="text-sm font-bold text-white">{order.productName} ({order.variant})</div>
-                                                            <div className="flex justify-between items-center bg-purple-500/10 p-2 rounded-lg border border-purple-500/20 mt-2">
-                                                                <div>
-                                                                    <span className="text-[10px] font-bold text-purple-400 block">عرض توفيري (Upsell)</span>
-                                                                    <span className="text-[9px] text-purple-300">+100 DA عمولة لكِ</span>
-                                                                </div>
-                                                                <button 
-                                                                    onClick={() => {
-                                                                        const newUpsell = !order.upsellAdded;
-                                                                        const newQty = newUpsell ? order.quantity + 1 : Math.max(1, order.quantity - 1);
-                                                                        const newTotal = (newQty * order.unitPriceDZD) + order.shippingFeeDZD;
-                                                                        handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { upsellAdded: newUpsell, quantity: newQty, totalPriceDZD: newTotal });
-                                                                    }}
-                                                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition ${order.upsellAdded ? 'bg-purple-500 text-white' : 'bg-slate-900 text-purple-400 border border-purple-500/50'}`}
-                                                                >
-                                                                    {order.upsellAdded ? 'مضاف ✓' : 'إضافة +1'}
-                                                                </button>
-                                                            </div>
+                                                    {/* UPSELL SUGGESTION GLOW BOX */}
+                                                    <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-transparent p-3 rounded-xl border border-brandOrange/30 flex justify-between items-center shadow-neon-orange">
+                                                        <div>
+                                                            <span className="text-xs font-black text-brandOrange block">إضافة العرض التوفيري (Upsell +100 DA)</span>
+                                                            <span className="text-[10px] text-slate-400 font-semibold">إضافة حبة ثانية بخصم مخصص للزبون ومكافأة لكِ</span>
                                                         </div>
+                                                        <button 
+                                                            onClick={() => {
+                                                                const newUpsell = !order.upsellAdded;
+                                                                const newQty = newUpsell ? order.quantity + 1 : Math.max(1, order.quantity - 1);
+                                                                const newTotal = (newQty * order.unitPriceDZD) + order.shippingFeeDZD;
+                                                                handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { upsellAdded: newUpsell, quantity: newQty, totalPriceDZD: newTotal });
+                                                            }}
+                                                            className={`px-3.5 py-2 rounded-xl text-xs font-black transition ${order.upsellAdded ? 'bg-brandOrange text-slate-950 font-black shadow-lg' : 'bg-slate-900 text-brandOrange border border-brandOrange/50'}`}
+                                                        >
+                                                            {order.upsellAdded ? 'تمت الإضافة ✓' : 'إضافة Upsell +1'}
+                                                        </button>
+                                                    </div>
 
-                                                        {/* 🔴 DYNAMIC WILAYA & CASCADING COMMUNE SELECTOR 🔴 */}
-                                                        <div className="space-y-2 border-t md:border-t-0 md:border-r border-slate-800 md:pr-4 pt-2 md:pt-0">
-                                                            <label className="text-xs text-slate-500 block font-bold">الولاية والبلدية (DHD Required)</label>
-                                                            
-                                                            {/* Wilaya Picker */}
+                                                    {/* WILAYA & CASCADING COMMUNE SELECTOR */}
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                                                        <div>
+                                                            <label className="text-[10px] text-slate-400 font-bold block mb-1">الولاية (DHD Code)</label>
                                                             <select 
                                                                 value={order.wilaya}
                                                                 onChange={(e) => {
@@ -760,69 +841,68 @@
                                                                         totalPriceDZD: total 
                                                                     });
                                                                 }}
-                                                                className="w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white font-bold"
+                                                                className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white font-bold"
                                                             >
                                                                 {DHD_WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
                                                             </select>
+                                                        </div>
 
-                                                            {/* Commune Cascading Picker */}
-                                                            <div>
-                                                                <label className="text-[10px] text-cyan-400 block font-bold mt-1">البلدية الرسمية (Commune) *</label>
-                                                                <select 
-                                                                    value={order.commune || currentDhdWilaya.communes[0]}
-                                                                    onChange={(e) => {
-                                                                        handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { commune: e.target.value });
-                                                                    }}
-                                                                    className="w-full p-2 bg-slate-900 border border-cyan-500/40 rounded-lg text-xs text-emerald-400 font-bold"
-                                                                >
-                                                                    {currentDhdWilaya.communes.map(c => <option key={c} value={c}>{c}</option>)}
-                                                                </select>
-                                                            </div>
+                                                        <div>
+                                                            <label className="text-[10px] text-cyan-400 font-bold block mb-1">البلدية الرسمية (Commune DHD) *</label>
+                                                            <select 
+                                                                value={order.commune || currentDhdWilaya.communes[0]}
+                                                                onChange={(e) => {
+                                                                    handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { commune: e.target.value });
+                                                                }}
+                                                                className="w-full p-2 bg-slate-950 border border-cyan-500/40 rounded-lg text-xs text-emerald-400 font-bold"
+                                                            >
+                                                                {currentDhdWilaya.communes.map(c => <option key={c} value={c}>{c}</option>)}
+                                                            </select>
+                                                        </div>
 
-                                                            <div className="flex gap-1 mt-1">
-                                                                <button onClick={() => {
-                                                                    const fee = currentDhdWilaya.homeFee;
-                                                                    const total = (order.quantity * order.unitPriceDZD) + fee;
-                                                                    handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'Domicile', shippingFeeDZD: fee, totalPriceDZD: total });
-                                                                }} className={`flex-1 py-1.5 rounded text-[10px] font-bold ${order.deliveryType === 'Domicile' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>البيت ({currentDhdWilaya.homeFee} DA)</button>
-                                                                <button onClick={() => {
-                                                                    const fee = currentDhdWilaya.stopDeskFee;
-                                                                    const total = (order.quantity * order.unitPriceDZD) + fee;
-                                                                    handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'StopDesk', shippingFeeDZD: fee, totalPriceDZD: total });
-                                                                }} className={`flex-1 py-1.5 rounded text-[10px] font-bold ${order.deliveryType === 'StopDesk' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>مكتب ({currentDhdWilaya.stopDeskFee} DA)</button>
-                                                            </div>
+                                                        <div className="sm:col-span-2 flex gap-2 pt-1">
+                                                            <button onClick={() => {
+                                                                const fee = currentDhdWilaya.homeFee;
+                                                                const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'Domicile', shippingFeeDZD: fee, totalPriceDZD: total });
+                                                            }} className={`flex-1 py-1.5 rounded-lg text-[10px] font-extrabold transition ${order.deliveryType === 'Domicile' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>البيت ({currentDhdWilaya.homeFee} DA)</button>
+                                                            <button onClick={() => {
+                                                                const fee = currentDhdWilaya.stopDeskFee;
+                                                                const total = (order.quantity * order.unitPriceDZD) + fee;
+                                                                handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { deliveryType: 'StopDesk', shippingFeeDZD: fee, totalPriceDZD: total });
+                                                            }} className={`flex-1 py-1.5 rounded-lg text-[10px] font-extrabold transition ${order.deliveryType === 'StopDesk' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-900 text-slate-500'}`}>مكتب ({currentDhdWilaya.stopDeskFee} DA)</button>
                                                         </div>
                                                     </div>
 
                                                     {/* Remarque Box */}
                                                     <div>
-                                                        <label className="text-[10px] font-bold text-amber-400 block mb-1.5">ملاحظة الكوبيراتريس (Remarque):</label>
+                                                        <label className="text-[10px] font-bold text-amber-400 block mb-1">ملاحظة الكوبيراتريس (Remarque):</label>
                                                         <input 
                                                             type="text" 
                                                             placeholder="اكتبي ملاحظة للحفظ المباشر..."
                                                             value={order.notes || ''}
                                                             onChange={(e) => handleUpdateOrderStatus(order.id, order.statusCall, order.statusShipping, { notes: e.target.value })}
-                                                            className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500/50"
+                                                            className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500/50"
                                                         />
                                                     </div>
 
                                                     {/* STATUS TRIGGERS & CONFIRMATION */}
-                                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-2 pt-2 border-t border-slate-800">
+                                                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-slate-800">
                                                         <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_1')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_1' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Pas 1</button>
                                                         <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_2')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_2' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Pas 2</button>
                                                         <button onClick={() => handleUpdateOrderStatus(order.id, 'Pas_3')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Pas_3' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Pas 3</button>
                                                         <button onClick={() => handleUpdateOrderStatus(order.id, 'Injoignable')} className={`col-span-1 py-2 rounded-xl text-xs font-bold border transition ${order.statusCall === 'Injoignable' ? 'bg-purple-500/20 text-purple-400 border-purple-500/50' : 'bg-slate-900 text-slate-400 border-slate-800'}`}>Injoignable</button>
-                                                        <button onClick={() => setCancelModalOrder(order)} className="col-span-2 md:col-span-1 py-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 rounded-xl text-xs font-bold border border-rose-500/30 transition">Annuler ✗</button>
+                                                        <button onClick={() => setCancelModalOrder(order)} className="col-span-2 sm:col-span-1 py-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 rounded-xl text-xs font-bold border border-rose-500/30 transition">Annuler ✗</button>
                                                         
                                                         {/* BIG GREEN CONFIRM */}
-                                                        <button onClick={() => handleUpdateOrderStatus(order.id, 'Confirme', 'Non_Expedie')} className="col-span-2 md:col-span-5 mt-2 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-neon-emerald transition active:scale-95 flex items-center justify-center gap-2">
+                                                        <button onClick={() => handleUpdateOrderStatus(order.id, 'Confirme', 'Non_Expedie')} className="col-span-2 sm:col-span-5 mt-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-black rounded-xl text-sm shadow-neon-emerald transition active:scale-95 flex items-center justify-center gap-2">
                                                             <i className="fa-solid fa-circle-check text-lg"></i> تأكيد الطلبية (A TA2KID B VERT)
                                                         </button>
 
                                                         {/* Direct Export to DHD Express API Button */}
                                                         {order.statusCall === 'Confirme' && (
-                                                            <button onClick={() => setDhdModalOrder(order)} className="col-span-2 md:col-span-5 py-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/40 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition">
-                                                                <i className="fa-solid fa-paper-plane"></i> تصدير مباشر لـ DHD Express (POST /api/v1/create/order)
+                                                            <button onClick={() => setDhdModalOrder(order)} className="col-span-2 sm:col-span-5 py-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/40 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition">
+                                                                <i className="fa-solid fa-paper-plane"></i> تصدير مباشر لـ DHD Express (API Export)
                                                             </button>
                                                         )}
                                                     </div>
@@ -834,7 +914,7 @@
                                 })
                             ) : (
                                 <div className="glass-panel p-12 text-center rounded-3xl border border-slate-800">
-                                    <p className="text-slate-400 font-bold text-sm">لا توجد طلبات تطابق الفلتر المالي الحالي.</p>
+                                    <p className="text-slate-400 font-bold text-sm">Aucune commande trouvée.</p>
                                 </div>
                             )}
                         </div>
@@ -845,9 +925,9 @@
                         <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
                             <div className="bg-slate-900 border border-cyan-500/50 p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-neon-cyan">
                                 <h3 className="text-lg font-black text-cyan-400 flex items-center gap-2">
-                                    <i className="fa-solid fa-truck-ramp-box text-xl"></i> تصدير الطلب إلى DHD Express API
+                                    <i className="fa-solid fa-truck-ramp-box text-xl"></i> Exportation vers DHD Express API
                                 </h3>
-                                <p className="text-xs text-slate-300">سيتم إرسال البيانات الرسمية بما في ذلك البلدية المحددة (`commune`):</p>
+                                <p className="text-xs text-slate-300">Vérification du Payload Officiel Postman avant l'envoi:</p>
                                 
                                 <pre className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto" dir="ltr">
                                     {JSON.stringify({
@@ -865,14 +945,14 @@
                                 </pre>
 
                                 <div className="flex gap-3">
-                                    <button onClick={() => setDhdModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">إلغاء</button>
+                                    <button onClick={() => setDhdModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Annuler</button>
                                     <button 
                                         disabled={isExportingDHD}
                                         onClick={() => sendRealOrderToDHD(dhdModalOrder)} 
                                         className="flex-1 py-3 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-2"
                                     >
                                         {isExportingDHD ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-paper-plane"></i>}
-                                        <span>إرسال وتوليد كود التتبع DHD</span>
+                                        <span>Confirmer & Générer Tracking</span>
                                     </button>
                                 </div>
                             </div>
@@ -884,25 +964,25 @@
                         <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
                             <div className="bg-slate-900 border border-rose-500/50 p-6 rounded-3xl max-w-md w-full space-y-5 shadow-neon-rose">
                                 <h3 className="text-xl font-black text-rose-500 flex items-center gap-2">
-                                    <i className="fa-solid fa-triangle-exclamation animate-pulse"></i> تحذير: غرامة إلغاء الطلب
+                                    <i className="fa-solid fa-triangle-exclamation animate-pulse"></i> Pénalité d'Annulation
                                 </h3>
                                 <p className="text-xs text-slate-300 font-bold bg-rose-500/10 p-3 rounded-xl border border-rose-500/20 leading-relaxed">
-                                    هل أنت متأكدة؟ إلغاء هذا الطلب سيؤدي إلى خصم <strong className="text-rose-400">-10 DA</strong> من مستحقاتك المعلقة كعقوبة.
+                                    L'annulation de cette commande entraînera une déduction de <strong className="text-rose-400">-10 DA</strong> sur vos gains en attente.
                                 </p>                                
                                 <div>
-                                    <label className="text-[10px] font-bold text-slate-400 block mb-1">سبب الإلغاء (إجباري)</label>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-1">Raison de l'annulation (Obligatoire)</label>
                                     <select value={cancelReason} onChange={(e) => setCancelReason(e.target.value)} className="w-full p-3 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-rose-500">
-                                        <option value="">-- اختاري السبب --</option>
-                                        <option value="السعر غالي">السعر غالي / لم يناسبه</option>
-                                        <option value="مدة التوصيل">المدة طويلة جداً</option>
-                                        <option value="خطأ">خطأ في الطلب / غير مهتم</option>
+                                        <option value="">-- Choisir la raison --</option>
+                                        <option value="السعر غالي">Prix élevé / Refus du tarif</option>
+                                        <option value="مدة التوصيل">Délai de livraison trop long</option>
+                                        <option value="خطأ">Erreur de commande / Non intéressé</option>
                                     </select>
                                 </div>
 
                                 <div className="flex gap-3">
-                                    <button onClick={() => setCancelModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">تراجع</button>
+                                    <button onClick={() => setCancelModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">Retour</button>
                                     <button disabled={!cancelReason} onClick={() => handleUpdateOrderStatus(cancelModalOrder.id, 'Annule', cancelModalOrder.statusShipping, { cancelReason })} className="flex-1 py-3 bg-rose-600 disabled:opacity-30 text-white font-black rounded-xl text-xs">
-                                        تأكيد الإلغاء (-10 DA)
+                                        Confirmer (-10 DA)
                                     </button>
                                 </div>
                             </div>
