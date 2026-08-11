@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COD MATRIX - VeraVision Master Platform</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -108,16 +108,16 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // SUPABASE DATABASE CREDENTIALS
+        // SUPABASE CREDENTIALS
         const SUPABASE_URL = 'https://fatgvakfpxsycrjleknt.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhdGd2YWtmcHhzeWNyamxla250Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjY2MjQsImV4cCI6MjEwMDIwMjYyNH0.7_DSLql8sjTSjnUSYVJZIwGVTPJ9lhOiG192oJKBOM0';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // REAL DHD EXPRESS / ECOTRACK API CREDENTIALS
+        // REAL DHD EXPRESS API CREDENTIALS
         const DHD_API_URL = 'https://platform.dhd-dz.com';
         const DHD_TOKEN = 'mSDPSTuAIv2Ws86SVAvKwtf7Z94DZonrAGSjwNelwFqRITKzZ5pajRFypktp';
 
-        // Web Audio Sound Engine
+        // Sound Engine
         class SoundEngine {
             constructor() { this.ctx = null; }
             init() { if (!this.ctx && typeof window !== 'undefined') { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) this.ctx = new AudioCtx(); } }
@@ -196,7 +196,7 @@
             const [loginInput, setLoginInput] = useState({ username: '', password: '' });
             const [loginError, setLoginError] = useState('');
 
-            // App Options
+            // App Preferences
             const [theme, setTheme] = useState('dark');
             const [lang, setLang] = useState('AR');
             const [soundEnabled, setSoundEnabled] = useState(true);
@@ -259,7 +259,7 @@
                 const map = new Map();
                 orders.forEach(o => {
                     const key = `${o.customerPhone}_${o.productName}`;
-                    if (!map.has(key) || new Date(o.createdAt) > new Date(map.get(key).createdAt)) {
+                    if (!map.has(key) || new Date(o.updatedAt || o.createdAt) > new Date(map.get(key).updatedAt || map.get(key).createdAt)) {
                         map.set(key, o);
                     }
                 });
@@ -281,7 +281,7 @@
                 return { dedupedOrders: dOrders, statusCounts: counts };
             }, [orders]);
 
-            // DHD API Interactions
+            // DHD API Integration Engine
             const createDHDOrder = async (order, trackingSetter) => {
                 if (!order.commune) { showToast('خطأ ❌', 'اختر البلدية أولاً', 'error'); return; }
                 const payload = {
@@ -291,11 +291,11 @@
                     produit: `${order.productName} (x${order.quantity})`
                 };
                 try {
-                    showToast('DHD Sync...', 'جاري التصدير لـ DHD', 'info');
+                    showToast('DHD Sync...', 'جاري التصدير لـ DHD Express', 'info');
                     const res = await fetch(`${DHD_API_URL}/api/v1/create/order`, { method: 'POST', headers: { 'Authorization': `Bearer ${DHD_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                     const data = await res.json();
                     if (res.ok || data.tracking || data.success) {
-                        const tracking = data.tracking || `DHD-${Math.floor(Math.random()*900000)}`;
+                        const tracking = data.tracking || (data.data && data.data.tracking) || `DHD-${Math.floor(Math.random()*900000)}`;
                         trackingSetter(tracking);
                         if(soundEnabled) sfx.play('success'); showToast('DHD Success 🚀', `رقم التتبع: ${tracking}`, 'success');
                     } else throw new Error(data.message || 'Error');
@@ -306,7 +306,7 @@
             };
 
             const updateDHDOrder = async (trackingCode, order) => {
-                const url = `${DHD_API_URL}/api/v1/update/order?tracking=${trackingCode}&code_wilaya=${order.wilaya_id || 16}&commune=${encodeURIComponent(order.commune || '')}&montant=${order.totalPriceDZD}`;
+                const url = `${DHD_API_URL}/api/v1/update/order?tracking=${trackingCode}&code_wilaya=${order.wilaya_id || 16}&commune=${encodeURIComponent(order.commune || '')}&montant=${order.totalPriceDZD}&client=${encodeURIComponent(order.customerName || '')}`;
                 try { await fetch(url, { method: 'POST', headers: { 'Authorization': `Bearer ${DHD_TOKEN}` }}); showToast('DHD Sync 🔄', 'تم التحديث في DHD', 'success'); } catch(e){}
             };
 
@@ -314,22 +314,36 @@
                 try { await fetch(`${DHD_API_URL}/api/v1/delete/order?tracking=${trackingCode}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${DHD_TOKEN}` }}); showToast('DHD Sync 🗑️', 'تم حذفه من DHD', 'error'); } catch(e){}
             };
 
-            // Order Updates Handler
+            // Order Deletion (Hard Delete from Supabase & DHD)
+            const hardDeleteOrder = async (order) => {
+                if(order.trackingCode) { await deleteDHDOrder(order.trackingCode); }
+                setOrders(curr => curr.filter(o => o.id !== order.id));
+                if(soundEnabled) sfx.play('error');
+                showToast('تم الحذف', 'تم مسح الطلبية نهائياً من السيستم', 'error');
+                await supabase.from('orders').delete().eq('id', order.id);
+            };
+
+            // Status Updates & Financial LED Calculations
             const updateOrder = async (orderId, updates) => {
                 const prev = orders.find(o => o.id === orderId);
                 let pendingDiff = 0; let sfxType = 'click';
 
-                if (updates.statusCall === 'Confirme' && prev.statusCall !== 'Confirme') { pendingDiff += 100; sfxType = 'success'; if(window.confetti) confetti({colors:['#FF6600', '#fff']}); }
+                if (updates.statusCall === 'Confirme' && prev.statusCall !== 'Confirme') { 
+                    pendingDiff += 100; sfxType = 'success'; 
+                    if(window.confetti) confetti({colors:['#FF6600', '#10B981']}); 
+                }
                 if (updates.upsellAdded && !prev.upsellAdded) { pendingDiff += 100; sfxType = 'cash'; }
                 if (updates.statusCall === 'Annule' && prev.statusCall !== 'Annule') { 
                     pendingDiff -= 10; sfxType = 'error'; 
                     triggerScaryPenalty();
                     if(prev.trackingCode) deleteDHDOrder(prev.trackingCode); 
                 }
-                if (prev.trackingCode && (updates.wilaya || updates.commune || updates.totalPriceDZD)) { updateDHDOrder(prev.trackingCode, { ...prev, ...updates }); }
+                if (prev.trackingCode && (updates.wilaya || updates.commune || updates.totalPriceDZD || updates.customerName)) { 
+                    updateDHDOrder(prev.trackingCode, { ...prev, ...updates }); 
+                }
 
                 if(soundEnabled) sfx.play(sfxType);
-                const newData = { ...prev, ...updates };
+                const newData = { ...prev, ...updates, updatedAt: new Date().toISOString() };
                 setOrders(curr => curr.map(o => o.id === orderId ? newData : o));
                 
                 if (pendingDiff !== 0 && currentUser.role === 'confirmatrice') {
@@ -347,7 +361,7 @@
 
             const showToast = (title, sub, type) => { setToast({ title, sub, type }); setTimeout(() => setToast(null), 3500); };
 
-            // Filter Pipeline Handler
+            // Filter Engine
             const displayedOrders = useMemo(() => {
                 let list = topStatusFilter === 'ALL' ? dedupedOrders : orders;
                 return list.filter(o => {
@@ -368,7 +382,12 @@
                     if (endDate && o.createdAt.split('T')[0] > endDate) return false;
                     
                     return true;
-                }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+                }).sort((a,b) => {
+                    if (topStatusFilter === 'NEW') {
+                        return new Date(b.createdAt) - new Date(a.createdAt); // Newest to oldest
+                    }
+                    return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt); // Last modified first
+                });
             }, [orders, dedupedOrders, topStatusFilter, searchQuery, startDate, endDate, wilayaFilter]);
 
             // Login Handlers
@@ -379,16 +398,16 @@
             };
 
             const PIPELINE = [
-                { key: 'ALL', label: 'ALL', color: 'slate', icon: 'fa-layer-group', count: statusCounts.ALL },
-                { key: 'NEW', label: 'NEW', color: 'blue', icon: 'fa-sparkles', count: statusCounts.NEW },
-                { key: 'WTSP', label: 'WTSP', color: 'green', icon: 'fa-whatsapp', count: statusCounts.WTSP },
-                { key: 'PAS_1', label: 'PAS 1', color: 'amber', icon: 'fa-phone-slash', count: statusCounts.PAS_1 },
-                { key: 'PAS_2', label: 'PAS 2', color: 'amber', icon: 'fa-phone-slash', count: statusCounts.PAS_2 },
-                { key: 'PAS_3', label: 'PAS 3', color: 'amber', icon: 'fa-phone-slash', count: statusCounts.PAS_3 },
-                { key: 'INJ', label: 'INJ', color: 'purple', icon: 'fa-ban', count: statusCounts.INJ },
-                { key: 'CONFIRM', label: 'CONFIRM', color: 'emerald', icon: 'fa-check', count: statusCounts.CONFIRM },
-                { key: 'DHD', label: 'DHD', color: 'cyan', icon: 'fa-truck-fast', count: statusCounts.DHD },
-                { key: 'ANNULER', label: 'ANNULER', color: 'rose', icon: 'fa-xmark', count: statusCounts.ANNULER }
+                { key: 'ALL', label: 'ALL', icon: 'fa-layer-group', count: statusCounts.ALL },
+                { key: 'NEW', label: 'NEW', icon: 'fa-sparkles', count: statusCounts.NEW },
+                { key: 'WTSP', label: 'WTSP', icon: 'fa-whatsapp', count: statusCounts.WTSP },
+                { key: 'PAS_1', label: 'PAS 1', icon: 'fa-phone-slash', count: statusCounts.PAS_1 },
+                { key: 'PAS_2', label: 'PAS 2', icon: 'fa-phone-slash', count: statusCounts.PAS_2 },
+                { key: 'PAS_3', label: 'PAS 3', icon: 'fa-phone-slash', count: statusCounts.PAS_3 },
+                { key: 'INJ', label: 'INJ', icon: 'fa-ban', count: statusCounts.INJ },
+                { key: 'CONFIRM', label: 'CONFIRM', icon: 'fa-check', count: statusCounts.CONFIRM },
+                { key: 'DHD', label: 'DHD', icon: 'fa-truck-fast', count: statusCounts.DHD },
+                { key: 'ANNULER', label: 'ANNULER', icon: 'fa-xmark', count: statusCounts.ANNULER }
             ];
 
             if (!currentUser) return (
@@ -452,7 +471,7 @@
                                 {/* PROFILE DROPDOWN */}
                                 <div className="relative">
                                     <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-800 border border-slate-700 p-1.5 pr-3 rounded-2xl transition">
-                                        <div className={`w-8 h-8 rounded-xl bg-brandOrange flex items-center justify-center text-white font-black text-sm`}>{currentUser.name.charAt(0)}</div>
+                                        <div className="w-8 h-8 rounded-xl bg-brandOrange flex items-center justify-center text-white font-black text-sm">{currentUser.name.charAt(0)}</div>
                                         <div className="text-right hidden sm:block">
                                             <div className="text-xs font-bold leading-none">{currentUser.name}</div>
                                             <span className="text-[9px] font-black text-brandOrange">{currentUser.badge}</span>
@@ -626,20 +645,24 @@
                                                     <button onClick={()=>updateOrder(order.id, {statusCall: 'Pas_1'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-amber-400 border border-slate-700">PAS 1</button>
                                                     <button onClick={()=>updateOrder(order.id, {statusCall: 'Pas_2'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-amber-400 border border-slate-700">PAS 2</button>
                                                     <button onClick={()=>updateOrder(order.id, {statusCall: 'Pas_3'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-amber-400 border border-slate-700">PAS 3</button>
-                                                    <button onClick={()=>updateOrder(order.id, {statusCall: 'Injoignable'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-purple-400 border border-slate-700">INJ</button>
+                                                    <button onClick={()=>updateOrder(order.id, {statusCall: 'Injoignable'})} className="py-2 bg-slate-800 rounded-lg text-[10px] font-bold text-purple-400 border border-slate-700">INJ (مغلق)</button>
                                                 </div>
 
                                                 <div className="flex gap-2">
-                                                    <button onClick={() => setCancelModalOrder(order)} className="w-1/3 py-3 bg-rose-500/10 text-rose-400 rounded-xl text-xs font-bold border border-rose-500/30">Annuler</button>
-                                                    <button onClick={() => updateOrder(order.id, {statusCall: 'Confirme'})} className="w-2/3 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 rounded-xl text-sm font-black">CONFIRMER ✓</button>
+                                                    <button onClick={() => setCancelModalOrder(order)} className="w-1/3 py-3 bg-rose-500/10 text-rose-400 rounded-xl text-xs font-bold border border-rose-500/30">Annuler (-10 DA)</button>
+                                                    <button onClick={() => updateOrder(order.id, {statusCall: 'Confirme'})} className="w-2/3 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 rounded-xl text-sm font-black shadow-neon-green">CONFIRMER (+100 DA) ✓</button>
                                                 </div>
 
-                                                {order.statusCall === 'Confirme' && !order.trackingCode && (
-                                                    <button onClick={() => createDHDOrder(order, (t) => updateOrder(order.id, { trackingCode: t, statusShipping: 'Expedie' }))} className="w-full py-3 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 rounded-xl text-xs font-black flex items-center justify-center gap-2 hover:bg-cyan-500/30 transition shadow-neon-cyan">
-                                                        <i className="fa-solid fa-paper-plane"></i> EXPORT TO DHD EXPRESS API
-                                                    </button>
-                                                )}
-                                                
+                                                {/* HARD DELETE BUTTON */}
+                                                <div className="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+                                                    <button onClick={() => hardDeleteOrder(order)} className="text-[10px] text-rose-500 hover:text-rose-400 font-bold flex items-center gap-1"><i className="fa-solid fa-trash"></i> Supprimer définitivement de la base</button>
+                                                    {order.statusCall === 'Confirme' && !order.trackingCode && (
+                                                        <button onClick={() => createDHDOrder(order, (t) => updateOrder(order.id, { trackingCode: t, statusShipping: 'Expedie' }))} className="px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 rounded-xl text-xs font-black hover:bg-cyan-500/30 transition shadow-neon-cyan">
+                                                            <i className="fa-solid fa-paper-plane"></i> EXPORT TO DHD EXPRESS API
+                                                        </button>
+                                                    )}
+                                                </div>
+
                                                 {order.trackingCode && (
                                                     <div className="p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-center text-xs font-mono text-cyan-400 font-bold">
                                                         DHD TRACKING: {order.trackingCode}
@@ -674,7 +697,7 @@
                                     <option value="Faux numéro">Faux numéro / Erreur</option>
                                 </select>
 
-                                <div className="flex gap-3">
+                                <div className="flex gap-2">
                                     <button onClick={()=>setCancelModalOrder(null)} className="flex-1 py-3 bg-slate-800 text-white rounded-xl text-xs font-bold">Retour</button>
                                     <button disabled={!cancelReason} onClick={() => updateOrder(cancelModalOrder.id, {statusCall: 'Annule', cancelReason: cancelReason})} className="flex-1 py-3 bg-rose-600 disabled:opacity-50 text-white rounded-xl text-xs font-black">Annuler (-10 DA)</button>
                                 </div>
