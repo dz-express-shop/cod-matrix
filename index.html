@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COD MATRIX - VeraVision Master Platform</title>
+    <title>COD MATRIX - Enterprise Service Client Suite</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,7 +31,7 @@
         };
     </script>
 
-    <!-- Supabase JS & React Standalone -->
+    <!-- Supabase JS & React Standalone CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -143,7 +143,7 @@
         }
         const sfx = new SoundEngine();
 
-        // OFFICIAL DHD / ECOTRACK WILAYAS & COMMUNES DATA
+        // OFFICIAL DHD WILAYAS, FEES & COMMUNES DATA
         const DHD_WILAYAS = [
             { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef', 'Zaouiet Kounta'] },
             { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450, communes: ['Chlef', 'Tenes', 'Boukadir', 'Oued Sly', 'Abou El Hassan'] },
@@ -196,7 +196,7 @@
             const [loginInput, setLoginInput] = useState({ username: '', password: '' });
             const [loginError, setLoginError] = useState('');
 
-            // App Preferences
+            // App Options
             const [theme, setTheme] = useState('dark');
             const [lang, setLang] = useState('AR');
             const [soundEnabled, setSoundEnabled] = useState(true);
@@ -317,9 +317,19 @@
             // Order Deletion (Hard Delete from Supabase & DHD)
             const hardDeleteOrder = async (order) => {
                 if(order.trackingCode) { await deleteDHDOrder(order.trackingCode); }
+                
+                let pendingDeduction = 0;
+                if (order.statusCall === 'Confirme') pendingDeduction += 100;
+                if (order.upsellAdded) pendingDeduction += 100;
+
+                if (pendingDeduction > 0 && currentUser.role === 'confirmatrice') {
+                    const newPending = Math.max(0, (currentUser.pendingDZD || 0) - pendingDeduction);
+                    setCurrentUser(curr => ({ ...curr, pendingDZD: newPending }));
+                }
+
                 setOrders(curr => curr.filter(o => o.id !== order.id));
                 if(soundEnabled) sfx.play('error');
-                showToast('تم الحذف', 'تم مسح الطلبية نهائياً من السيستم', 'error');
+                showToast('تم الحذف 🗑️', 'تم مسح الطلبية نهائياً من السيستم و DHD', 'error');
                 await supabase.from('orders').delete().eq('id', order.id);
             };
 
@@ -361,7 +371,7 @@
 
             const showToast = (title, sub, type) => { setToast({ title, sub, type }); setTimeout(() => setToast(null), 3500); };
 
-            // Filter Engine
+            // Filter Pipeline Handler
             const displayedOrders = useMemo(() => {
                 let list = topStatusFilter === 'ALL' ? dedupedOrders : orders;
                 return list.filter(o => {
@@ -653,7 +663,7 @@
                                                     <button onClick={() => updateOrder(order.id, {statusCall: 'Confirme'})} className="w-2/3 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 rounded-xl text-sm font-black shadow-neon-green">CONFIRMER (+100 DA) ✓</button>
                                                 </div>
 
-                                                {/* HARD DELETE BUTTON */}
+                                                {/* HARD DELETE BUTTON & EXPORT TO DHD */}
                                                 <div className="pt-2 border-t border-slate-800/80 flex justify-between items-center">
                                                     <button onClick={() => hardDeleteOrder(order)} className="text-[10px] text-rose-500 hover:text-rose-400 font-bold flex items-center gap-1"><i className="fa-solid fa-trash"></i> Supprimer définitivement de la base</button>
                                                     {order.statusCall === 'Confirme' && !order.trackingCode && (
