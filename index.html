@@ -75,7 +75,7 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .light .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.08);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
@@ -153,7 +153,7 @@
         }
         const sfx = new SoundEngine();
 
-        // OFFICIAL DHD / ECOTRACK WILAYAS & COMMUNES MAPPING
+        // 🔴 OFFICIAL DHD / ECOTRACK WILAYAS, FEES & COMMUNES DATA 🔴
         const DHD_WILAYAS = [
             { id: 1, name: '01 - Adrar', homeFee: 1300, stopDeskFee: 900, communes: ['Adrar', 'Reggane', 'Timimoun', 'Aoulef', 'Zaouiet Kounta'] },
             { id: 2, name: '02 - Chlef', homeFee: 850, stopDeskFee: 450, communes: ['Chlef', 'Tenes', 'Boukadir', 'Oued Sly', 'Abou El Hassan'] },
@@ -163,14 +163,14 @@
             { id: 6, name: '06 - Béjaïa', homeFee: 800, stopDeskFee: 450, communes: ['Béjaïa', 'Amizour', 'Akbou', 'El Kseur', 'Sidi Aïch', 'Tichy'] },
             { id: 7, name: '07 - Biskra', homeFee: 950, stopDeskFee: 550, communes: ['Biskra', 'Tolga', 'Ouled Djellal', 'Sidi Okba'] },
             { id: 8, name: '08 - Béchar', homeFee: 1000, stopDeskFee: 650, communes: ['Béchar', 'Abadla', 'Beni Ounif', 'Kenadsa'] },
-            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun'] },
+            { id: 9, name: '09 - Blida', homeFee: 650, stopDeskFee: 400, communes: ['Blida', 'Boufarik', 'Ouled Yaïch', 'Mouzaïa', 'El Affroun', 'Beni Mered', 'Bougara', 'Chiffa', 'Ouled Slama', 'Souma'] },
             { id: 10, name: '10 - Bouira', homeFee: 700, stopDeskFee: 550, communes: ['Bouira', 'Lakhdaria', 'Sour El Ghozlane', 'Ain Bessem'] },
             { id: 11, name: '11 - Tamanrasset', homeFee: 1500, stopDeskFee: 1100, communes: ['Tamanrasset', 'In Salah', 'In Ghar'] },
             { id: 12, name: '12 - Tébessa', homeFee: 900, stopDeskFee: 0, communes: ['Tébessa', 'Cheria', 'El Aouinet', 'Ouenza'] },
             { id: 13, name: '13 - Tlemcen', homeFee: 900, stopDeskFee: 500, communes: ['Tlemcen', 'Maghnia', 'Mansourah', 'Chetouane', 'Remchi'] },
             { id: 14, name: '14 - Tiaret', homeFee: 850, stopDeskFee: 0, communes: ['Tiaret', 'Sougueur', 'Frenda', 'Ksar Chellala'] },
             { id: 15, name: '15 - Tizi Ouzou', homeFee: 750, stopDeskFee: 450, communes: ['Tizi Ouzou', 'Draa Ben Khedda', 'Azazga', 'Tigzirt', 'Boghni'] },
-            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Bordj El Bahri', 'El Biar', 'Bachar Djerrah', 'Bir Mourad Raïs', 'Rouïba', 'Ain Taya', 'Ouled Fayet', 'Dely Ibrahim', 'Sidi M\'Hamed', 'Casbah', 'Reghaïa', 'Ain Benian', 'Saoula', 'Birtouta'] },
+            { id: 16, name: '16 - Alger', homeFee: 450, stopDeskFee: 300, communes: ['Bab Ezzouar', 'Draria', 'Kouba', 'Hydra', 'Cheraga', 'Zeralda', 'Bordj El Kiffan', 'Bordj El Bahri', 'El Biar', 'Bachar Djerrah', 'Bir Mourad Raïs', 'Rouïba', 'Ain Taya', 'Ouled Fayet', 'Dely Ibrahim', 'Sidi M\'Hamed', 'Casbah', 'Reghaïa', 'Ain Benian', 'Saoula', 'Birtouta', 'Alger Centre'] },
             { id: 17, name: '17 - Djelfa', homeFee: 950, stopDeskFee: 500, communes: ['Djelfa', 'Ain Oussera', 'Hassi Bahbah', 'Messaad'] },
             { id: 18, name: '18 - Jijel', homeFee: 900, stopDeskFee: 0, communes: ['Jijel', 'Tazerout', 'El Milia', 'Taher'] },
             { id: 19, name: '19 - Sétif', homeFee: 800, stopDeskFee: 450, communes: ['Sétif', 'El Eulma', 'Ain Arnat', 'Ain Oulmene', 'Bougaa', 'Ain Azel'] },
@@ -195,7 +195,8 @@
             { id: 'admin-karim', username: 'admin', password: 'admin123', name: 'كريم / أنيس', role: 'admin', badgeTitle: 'OWNER / GERANT' },
             { id: 'conf-dalia', username: 'dalia', password: '123456', name: 'دالية المنصوري', role: 'confirmatrice', badgeTitle: 'SERVICE CLIENT', pendingDZD: 0, confirmedDZD: 0, xp: 0 },
             { id: 'suivi-nadir', username: 'nadir', password: '123456', name: 'نظير العلمي', role: 'suivi_agent', badgeTitle: 'AGENT DE SUIVI' },
-            { id: 'stock-zaki', username: 'zaki', password: '123456', name: 'زكي بوقرة', role: 'stock_agent', badgeTitle: 'STOCK MANAGER' }
+            { id: 'stock-zaki', username: 'zaki', password: '123456', name: 'زكي بوقرة', role: 'stock_agent', badgeTitle: 'STOCK MANAGER' },
+            { id: 'media-buyer', username: 'media', password: '123456', name: 'وسيم ميديا', role: 'media_buyer', badgeTitle: 'MEDIA BUYER' }
         ];
 
         function App() {
@@ -428,6 +429,7 @@
             // 🔴 AUTOMATIC DHD UPDATE API (Modifier une commande) 🔴
             const updateOrderInDHD = async (trackingCode, updatedData) => {
                 const wilayaCode = parseInt(updatedData.wilaya_id) || 16;
+                // Query params as per Postman Doc
                 const updateUrl = `${DHD_API_URL}/api/v1/update/order?tracking=${trackingCode}&code_wilaya=${wilayaCode}&commune=${encodeURIComponent(updatedData.commune || '')}&montant=${updatedData.totalPriceDZD}&client=${encodeURIComponent(updatedData.customerName || '')}`;
                 try {
                     await fetch(updateUrl, { method: 'POST', headers: { 'Authorization': `Bearer ${DHD_TOKEN}` } });
@@ -462,7 +464,18 @@
 
             // Filter Engine
             const filteredOrders = useMemo(() => {
-                return orders.filter(o => {
+                // Deduplicate for ALL view
+                let processedOrders = orders;
+                if (topStatusFilter === 'ALL') {
+                    const uniqueOrdersMap = new Map();
+                    orders.forEach(o => {
+                        const key = `${o.customerPhone}_${o.productName}`;
+                        if (!uniqueOrdersMap.has(key)) uniqueOrdersMap.set(key, o);
+                    });
+                    processedOrders = Array.from(uniqueOrdersMap.values());
+                }
+
+                return processedOrders.filter(o => {
                     if (topStatusFilter === 'NEW' && o.statusCall !== 'En_Cours') return false;
                     if (topStatusFilter === 'WTSP' && !o.isWhatsAppSent) return false;
                     if (topStatusFilter === 'PAS_1' && o.statusCall !== 'Pas_1') return false;
@@ -503,6 +516,24 @@
                 setCurrentUser(null); setIsProfileMenuOpen(false);
                 setLoginInput({ username: '', password: '' });
                 if (soundEnabled) sfx.playClick();
+            };
+
+            const formatWhatsAppLink = (order) => {
+                let cleanPhone = order.customerPhone.replace(/\s+/g, '');
+                if (cleanPhone.startsWith('0')) cleanPhone = '213' + cleanPhone.substring(1);
+                const waMessage = encodeURIComponent(`سلام عليكم ${order.customerName}، معاك خدمة الزبائن لتأكيد طلبك (${order.productName}). الإجمالي ${order.totalPriceDZD} دج. نأكدو الشحن؟`);
+                return `https://wa.me/${cleanPhone}?text=${waMessage}`;
+            };
+
+            const getStatusBadge = (status) => {
+                const styles = {
+                    'En_Cours': 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+                    'Confirme': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                    'Annule': 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+                    'Injoignable': 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+                };
+                const style = styles[status] || 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+                return <span className={`text-[10px] px-2.5 py-0.5 rounded-md font-bold border whitespace-nowrap ${style}`}>{status ? status.replace('_', ' ') : 'N/A'}</span>;
             };
 
             if (!currentUser) {
